@@ -6,6 +6,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import bootstrapPlugin from "@fullcalendar/bootstrap";
+import listPlugin from '@fullcalendar/list';
 
 import "./EventCalendar.css";
 
@@ -84,9 +85,9 @@ export default class EventCalendar extends Component {
                     header={{
                         left: 'prev today next',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek, listMonth'
+                        right: 'dayGridMonth,timeGridWeek,listMonth'
                     }}
-                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrapPlugin]}
+                    plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin, bootstrapPlugin]}
                     themeSystem="bootstrap"
                     displayEventTime={true}
                     selectable={true}
