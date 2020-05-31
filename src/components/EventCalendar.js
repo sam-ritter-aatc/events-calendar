@@ -124,7 +124,8 @@ export default class EventCalendar extends Component {
                     </ModalBody>
                     <ModalFooter>
                         {!this.state.isEditing && <Button color="warning" onClick={this.editToggle}>Edit</Button>}{" "}
-                        <Button color="primary" onClick={this.saveEvent}>Save</Button>{" "}
+                        {this.state.isEditing && <Button color="primary" onClick={this.saveEvent} disabled={!this.state.isEditing}>Save</Button>}{" "}
+                        {!this.state.isEditing && <Button color="danger" onClick={this.eventRsvp}>RSVP</Button>}{" "}
                         <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -135,6 +136,11 @@ export default class EventCalendar extends Component {
 
     userCanEdit = () => {
         return true;
+    }
+
+    eventRsvp = (event) => {
+        console.log("event rsvp",this.state.currentEvent);
+        alert( "you have been registered for event: "+this.state.currentEvent.title);
     }
 
     saveEvent = (event) => {
