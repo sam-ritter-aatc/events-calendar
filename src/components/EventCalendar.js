@@ -12,6 +12,7 @@ import "./EventCalendar.css";
 
 import SwitchableTextInput from "./SwitchableTextInput";
 import SwitchableDatePicker from "./SwitchableDatePicker";
+import SwitchableButton from "./SwitchableButton";
 
 
 export default class EventCalendar extends Component {
@@ -123,9 +124,9 @@ export default class EventCalendar extends Component {
                         </form>
                     </ModalBody>
                     <ModalFooter>
-                        {!this.state.isEditing && <Button color="warning" onClick={this.editToggle}>Edit</Button>}{" "}
-                        {this.state.isEditing && <Button color="primary" onClick={this.saveEvent} disabled={!this.state.isEditing}>Save</Button>}{" "}
-                        {!this.state.isEditing && <Button color="danger" onClick={this.eventRsvp}>RSVP</Button>}{" "}
+                        <SwitchableButton isVisible={!this.state.isCreateEvent} color="warning" onClick={this.editToggle} isDisabled={false} name="Edit" />
+                        <SwitchableButton isVisible={this.state.isEditing} color="primary" onClick={this.saveEvent} isDisabled={!this.state.isEditing} name="Save" />
+                        <SwitchableButton isVisible={!this.state.isEditing} color="danger" onClick={this.eventRsvp} isDisabled={false} name="RSVP" />
                         <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
