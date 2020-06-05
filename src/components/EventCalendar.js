@@ -24,6 +24,7 @@ export default class EventCalendar extends Component {
         this.onChangeLocation = this.onChangeLocation.bind(this);
         // this.handleStartChange = this.handleStartChange.bind(this);
         // this.handleEndChange = this.handleEndChange.bind(this);
+console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
     }
 
     calendarComponentRef = React.createRef()
