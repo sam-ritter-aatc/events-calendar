@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+
+import getAuthTokens from '../utils/WildAppricotOAuthUtils';
+import getEvents from '../utils/WildApricotEvents';
+import eventConvert from '../utils/WildApricotConversions';
+
 import uuid from "react-uuid";
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -7,6 +12,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import listPlugin from '@fullcalendar/list';
+
 
 import "./EventCalendar.css";
 
@@ -24,7 +30,7 @@ export default class EventCalendar extends Component {
         this.onChangeLocation = this.onChangeLocation.bind(this);
         // this.handleStartChange = this.handleStartChange.bind(this);
         // this.handleEndChange = this.handleEndChange.bind(this);
-console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
+        console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
     }
 
     calendarComponentRef = React.createRef()
@@ -46,28 +52,33 @@ console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
         calendarWeekends: true,
     }
 
-    // componentDidMount() {
-    //     fetch('/api/list')
-    //         .then(res => res.json())
-    //         .then(events => this.setState({events: events, update: true}, () => {
-    //             console.log(events);
-    //             var myEvents = events.map((event) => {
-    //                 return {
-    //                     id: event.id,
-    //                     title: event.summary,
-    //                     start: event.start.dateTime || event.start.date,
-    //                     end: event.end.dateTime || event.end.date,
-    //                     organizer: event.organizer,
-    //                     created: event.created,
-    //                     updated: event.updated,
-    //                     location: event.location
-    //                 }
-    //             });
-    //             console.log("myEvents", myEvents);
-    //             this.setState({events: myEvents});
-    //         }))
-    //         .catch((error) => console.error(error))
-    // }
+    async componentDidMount() {
+        let tkn = {};
+        await getAuthTokens((data) => {
+            tkn = data;
+        });
+        let evnts = [];
+        await getEvents(tkn, '2019-01-01', (data) => {
+            evnts = data;
+        });
+        console.log(evnts);
+        this.setState({events: eventConvert(evnts)});
+        console.log("events", this.state.events);
+        var myEvents = eventConvert(evnts).map((event) => {
+            return {
+                id: event.id,
+                title: event.name,
+                start: event.startDate,
+                end: event.endDate,
+                organizer: event.organizer,
+                created: event.created,
+                updated: event.updated,
+                location: event.location
+            }
+        });
+        console.log("myEvents", myEvents);
+        this.setState({events: myEvents});
+    }
 
     modalToggle = () => {
         this.setState({showCreateModal: !this.state.showCreateModal});
@@ -113,21 +124,40 @@ console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
                                 <label>Event ID: {this.state.currentEvent.id}</label>
                             </div>}
 
-                            <SwitchableTextInput label="Event Name: " className="form-group" value={this.state.currentEvent.title} onChange={this.onChangeEventName} inputFlag={this.state.isEditing} />
+                            <SwitchableTextInput label="Event Name: " className="form-group"
+                                                 value={this.state.currentEvent.title} onChange={this.onChangeEventName}
+                                                 inputFlag={this.state.isEditing}/>
 
-                            <SwitchableTextInput label="Event Description: " className="form-group" value={this.state.currentEvent.description} onChange={this.onChangeEventDescription} inputFlag={this.state.isEditing} />
+                            <SwitchableTextInput label="Event Description: " className="form-group"
+                                                 value={this.state.currentEvent.description}
+                                                 onChange={this.onChangeEventDescription}
+                                                 inputFlag={this.state.isEditing}/>
 
-                            <SwitchableTextInput label="Event Location: " className="form-group" value={this.state.currentEvent.location} onChange={this.onChangeLocation} inputFlag={this.state.isEditing} />
+                            <SwitchableTextInput label="Event Location: " className="form-group"
+                                                 value={this.state.currentEvent.location}
+                                                 onChange={this.onChangeLocation} inputFlag={this.state.isEditing}/>
 
-                            <SwitchableDatePicker label="Start Date: " editFlag={this.state.isEditing} selected={this.state.currentEvent.start} handleChange={this.handleStartChange} start={this.state.currentEvent.start} end={this.state.currentEvent.end}/>
+                            <SwitchableDatePicker label="Start Date: " editFlag={this.state.isEditing}
+                                                  selected={this.state.currentEvent.start}
+                                                  handleChange={this.handleStartChange}
+                                                  start={this.state.currentEvent.start}
+                                                  end={this.state.currentEvent.end}/>
 
-                            <SwitchableDatePicker label="End Date: " editFlag={this.state.isEditing} selected={this.state.currentEvent.end} handleChange={this.handleEndChange} start={this.state.currentEvent.start} end={this.state.currentEvent.end} minDate={this.state.currentEvent.start}/>
+                            <SwitchableDatePicker label="End Date: " editFlag={this.state.isEditing}
+                                                  selected={this.state.currentEvent.end}
+                                                  handleChange={this.handleEndChange}
+                                                  start={this.state.currentEvent.start}
+                                                  end={this.state.currentEvent.end}
+                                                  minDate={this.state.currentEvent.start}/>
                         </form>
                     </ModalBody>
                     <ModalFooter>
-                        <SwitchableButton isVisible={!this.state.isCreateEvent} color="warning" onClick={this.editToggle} isDisabled={false} name="Edit" />
-                        <SwitchableButton isVisible={this.state.isEditing} color="primary" onClick={this.saveEvent} isDisabled={!this.state.isEditing} name="Save" />
-                        <SwitchableButton isVisible={!this.state.isEditing} color="danger" onClick={this.eventRsvp} isDisabled={false} name="RSVP" />
+                        <SwitchableButton isVisible={!this.state.isCreateEvent} color="warning"
+                                          onClick={this.editToggle} isDisabled={false} name="Edit"/>
+                        <SwitchableButton isVisible={this.state.isEditing} color="primary" onClick={this.saveEvent}
+                                          isDisabled={!this.state.isEditing} name="Save"/>
+                        <SwitchableButton isVisible={!this.state.isEditing} color="danger" onClick={this.eventRsvp}
+                                          isDisabled={false} name="RSVP"/>
                         <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -141,8 +171,8 @@ console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
     }
 
     eventRsvp = (event) => {
-        console.log("event rsvp",this.state.currentEvent);
-        alert( "you have been registered for event: "+this.state.currentEvent.title);
+        console.log("event rsvp", this.state.currentEvent);
+        alert("you have been registered for event: " + this.state.currentEvent.title);
     }
 
     saveEvent = (event) => {

@@ -1,5 +1,5 @@
 const waEvents = require('./test-wa-events-with-sessions.json');
-const eventConvert = require('./WildApricotConversions');
+const eventConvert = require('../WildApricotConversions');
 
 describe('converts an array of events(1 item which is recurring session)', () => {
     test('it should convert recurring event', () => {
