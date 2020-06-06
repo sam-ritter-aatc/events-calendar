@@ -1,5 +1,4 @@
 const axios = require('axios');
-const qs = require('querystring');
 
 const getEvents = async (token, startDate, cb) => {
     let authHdr = token.token_type + ' ' +token.access_token;
@@ -10,6 +9,9 @@ console.log("auth",authHdr);
         headers: {
             'Content-Type': 'application/json',
             'Authorization': authHdr
+        },
+        params: {
+            $filter: "StartDate ge "+startDate
         }
     };
 

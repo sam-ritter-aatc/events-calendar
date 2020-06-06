@@ -57,27 +57,22 @@ export default class EventCalendar extends Component {
         await getAuthTokens((data) => {
             tkn = data;
         });
-        let evnts = [];
         await getEvents(tkn, '2019-01-01', (data) => {
-            evnts = data;
+            var myEvents = eventConvert(data).map((event) => {
+                return {
+                    id: event.id,
+                    title: event.name,
+                    start: event.startDate,
+                    end: event.endDate,
+                    organizer: event.organizer,
+                    created: event.created,
+                    updated: event.updated,
+                    location: event.location
+                }
+            });
+            console.log("myEvents", myEvents);
+            this.setState({events: myEvents});
         });
-        console.log(evnts);
-        this.setState({events: eventConvert(evnts)});
-        console.log("events", this.state.events);
-        var myEvents = eventConvert(evnts).map((event) => {
-            return {
-                id: event.id,
-                title: event.name,
-                start: event.startDate,
-                end: event.endDate,
-                organizer: event.organizer,
-                created: event.created,
-                updated: event.updated,
-                location: event.location
-            }
-        });
-        console.log("myEvents", myEvents);
-        this.setState({events: myEvents});
     }
 
     modalToggle = () => {

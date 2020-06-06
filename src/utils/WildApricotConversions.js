@@ -1,8 +1,6 @@
 
 const eventConvert = (waEvent) => {
     let eList = [];
-    // let waEvnt = waEvent[0];
-    let event = {};
     if( Array.isArray(waEvent)) {
         waEvent.forEach((item) => {
             let x = convertSingleEvent(item);
