@@ -1,7 +1,7 @@
 const axios = require('axios');
 const qs = require('querystring');
 
-const getAuthTokens = async (cb) => {
+export const getAuthTokens = async (cb) => {
     console.log("url", process.env.REACT_APP_WA_OAUTH_URL);
     console.log("key", process.env.REACT_APP_WA_API_KEY);
 
@@ -27,4 +27,3 @@ const getAuthTokens = async (cb) => {
         });
 }
 
-module.exports = getAuthTokens;

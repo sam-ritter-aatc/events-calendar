@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import getAuthTokens from "../../utils/WildAppricotOAuthUtils";
+import {getAuthTokens} from "../../utils/WildAppricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import SwitchableTextInput from "../SwitchableTextInput";
 import renderHTML from 'react-render-html';
