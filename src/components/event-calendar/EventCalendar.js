@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 
-import getAuthTokens from '../utils/WildAppricotOAuthUtils';
-import getEvents from '../utils/WildApricotEvents';
-import eventConvert from '../utils/WildApricotConversions';
+import getAuthTokens from '../../utils/WildAppricotOAuthUtils';
+import {getEvents} from '../../utils/WildApricotEvents';
+import eventConvert from '../../utils/WildApricotConversions';
 
 import uuid from "react-uuid";
 import FullCalendar from '@fullcalendar/react'
@@ -16,9 +15,9 @@ import listPlugin from '@fullcalendar/list';
 
 import "./EventCalendar.css";
 
-import SwitchableTextInput from "./SwitchableTextInput";
-import SwitchableDatePicker from "./SwitchableDatePicker";
-import SwitchableButton from "./SwitchableButton";
+// import SwitchableTextInput from "./SwitchableTextInput";
+// import SwitchableDatePicker from "./SwitchableDatePicker";
+// import SwitchableButton from "./SwitchableButton";
 
 
 export default class EventCalendar extends Component {
@@ -50,29 +49,37 @@ export default class EventCalendar extends Component {
         events: [],
         showCreateModal: false,
         calendarWeekends: true,
+        waToken: {}
     }
 
     async componentDidMount() {
-        let tkn = {};
-        await getAuthTokens((data) => {
-            tkn = data;
-        });
-        await getEvents(tkn, '2019-01-01', (data) => {
+        await getAuthTokens((data) => this.setState({waToken: data}));
+        await getEvents(this.state.waToken, '2019-01-01', (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
-                    id: event.id,
-                    title: event.name,
-                    start: event.startDate,
-                    end: event.endDate,
-                    organizer: event.organizer,
-                    created: event.created,
-                    updated: event.updated,
-                    location: event.location
+                    id: event.Id,
+                    title: event.Name,
+                    start: event.StartDate,
+                    end: event.EndDate,
+                    Url: event.Url,
+                    Tags: event.Tags,
+                    backgroundColor: this.getEventColor(event),
+                    parentId: event.parentId
                 }
             });
-            console.log("myEvents", myEvents);
+            // console.log("myEvents", myEvents);
             this.setState({events: myEvents});
         });
+    }
+
+    getEventColor(event) {
+        if ( /Ironman/.test(event.Name) ) {
+            return 'red'
+        }
+        if ( event.isRecurringSession ) {
+            return 'green';
+        }
+        return 'blue';
     }
 
     modalToggle = () => {
@@ -105,57 +112,6 @@ export default class EventCalendar extends Component {
                     dateClick={this.handleDateClick}
                     eventClick={this.handleEventClick}
                 />
-                <Modal
-                    isOpen={this.state.showCreateModal}
-                    toggle={this.modalToggle}
-                    className={this.constructor.name}
-                >
-                    <ModalHeader toggle={this.modalToggle}>
-                        {this.state.isCreateEvent ? "Create New Event" : this.state.currentEvent.title}
-                    </ModalHeader>
-                    <ModalBody>
-                        <form onSubmit={this.onSubmit}>
-                            {!this.state.isCreateEvent && <div className="form-group">
-                                <label>Event ID: {this.state.currentEvent.id}</label>
-                            </div>}
-
-                            <SwitchableTextInput label="Event Name: " className="form-group"
-                                                 value={this.state.currentEvent.title} onChange={this.onChangeEventName}
-                                                 inputFlag={this.state.isEditing}/>
-
-                            <SwitchableTextInput label="Event Description: " className="form-group"
-                                                 value={this.state.currentEvent.description}
-                                                 onChange={this.onChangeEventDescription}
-                                                 inputFlag={this.state.isEditing}/>
-
-                            <SwitchableTextInput label="Event Location: " className="form-group"
-                                                 value={this.state.currentEvent.location}
-                                                 onChange={this.onChangeLocation} inputFlag={this.state.isEditing}/>
-
-                            <SwitchableDatePicker label="Start Date: " editFlag={this.state.isEditing}
-                                                  selected={this.state.currentEvent.start}
-                                                  handleChange={this.handleStartChange}
-                                                  start={this.state.currentEvent.start}
-                                                  end={this.state.currentEvent.end}/>
-
-                            <SwitchableDatePicker label="End Date: " editFlag={this.state.isEditing}
-                                                  selected={this.state.currentEvent.end}
-                                                  handleChange={this.handleEndChange}
-                                                  start={this.state.currentEvent.start}
-                                                  end={this.state.currentEvent.end}
-                                                  minDate={this.state.currentEvent.start}/>
-                        </form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <SwitchableButton isVisible={!this.state.isCreateEvent} color="warning"
-                                          onClick={this.editToggle} isDisabled={false} name="Edit"/>
-                        <SwitchableButton isVisible={this.state.isEditing} color="primary" onClick={this.saveEvent}
-                                          isDisabled={!this.state.isEditing} name="Save"/>
-                        <SwitchableButton isVisible={!this.state.isEditing} color="danger" onClick={this.eventRsvp}
-                                          isDisabled={false} name="RSVP"/>
-                        <Button color="secondary" onClick={this.modalToggle}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
                 <button onClick={this.createEvent}>Create Event</button>
             </div>
         )
@@ -191,14 +147,17 @@ export default class EventCalendar extends Component {
         console.log("state", this.state);
     }
 
-    handleEventClick = async (arg) => {
-        this.setState({
-            isCreateEvent: false,
-            isEditing: false
+    handleEventClick = (arg) => {
+        console.log("going to event", arg);
+        this.props.history.push({
+            pathname: '/showEvent',
+            state: {
+                id: arg.event.id,
+                name: arg.event.title,
+                url: arg.event.extendedProps.Url,
+                parentId: arg.event.extendedProps.parentId
+            }
         });
-        console.log("eventClicked", arg);
-        await this.setState({currentEvent: this.state.events.find(x => x.id === arg.event.id)});
-        this.showModal(arg)
     }
 
     handleDateClick = (e) => {

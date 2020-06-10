@@ -19,27 +19,22 @@ const eventConvert = (waEvent) => {
 }
 
 const convertSingleEvent = (waEvent) => {
-    let event = {} ;
-    event.id = waEvent.Id;
-    event.startDate = waEvent.StartDate;
-    event.endDate = waEvent.EndDate;
-    event.location = waEvent.Location;
-    event.url = waEvent.Url;
-    event.name = waEvent.Name;
-    event.tags = waEvent.Tags;
+    let event = Object.assign({}, waEvent) ;
 
     if ( waEvent.Sessions ) {
         let eList = [];
         waEvent.Sessions.forEach((item) => {
             let e = Object.assign({}, event);
-            e.id = item.Id;
-            e.parentId = event.id;
-            e.name = item.Title;
-            e.startDate = item.StartDate;
-            e.endDate = item.EndDate;
-            e.startTimeSpecified = item.StartTimeSpecified;
-            e.endTimeSpecified = item.EndTimeSpecified;
+            e.Id = item.Id;
+            e.parentId = event.Id;
+            e.Title = item.Title;
+            e.StartDate = item.StartDate;
+            e.EndDate = item.EndDate;
+            e.StartTimeSpecified = item.StartTimeSpecified;
+            e.EndTimeSpecified = item.EndTimeSpecified;
             e.isRecurringSession = true;
+            e.isOrganizedEvent = item.Details && item.Details.Organizer;
+            delete e.Sessions
             eList.push(e);
         })
         return eList;

@@ -1,21 +1,34 @@
+import {makeAuthHeader, makeBaseUrl} from "./WildApricotUtils";
 const axios = require('axios');
 
-const getEvents = async (token, startDate, cb) => {
-    let authHdr = token.token_type + ' ' +token.access_token;
-    let acct = token.Permissions[0].AccountId;
-    let baseUrl = process.env.REACT_APP_WA_BASE_URL + '/accounts/' + acct + '/events'
-console.log("auth",authHdr);
-    const getConfig = {
+const eventsUrlPart = '/events';
+
+export const getEventById = async (token, eventId, cb) => {
+    await axios.get(makeBaseUrl(token)+eventsUrlPart+'/'+eventId, {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': authHdr
+            'Authorization': makeAuthHeader(token)
+        }
+    })
+        .then((result) => {
+            cb(result.data)
+        })
+        .catch((err) => {
+            console.log("Error", err);
+            cb({});
+        })
+}
+
+export const getEvents = async (token, startDate, cb) => {
+    await axios.get(makeBaseUrl(token)+eventsUrlPart, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': makeAuthHeader(token)
         },
         params: {
             $filter: "StartDate ge "+startDate
         }
-    };
-
-    await axios.get(baseUrl, getConfig)
+    })
         .then((result) => {
             cb(result.data.Events);
         })
@@ -25,4 +38,3 @@ console.log("auth",authHdr);
         });
 };
 
-module.exports = getEvents;
