@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/calendar-events/static/css/main.9b4c4c0c.chunk.css",
-    "main.js": "/calendar-events/static/js/main.8f5762ca.chunk.js",
-    "main.js.map": "/calendar-events/static/js/main.8f5762ca.chunk.js.map",
+    "main.css": "/calendar-events/static/css/main.c947f6e2.chunk.css",
+    "main.js": "/calendar-events/static/js/main.d11526f8.chunk.js",
+    "main.js.map": "/calendar-events/static/js/main.d11526f8.chunk.js.map",
     "runtime-main.js": "/calendar-events/static/js/runtime-main.85b7c15d.js",
     "runtime-main.js.map": "/calendar-events/static/js/runtime-main.85b7c15d.js.map",
     "static/css/2.fc13cdf4.chunk.css": "/calendar-events/static/css/2.fc13cdf4.chunk.css",
-    "static/js/2.71e4ce63.chunk.js": "/calendar-events/static/js/2.71e4ce63.chunk.js",
-    "static/js/2.71e4ce63.chunk.js.map": "/calendar-events/static/js/2.71e4ce63.chunk.js.map",
+    "static/js/2.a75d26b9.chunk.js": "/calendar-events/static/js/2.a75d26b9.chunk.js",
+    "static/js/2.a75d26b9.chunk.js.map": "/calendar-events/static/js/2.a75d26b9.chunk.js.map",
     "index.html": "/calendar-events/index.html",
-    "precache-manifest.dea4d18dddb4628b73d102ddeb8ff75a.js": "/calendar-events/precache-manifest.dea4d18dddb4628b73d102ddeb8ff75a.js",
+    "precache-manifest.26b8f17189de9fa8bd387cc898eb8c93.js": "/calendar-events/precache-manifest.26b8f17189de9fa8bd387cc898eb8c93.js",
     "service-worker.js": "/calendar-events/service-worker.js",
     "static/css/2.fc13cdf4.chunk.css.map": "/calendar-events/static/css/2.fc13cdf4.chunk.css.map",
-    "static/css/main.9b4c4c0c.chunk.css.map": "/calendar-events/static/css/main.9b4c4c0c.chunk.css.map",
-    "static/js/2.71e4ce63.chunk.js.LICENSE.txt": "/calendar-events/static/js/2.71e4ce63.chunk.js.LICENSE.txt",
+    "static/css/main.c947f6e2.chunk.css.map": "/calendar-events/static/css/main.c947f6e2.chunk.css.map",
+    "static/js/2.a75d26b9.chunk.js.LICENSE.txt": "/calendar-events/static/js/2.a75d26b9.chunk.js.LICENSE.txt",
     "static/media/EventCalendar.css": "/calendar-events/static/media/fa-solid-900.ec763292.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.85b7c15d.js",
     "static/css/2.fc13cdf4.chunk.css",
-    "static/js/2.71e4ce63.chunk.js",
-    "static/css/main.9b4c4c0c.chunk.css",
-    "static/js/main.8f5762ca.chunk.js"
+    "static/js/2.a75d26b9.chunk.js",
+    "static/css/main.c947f6e2.chunk.css",
+    "static/js/main.d11526f8.chunk.js"
   ]
 }
