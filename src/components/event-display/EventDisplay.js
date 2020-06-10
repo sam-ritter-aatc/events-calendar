@@ -27,7 +27,8 @@ export default class EventDisplay extends Component {
             await getEventById(this.state.waToken, this.props.location.state.parentId, (data) => {
                 let e = clone(data);
                 for( let [k,v] of Object.entries(e.Sessions)) {
-                    if( v.Id == this.props.location.state.id ){
+                    k = k;
+                    if( v.Id === this.props.location.state.id ){
                         e.EndDate = v.EndDate;
                         e.StartDate = v.StartDate;
                         e.Name = v.Title;
