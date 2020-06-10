@@ -4,17 +4,22 @@ const axios = require('axios');
 const eventsUrlPart = '/events';
 
 export const getEventById = async (token, eventId, cb) => {
-    await axios.get(makeBaseUrl(token)+eventsUrlPart+'/'+eventId, {
+    console.log("getEventById", eventId);
+    await axios({
+        url: makeBaseUrl(token)+eventsUrlPart+'/'+eventId,
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': makeAuthHeader(token)
         }
     })
         .then((result) => {
-            cb(result.data)
+            console.log("RESULT", result)
+            cb(result.data);
+            // return result.data;
         })
         .catch((err) => {
-            console.log("Error", err);
+            console.log("## Error ##", err);
             cb({});
         })
 }

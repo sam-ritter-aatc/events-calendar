@@ -5,15 +5,15 @@ import SwitchableTextInput from "../SwitchableTextInput";
 import renderHTML from 'react-render-html';
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
-const clone = require('rfdc')();
 
 export default class EventDisplay extends Component {
-    constructor(props) {
-        super(props);
-        console.log("display", props);
-    }
-
+    // constructor(props) {
+    //     super(props);
+    //     console.log("display", props);
+    //
+    // }
     state = {
+        fetch: true,
         eventId: '',
         waToken: {},
         url: '',
@@ -21,21 +21,24 @@ export default class EventDisplay extends Component {
         organizer: null,
     }
 
+
     async eventDetails() {
         // recurring event
-        if( this.props.location.state.parentId ) {
+        if (this.props.location.state.parentId && this.state.fetch) {
             await getEventById(this.state.waToken, this.props.location.state.parentId, (data) => {
-                let e = clone(data);
-                for( let [k,v] of Object.entries(e.Sessions)) {
-                    k = k;
-                    if( v.Id === this.props.location.state.id ){
-                        e.EndDate = v.EndDate;
-                        e.StartDate = v.StartDate;
-                        e.Name = v.Title;
-                        e.sessionId = v.Id;
-                        break;
-                    }
+                let e = Object.assign({}, data);
+                this.setState({fetch: false});
+                console.log("props", this.props);
+
+                let sess = data.Sessions.filter(x => x.Id === this.props.location.state.id);
+                console.log("foundSession", sess);
+                if (sess) {
+                    e.sessionId = sess[0].Id;
+                    e.Name = sess[0].Title;
+                    e.StartDate = sess[0].StartDate;
+                    e.EndDate = sess[0].EndDate;
                 }
+                console.log("theEvent", e);
                 this.setState({event: e});
                 console.log('state', this.state);
             });
@@ -52,8 +55,9 @@ export default class EventDisplay extends Component {
 
     async componentDidMount() {
         await getAuthTokens((data) => this.setState({waToken: data}));
+        console.log("Fetching event data");
         await this.eventDetails();
-            // console.log('contact values ->', this.state.event, this.state.event.Details, this.state.event.Details.Organizer);
+        // console.log('contact values ->', this.state.event, this.state.event.Details, this.state.event.Details.Organizer);
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
@@ -65,22 +69,26 @@ export default class EventDisplay extends Component {
     }
 
     render() {
-        console.log("eventDisplay", this.props.location.state);
+        // console.log("eventDisplay", this.props.location.state);
         if (this.state.event === null) {
-            return (<EventDataLoader name={this.props.location.state.name} /> );
+            return (<EventDataLoader name={this.props.location.state.name}/>);
         } else {
             return (
                 <div>
                     <h2>{this.state.event.Name}</h2>
                     <SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>
                     <SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>
-                    <SwitchableTextInput className="event-start" label="Event Start Date/Time: " value={this.state.event.StartDate} />
-                    <SwitchableTextInput className="event-end" label="Event End Date/Time: " value={this.state.event.EndDate} />
-                    <SwitchableTextInput className="location" label="Event Location: " value={this.state.event.Location} />
-                    {this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: " value={this.state.organizer.display+'('+this.state.organizer.email+')'} />}
+                    <SwitchableTextInput className="event-start" label="Event Start Date/Time: "
+                                         value={this.state.event.StartDate}/>
+                    <SwitchableTextInput className="event-end" label="Event End Date/Time: "
+                                         value={this.state.event.EndDate}/>
+                    <SwitchableTextInput className="location" label="Event Location: "
+                                         value={this.state.event.Location}/>
+                    {this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: "
+                                                                  value={this.state.organizer.display + '(' + this.state.organizer.email + ')'}/>}
                     {this.state.event.Details && this.state.event.Details.DescriptionHtml ? <div><h3>Description</h3>
                         <div>{renderHTML(this.state.event.Details.DescriptionHtml)}</div>
-                    </div> : <div></div> }
+                    </div> : <div></div>}
                 </div>
             );
         }

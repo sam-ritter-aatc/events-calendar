@@ -152,7 +152,7 @@ export default class EventCalendar extends Component {
         this.props.history.push({
             pathname: '/showEvent',
             state: {
-                id: arg.event.id,
+                id: parseInt(arg.event.id, 10),
                 name: arg.event.title,
                 url: arg.event.extendedProps.Url,
                 parentId: arg.event.extendedProps.parentId
