@@ -16,7 +16,7 @@ export const getEventById = async (token, eventId, cb) => {
         .then((result) => {
             console.log("RESULT", result)
             cb(result.data);
-            // return result.data;
+             // return result.data;
         })
         .catch((err) => {
             console.log("## Error ##", err);
