@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "613e6e2f74075382d5682cdef2dac4ee",
+    "revision": "a032b1c575278a347b3f06e7e66d768c",
     "url": "/calendar-events/index.html"
   },
   {
-    "revision": "593cec9a6b55085de8bf",
+    "revision": "af0df9d8c958857e3774",
     "url": "/calendar-events/static/css/2.fc13cdf4.chunk.css"
   },
   {
-    "revision": "37a32e83c3ed2f2abcff",
-    "url": "/calendar-events/static/css/main.c947f6e2.chunk.css"
+    "revision": "a53a4636bd0339bdfe72",
+    "url": "/calendar-events/static/css/main.e2eda983.chunk.css"
   },
   {
-    "revision": "593cec9a6b55085de8bf",
-    "url": "/calendar-events/static/js/2.a75d26b9.chunk.js"
+    "revision": "af0df9d8c958857e3774",
+    "url": "/calendar-events/static/js/2.11eb1ca9.chunk.js"
   },
   {
     "revision": "d76210eab43653c12363d3745195af7e",
-    "url": "/calendar-events/static/js/2.a75d26b9.chunk.js.LICENSE.txt"
+    "url": "/calendar-events/static/js/2.11eb1ca9.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "37a32e83c3ed2f2abcff",
-    "url": "/calendar-events/static/js/main.f58a0f25.chunk.js"
+    "revision": "a53a4636bd0339bdfe72",
+    "url": "/calendar-events/static/js/main.b2467b69.chunk.js"
   },
   {
     "revision": "04ea2b208ce53ea4bf5c",
