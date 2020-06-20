@@ -14,6 +14,7 @@ import listPlugin from '@fullcalendar/list';
 
 
 import "./EventCalendar.css";
+import {getContact} from "../../utils/WildApricotContacts";
 
 // import SwitchableTextInput from "./SwitchableTextInput";
 // import SwitchableDatePicker from "./SwitchableDatePicker";
@@ -23,6 +24,10 @@ import "./EventCalendar.css";
 export default class EventCalendar extends Component {
     constructor(props) {
         super(props);
+        console.log("CREATEING EVENT CALENDAR");
+        if (this.props.match.params.memberId) {
+            console.log("RECEIVED MEMBERID", this.props.match.params.memberId);
+        }
         // this.onSubmit = this.onSubmit.bind(this);
         this.onChangeEventName = this.onChangeEventName.bind(this);
         this.onChangeEventDescription = this.onChangeEventDescription.bind(this);
@@ -37,24 +42,34 @@ export default class EventCalendar extends Component {
     state = {
         isCreateEvent: false,
         isEditing: false,
-        currentEvent: {
-            id: '',
-            title: '',
-            description: '',
-            location: '',
-            organizer: '',
-            start: new Date(),
-            end: new Date()
-        },
+        // currentEvent: {
+        //     id: '',
+        //     title: '',
+        //     description: '',
+        //     location: '',
+        //     organizer: '',
+        //     start: new Date(),
+        //     end: new Date()
+        // },
         events: [],
+        member: null,
         showCreateModal: false,
         calendarWeekends: true,
         waToken: {}
     }
 
     async componentDidMount() {
+        let firstDate = new Date();
+        firstDate.setFullYear(firstDate.getFullYear() - 1);
+        firstDate.setMonth(firstDate.getMonth() - 6);
+        console.log("FIRST DATE", firstDate)
+
         await getAuthTokens((data) => this.setState({waToken: data}));
-        await getEvents(this.state.waToken, '2019-01-01', (data) => {
+        if ( this.props.match.params.memberId && this.props.match.params.memberId !== "0") {
+            await getContact(this.state.waToken, this.props.match.params.memberId, (contact) => {this.setState({member: contact})})
+            console.log("Retrieve Member", this.state.member);
+        }
+        await getEvents(this.state.waToken, firstDate.toISOString(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
                     id: event.Id,
@@ -73,11 +88,8 @@ export default class EventCalendar extends Component {
     }
 
     getEventColor(event) {
-        if ( /Ironman/.test(event.Name) ) {
+        if ( /Race/.test(event.Name) ) {
             return 'red'
-        }
-        if ( event.isRecurringSession ) {
-            return 'green';
         }
         return 'blue';
     }
@@ -161,24 +173,13 @@ export default class EventCalendar extends Component {
     }
 
     handleDateClick = (e) => {
-        this.setState({
-            isCreateEvent: true,
-            isEditing: true,
-            currentEvent: e,
-        });
-        let start = new Date(e.date.getTime());
-        let end = new Date(e.date.getTime());
-        end.setDate(end.getDate() + 1);
-
-        this.setState({
-            currentEvent: {
-                id: uuid(),
-                start: start,
-                end: end
+        console.log("DATE CLICKED", e);
+        this.props.history.push({
+            pathname: '/editEvent',
+            state: {
+                date: new Date(e.date.getTime())
             }
-        });
-
-        this.showModal(e);
+        })
     }
 
     createEvent = () => {
@@ -200,12 +201,12 @@ export default class EventCalendar extends Component {
 
         this.showModal();
     }
-
-    showModal = e => {
-        console.log("showModal - incoming e", e);
-
-        this.modalToggle();
-    };
+    //
+    // showModal = e => {
+    //     console.log("showModal - incoming e", e);
+    //
+    //     this.modalToggle();
+    // };
 
     onChangeEventName = async (e) => {
         await this.setState({currentEvent: {...this.state.currentEvent, title: e}});

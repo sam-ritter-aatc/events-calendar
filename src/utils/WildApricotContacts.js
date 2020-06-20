@@ -15,11 +15,17 @@ export const getContact = async (token, contactId, cb) => {
             e.firstName = result.data.FirstName;
             e.lastName = result.data.LastName;
             e.email = result.data.Email;
-            e.display = result.data.DisplayName;
+            e.displayName = result.data.DisplayName;
+            e.isAdmin = isAdmin(result.data.FieldValues);
 
             cb(e);
         })
         .catch((err) => {
-            return {};
+            cb(null);
         })
+}
+
+const isAdmin = (fields) => {
+    let adminField = fields.filter(x => x.SystemCode === 'AdminRole');
+    return adminField.length>0 && adminField[0].Value.length > 0;
 }

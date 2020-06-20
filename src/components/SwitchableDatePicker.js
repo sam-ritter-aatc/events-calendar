@@ -10,7 +10,7 @@ export default class SwitchableDatePicker extends Component {
                 <label>{this.props.label}</label>
                 {!this.props.editFlag ? this.props.selected.toLocaleString() :
                 <DatePicker
-                    className="endDateEntry"
+                    className="dateEntry"
                     selected={this.props.selected}
                     onChange={this.props.handleChange}
                     showTimeSelect
