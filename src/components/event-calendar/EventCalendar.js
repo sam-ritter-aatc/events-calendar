@@ -73,7 +73,8 @@ export default class EventCalendar extends Component {
             var myEvents = eventConvert(data).map((event) => {
                 return {
                     id: event.Id,
-                    title: event.Name,
+                    title: event.Name.replace("Weekly Workout - ", "")
+                        .replace("Weekly Workout- ",""),  // shorten string in event
                     start: event.StartDate,
                     end: event.EndDate,
                     Url: event.Url,
@@ -85,6 +86,10 @@ export default class EventCalendar extends Component {
             // console.log("myEvents", myEvents);
             this.setState({events: myEvents});
         });
+    }
+
+    fixEventName(name) {
+        return name;
     }
 
     getEventColor(event) {
