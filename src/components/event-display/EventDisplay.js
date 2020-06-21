@@ -16,7 +16,6 @@ export default class EventDisplay extends Component {
         organizer: null,
     }
 
-
     async eventDetails() {
         console.log("EVENT DETAILS", this.props.location.state);
         this.setState({
@@ -59,7 +58,6 @@ export default class EventDisplay extends Component {
         await getAuthTokens((data) => this.setState({waToken: data}));
         console.log("Fetching event data");
         await this.eventDetails();
-        // console.log('contact values ->', this.state.event, this.state.event.Details, this.state.event.Details.Organizer);
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
@@ -71,7 +69,6 @@ export default class EventDisplay extends Component {
     }
 
     render() {
-        // console.log("eventDisplay", this.props.location.state);
         if (this.state.event === null) {
             return (<EventDataLoader name={this.props.location.state.name}/>);
         } else {

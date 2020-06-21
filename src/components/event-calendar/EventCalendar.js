@@ -16,10 +16,6 @@ import queryString from 'query-string';
 import "./EventCalendar.css";
 import {getContact} from "../../utils/WildApricotContacts";
 
-// import SwitchableTextInput from "./SwitchableTextInput";
-// import SwitchableDatePicker from "./SwitchableDatePicker";
-// import SwitchableButton from "./SwitchableButton";
-
 
 export default class EventCalendar extends Component {
     constructor(props) {
@@ -28,12 +24,6 @@ export default class EventCalendar extends Component {
         if (this.props.match.params.memberId) {
             console.log("RECEIVED MEMBERID", this.props.match.params.memberId);
         }
-        // this.onSubmit = this.onSubmit.bind(this);
-        this.onChangeEventName = this.onChangeEventName.bind(this);
-        this.onChangeEventDescription = this.onChangeEventDescription.bind(this);
-        this.onChangeLocation = this.onChangeLocation.bind(this);
-        // this.handleStartChange = this.handleStartChange.bind(this);
-        // this.handleEndChange = this.handleEndChange.bind(this);
         console.log('result', process.env.REACT_APP_WA_OAUTH_URL);
     }
 
@@ -77,7 +67,6 @@ export default class EventCalendar extends Component {
                     parentId: event.parentId
                 }
             });
-            // console.log("myEvents", myEvents);
             this.setState({events: myEvents});
         });
     }
@@ -106,10 +95,6 @@ export default class EventCalendar extends Component {
             return <Redirect to={{
                 pathname: '/showEvent',
                 state: {
-                    // id: parseInt(eventInfo.event.id, 10),
-                    // name: arg.event.title,
-                    // url: arg.event.extendedProps.Url,
-                    // parentId: arg.event.extendedProps.parentId,
                     member: this.state.member,
                     eventInfo: this.state.eventInfo
                 }
@@ -174,16 +159,6 @@ export default class EventCalendar extends Component {
     handleEventClick = (arg) => {
         console.log("going to event", arg);
         this.setState({showEvent: true, eventInfo: arg});
-        // this.props.history.push({
-        //     pathname: '/showEvent',
-        //     state: {
-        //         id: parseInt(arg.event.id, 10),
-        //         name: arg.event.title,
-        //         url: arg.event.extendedProps.Url,
-        //         parentId: arg.event.extendedProps.parentId,
-        //         member: this.state.member
-        //     }
-        // });
     }
 
     handleDateClick = (e) => {
@@ -214,23 +189,5 @@ export default class EventCalendar extends Component {
         });
 
         this.showModal();
-    }
-
-    onChangeEventName = async (e) => {
-        await this.setState({currentEvent: {...this.state.currentEvent, title: e}});
-    }
-    onChangeEventDescription = async (e) => {
-        await this.setState({currentEvent: {...this.state.currentEvent, description: e}});
-    }
-    onChangeLocation = async (e) => {
-        await this.setState({currentEvent: {...this.state.currentEvent, location: e}});
-    }
-
-    handleStartChange = async (date) => {
-        await this.setState({currentEvent: {...this.state.currentEvent, start: date}});
-    }
-
-    handleEndChange = async (date) => {
-        await this.setState({currentEvent: {...this.state.currentEvent, end: date}});
     }
 }
