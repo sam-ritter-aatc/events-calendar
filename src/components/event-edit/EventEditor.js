@@ -25,7 +25,7 @@ export default class EventEditor extends Component {
 
         this.state = {
             isEditing: true,
-            date: props.location.state.date,
+            date: props.location.state.eventInfo.date,
             description: ""
         }
     }
