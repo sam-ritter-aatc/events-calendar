@@ -1,25 +1,23 @@
 import axios from 'axios';
+import {getAuthTokens} from '../WildAppricotOAuthUtils';
 
-let getAuthTokens = require('../WildAppricotOAuthUtils');
 let token = require('./sampleToken.json');
 
 jest.mock('axios');
 //const mockedAxios = axios as jest.Mocked<typeof axios>
 
-describe.skip('OAuth Utils', () => {
-    test('WildApricot OAuth returns expected token', () => {
+describe('OAuth Utils', () => {
+    test('WildApricot OAuth returns expected token', async () => {
         const resp = { data: token};
-        mockedAxios.post.mockReturnValueOnce(resp);
+        axios.post.mockImplementationOnce(() => Promise.resolve(resp));
         // axios.post.mockReturnValueOnce({data: {"foo":"bar"}});
-        let rcvd = {};
-        getAuthTokens((data) => {
-            rcvd = data;
-        });
+        let rcvd = null;
+        await getAuthTokens((data) => { rcvd = Object.assign({}, data)});
 
         expect(rcvd).toEqual({
             "access_token": "the-access-token",
             "token_type": "Bearer",
-            "expires_in": 42,
+            "expires_in": 1800,
             "refresh_token": "the-refresh-token",
             "Permissions": [
                 {

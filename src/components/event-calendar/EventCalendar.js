@@ -42,15 +42,6 @@ export default class EventCalendar extends Component {
     state = {
         isCreateEvent: false,
         isEditing: false,
-        // currentEvent: {
-        //     id: '',
-        //     title: '',
-        //     description: '',
-        //     location: '',
-        //     organizer: '',
-        //     start: new Date(),
-        //     end: new Date()
-        // },
         events: [],
         member: null,
         showCreateModal: false,
@@ -172,7 +163,8 @@ export default class EventCalendar extends Component {
                 id: parseInt(arg.event.id, 10),
                 name: arg.event.title,
                 url: arg.event.extendedProps.Url,
-                parentId: arg.event.extendedProps.parentId
+                parentId: arg.event.extendedProps.parentId,
+                member: this.state.member
             }
         });
     }
