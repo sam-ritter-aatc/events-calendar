@@ -12,6 +12,7 @@ export const getContact = async (token, contactId, cb) => {
         .then((result) => {
             let e = {};
 
+            e.id = result.data.Id;
             e.firstName = result.data.FirstName;
             e.lastName = result.data.LastName;
             e.email = result.data.Email;

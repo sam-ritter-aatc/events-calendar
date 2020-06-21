@@ -11,8 +11,8 @@ function App() {
         <div className="App">
             <Router basename="/">
                 <Switch>
-                    <Route exact path="/:memberId" component={EventCalendar}/>
-                    {/*<Route exact path="/" component={EventCalendar} />*/}
+                    {/*<Route exact path="/:memberId" component={EventCalendar}/>*/}
+                    <Route exact path="/" component={EventCalendar} />
                     <Route exact path="/showEvent" component={EventDisplay}/>
                     <Route exact path="/editEvent" component={EventEditor}/>
                 </Switch>

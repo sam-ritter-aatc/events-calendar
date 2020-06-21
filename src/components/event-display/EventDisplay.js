@@ -7,11 +7,6 @@ import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 
 export default class EventDisplay extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     console.log("display", props);
-    //
-    // }
     state = {
         fetch: true,
         eventId: '',
@@ -23,14 +18,21 @@ export default class EventDisplay extends Component {
 
 
     async eventDetails() {
+        console.log("EVENT DETAILS", this.props.location.state);
+        this.setState({
+            member: this.props.location.state.member,
+            eventInfo: this.props.location.state.eventInfo
+        })
+
+        console.log("STATE",this.state);
         // recurring event
-        if (this.props.location.state.parentId && this.state.fetch) {
-            await getEventById(this.state.waToken, this.props.location.state.parentId, (data) => {
+        if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
+            await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
                 let e = Object.assign({}, data);
                 this.setState({fetch: false});
                 console.log("props", this.props);
 
-                let sess = data.Sessions.filter(x => x.Id === this.props.location.state.id);
+                let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
                 console.log("foundSession", sess);
                 if (sess) {
                     e.sessionId = sess[0].Id;
@@ -43,7 +45,7 @@ export default class EventDisplay extends Component {
                 console.log('state', this.state);
             });
         } else {
-            await getEventById(this.state.waToken, this.props.location.state.id, (data) => {
+            await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
                 this.setState({event: data});
             });
         }

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import {getAuthTokens} from "../../utils/WildAppricotOAuthUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
 import eventConvert from '../../utils/WildApricotConversions';
@@ -11,7 +10,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import listPlugin from '@fullcalendar/list';
-
+import {Redirect} from 'react-router-dom';
+import queryString from 'query-string';
 
 import "./EventCalendar.css";
 import {getContact} from "../../utils/WildApricotContacts";
@@ -46,18 +46,21 @@ export default class EventCalendar extends Component {
         member: null,
         showCreateModal: false,
         calendarWeekends: true,
-        waToken: {}
+        waToken: {},
+        showEvent: false
     }
 
     async componentDidMount() {
+        const queryStringValues = queryString.parse(this.props.location.search);
+        console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
         let firstDate = new Date();
         firstDate.setFullYear(firstDate.getFullYear() - 1);
         firstDate.setMonth(firstDate.getMonth() - 6);
         console.log("FIRST DATE", firstDate)
 
         await getAuthTokens((data) => this.setState({waToken: data}));
-        if ( this.props.match.params.memberId && this.props.match.params.memberId !== "0") {
-            await getContact(this.state.waToken, this.props.match.params.memberId, (contact) => {this.setState({member: contact})})
+        if ( queryStringValues.mid && queryStringValues.mid !== "0") {
+            await getContact(this.state.waToken, queryStringValues.mid, (contact) => {this.setState({member: contact})})
             console.log("Retrieve Member", this.state.member);
         }
         await getEvents(this.state.waToken, firstDate.toISOString(), (data) => {
@@ -99,6 +102,19 @@ export default class EventCalendar extends Component {
     }
 
     render() {
+        if (this.state.showEvent) {
+            return <Redirect to={{
+                pathname: '/showEvent',
+                state: {
+                    // id: parseInt(eventInfo.event.id, 10),
+                    // name: arg.event.title,
+                    // url: arg.event.extendedProps.Url,
+                    // parentId: arg.event.extendedProps.parentId,
+                    member: this.state.member,
+                    eventInfo: this.state.eventInfo
+                }
+            }}/>
+        }
         return (
             <div className='EventCalendar'>
                 <FullCalendar
@@ -157,16 +173,17 @@ export default class EventCalendar extends Component {
 
     handleEventClick = (arg) => {
         console.log("going to event", arg);
-        this.props.history.push({
-            pathname: '/showEvent',
-            state: {
-                id: parseInt(arg.event.id, 10),
-                name: arg.event.title,
-                url: arg.event.extendedProps.Url,
-                parentId: arg.event.extendedProps.parentId,
-                member: this.state.member
-            }
-        });
+        this.setState({showEvent: true, eventInfo: arg});
+        // this.props.history.push({
+        //     pathname: '/showEvent',
+        //     state: {
+        //         id: parseInt(arg.event.id, 10),
+        //         name: arg.event.title,
+        //         url: arg.event.extendedProps.Url,
+        //         parentId: arg.event.extendedProps.parentId,
+        //         member: this.state.member
+        //     }
+        // });
     }
 
     handleDateClick = (e) => {
@@ -198,12 +215,6 @@ export default class EventCalendar extends Component {
 
         this.showModal();
     }
-    //
-    // showModal = e => {
-    //     console.log("showModal - incoming e", e);
-    //
-    //     this.modalToggle();
-    // };
 
     onChangeEventName = async (e) => {
         await this.setState({currentEvent: {...this.state.currentEvent, title: e}});
