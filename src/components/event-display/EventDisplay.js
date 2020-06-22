@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {getAuthTokens} from "../../utils/WildAppricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import SwitchableTextInput from "../SwitchableTextInput";
-import renderHTML from 'react-render-html';
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
+import SwitchableHtmlDisplay from "../SwitchableHtmlDisplay";
+import "./EventDisplay.css";
 
 export default class EventDisplay extends Component {
     state = {
@@ -17,6 +18,14 @@ export default class EventDisplay extends Component {
     }
 
     async eventDetails() {
+    }
+
+    componentWillUnmount() {
+        console.log("unmounting########");
+    }
+
+    async componentDidMount() {
+        await getAuthTokens((data) => this.setState({waToken: data}));
         console.log("EVENT DETAILS", this.props.location.state);
         this.setState({
             member: this.props.location.state.member,
@@ -41,23 +50,14 @@ export default class EventDisplay extends Component {
                 }
                 console.log("theEvent", e);
                 this.setState({event: e});
-                console.log('state', this.state);
             });
         } else {
             await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
                 this.setState({event: data});
             });
         }
-    }
+        console.log('state', this.state);
 
-    componentWillUnmount() {
-        console.log("unmounting########");
-    }
-
-    async componentDidMount() {
-        await getAuthTokens((data) => this.setState({waToken: data}));
-        console.log("Fetching event data");
-        await this.eventDetails();
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
@@ -84,10 +84,9 @@ export default class EventDisplay extends Component {
                     <SwitchableTextInput className="location" label="Event Location: "
                                          value={this.state.event.Location}/>
                     {this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: "
-                                                                  value={this.state.organizer.display + '(' + this.state.organizer.email + ')'}/>}
-                    {this.state.event.Details && this.state.event.Details.DescriptionHtml ? <div><h3>Description</h3>
-                        <div>{renderHTML(this.state.event.Details.DescriptionHtml)}</div>
-                    </div> : <div></div>}
+                                                                  value={this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}/>}
+
+                    <SwitchableHtmlDisplay className="descriptionHtml" label="Description" value={this.state.event.Details.DescriptionHtml} displayFlag={this.state.event.Details && this.state.event.Details.DescriptionHtml} />
                 </div>
             );
         }
