@@ -1,5 +1,6 @@
 import  {isAdmin, getContact}  from '../WildApricotContacts';
 import axios from 'axios';
+import {makeAToken} from "../../__Test-Utils__/TokenData";
 
 jest.mock('axios');
 
@@ -9,7 +10,7 @@ describe('checks FieldValues in contact for admin access', () => {
         let data = makeData(NoAdminValue.FieldValues);
         axios.get.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
-        await getContact(fakeToken(), 1234, (data) => {contact = Object.assign({},data)} );
+        await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
         expect(contact.isAdmin).toBeFalsy();
     })
@@ -18,42 +19,12 @@ describe('checks FieldValues in contact for admin access', () => {
         let data = makeData(HasAdminValue.FieldValues);
         axios.get.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
-        await getContact(fakeToken(), 1234, (data) => {contact = Object.assign({},data)} );
+        await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
         expect(contact.isAdmin).toBeTruthy();
     })
 });
 
-const fakeToken = () => {
-    return {
-        "access_token": "7lhsM0DOI4zpxDAhCViTv0BCrfw-",
-        "token_type": "Bearer",
-        "expires_in": 1800,
-        "refresh_token": "rt_2020-06-17_JLvT-NITA09FS5GSZQUODXRuOyM-",
-        "Permissions": [
-            {
-                "AccountId": 12345,
-                "SecurityProfileId": 33478737,
-                "AvailableScopes": [
-                    "contacts_view",
-                    "contacts_edit",
-                    "contacts_membership_edit",
-                    "finances_edit",
-                    "finances_view",
-                    "emails_view",
-                    "emails_edit",
-                    "events_view",
-                    "events_edit",
-                    "event_registrations_edit",
-                    "event_registrations_view",
-                    "account_view",
-                    "membership_levels_view"
-                ]
-            }
-        ]
-
-    }
-}
 
 
 const makeData = (fields) => {

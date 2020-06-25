@@ -1,3 +1,9 @@
+.event-title label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
 .event-title {
     text-align: left;
 }
@@ -6,18 +12,44 @@
     text-align: left;
 }
 
+.descriptionHtml label {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
 .location {
     text-align: left;
+}
+.location label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 .organizer {
     text-align: left;
+}
+.organizer label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 .event-start {
     text-align: left;
 }
 
+.event-start label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
 .event-end {
     text-align: left;
+}
+.event-end label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
 }
