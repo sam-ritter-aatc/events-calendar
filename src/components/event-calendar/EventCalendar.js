@@ -77,7 +77,7 @@ export default class EventCalendar extends Component {
                 member: this.state.member,
                 eventInfo: this.state.eventInfo
             }
-        }}/>
+        }} push/>
     }
 
     render() {
