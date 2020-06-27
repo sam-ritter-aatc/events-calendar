@@ -59,7 +59,6 @@
   "setupFiles": [
     "./src/setupTests.js"
   ],
-  "proxy": "http://localhost:6969",
   "eslintConfig": {
     "extends": "react-app"
   },

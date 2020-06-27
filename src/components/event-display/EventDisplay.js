@@ -5,7 +5,9 @@ import SwitchableTextInput from "../SwitchableTextInput";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import SwitchableHtmlDisplay from "../SwitchableHtmlDisplay";
+import SwitchableButton from "../SwitchableButton";
 import "./EventDisplay.css";
+import {Redirect} from "react-router-dom";
 
 export default class EventDisplay extends Component {
     state = {
@@ -37,7 +39,7 @@ export default class EventDisplay extends Component {
         if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
             await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
                 let e = Object.assign({}, data);
-                this.setState({fetch: false});
+                // this.setState({fetch: false});
                 console.log("props", this.props);
 
                 let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
@@ -49,7 +51,7 @@ export default class EventDisplay extends Component {
                     e.EndDate = sess[0].EndDate;
                 }
                 console.log("theEvent", e);
-                this.setState({event: e});
+                this.setState({event: e, fetch:false});
             });
         } else {
             await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
@@ -68,12 +70,33 @@ export default class EventDisplay extends Component {
         console.log("state", this.state);
     }
 
+    buildRedirect(path) {
+        return <Redirect to={{
+            pathname: path,
+            state: {
+                member: this.state.member,
+                eventInfo: this.state.eventInfo
+            }
+        }} push/>
+    }
+
+    handleEditClick() {
+        this.setState({editEvent: true});
+    }
+
+    canEdit() {
+        return this.member.isAdmin;
+    }
+
     render() {
-        if (this.state.event === null) {
+        if (this.state.fetch) {
             return (<EventDataLoader name={this.props.location.state.name}/>);
+        } else if (this.state.editEvent) {
+            return this.buildRedirect('editEvent');
         } else {
             return (
                 <div>
+                    <SwitchableButton isVisible={this.canEdit} color="warning" onClick={() => this.handleEditClick()} isDisabled={false} name="Edit" />
                     <h2>{this.state.event.Name}</h2>
                     <SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>
                     <SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>
