@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-// import {getAuthTokens} from "../../utils/WildAppricotOAuthUtils";
-// import {getEventById} from "../../utils/WildApricotEvents";
 // import SwitchableTextInput from "../SwitchableTextInput";
 import CKEditor from "@ckeditor/ckeditor5-react";
 // NOTE: Use the editor from source (not a build)!
@@ -15,13 +13,13 @@ import EventDataLoader from "../event-data-loader/EventDataLoader";
 // import Italic from "@ckeditor/ckeditor5-basic-styles";
 // import Paragraph from "@ckeditor/ckeditor5-paragraph";
 
-const editorConfiguration = {
-    // plugins: [Essentials, Bold, Italic, Paragraph],
-    // plugins: [Essentials],
-    // toolbar: ["bold", "italic"]
-    height: '500px',
-    width: '80%'
-};
+// const editorConfiguration = {
+//     // plugins: [Essentials, Bold, Italic, Paragraph],
+//     // plugins: [Essentials],
+//     // toolbar: ["bold", "italic"]
+//     height: '500px',
+//     width: '80%'
+// };
 
 
 export default class EventEditor extends Component {
@@ -49,7 +47,7 @@ export default class EventEditor extends Component {
 
         console.log("STATE",this.state);
         // recurring event
-        if (this.state.eventInfo.event) {   // user clicked on an event
+        if (this.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
                     let e = Object.assign({}, data);
@@ -65,7 +63,7 @@ export default class EventEditor extends Component {
                         e.EndDate = sess[0].EndDate;
                     }
                     console.log("theEvent", e);
-                    this.setState({event: e, fetch: false});
+                    this.setState({event: e, fetch:false});
                 });
             } else {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
@@ -111,7 +109,7 @@ export default class EventEditor extends Component {
         } else {
             return (
                 <div className="App">
-                    <SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} start={this.state.date} end={this.state.date}/>
+                    {/*<SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} />*/}
                     <h2>Description</h2>
                     <CKEditor
                         editor={ ClassicEditor }
