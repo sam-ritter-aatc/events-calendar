@@ -126,8 +126,4 @@ export default class EventCalendar extends Component {
         console.log("DATE CLICKED", e);
         this.setState({editEvent: true, eventInfo: e});
     }
-
-    handleCreateEventClick = () => {
-        this.setState({editEvent: true, eventInfo: null});
-    }
 }
