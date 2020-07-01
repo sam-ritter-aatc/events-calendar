@@ -113,6 +113,10 @@ export default class EventCalendar extends Component {
         )
     }
 
+    createEvent = () => {
+        this.setState({editEvent: true, eventInfo: {}})
+    }
+
     handleEventClick = (arg) => {
         console.log("going to event", arg);
         this.setState({showEvent: true, eventInfo: arg});
@@ -121,57 +125,9 @@ export default class EventCalendar extends Component {
     handleDateClick = (e) => {
         console.log("DATE CLICKED", e);
         this.setState({editEvent: true, eventInfo: e});
-        // this.props.history.push({
-        //     pathname: '/editEvent',
-        //     state: {
-        //         date: new Date(e.date.getTime())
-        //     }
-        // })
     }
 
+    handleCreateEventClick = () => {
+        this.setState({editEvent: true, eventInfo: null});
+    }
 }
-// clearCurrentEvent = async () => {
-//     await this.setState({currentEvent: {}});
-//     console.log("state", this.state);
-// }
-    // createEvent = () => {
-    //     this.setState({
-    //         isCreateEvent: true,
-    //         isEditing: true,
-    //     });
-    //     let start = new Date();
-    //     let end = new Date();
-    //     end.setDate(end.getDate() + 1);
-    //
-    //     this.setState({
-    //         currentEvent: {
-    //             id: uuid(),
-    //             start: start,
-    //             end: end
-    //         }
-    //     });
-    //
-    //     this.showModal();
-    // }
-//
-// eventRsvp = (event) => {
-//     console.log("event rsvp", this.state.currentEvent);
-//     alert("you have been registered for event: " + this.state.currentEvent.title);
-// }
-//
-// saveEvent = (event) => {
-//     this.modalToggle();
-//     console.log("saving event", this.state.currentEvent);
-//     if (this.state.isCreateEvent) {
-//         this.setState({
-//             events: this.state.events.concat(Object.assign({}, this.state.currentEvent))
-//         })
-//     } else {
-//         let idx = this.state.events.findIndex(x => x.id === this.state.currentEvent.id)
-//         let eventsCopy = [...this.state.events];
-//         eventsCopy[idx] = this.state.currentEvent;
-//         this.setState({events: eventsCopy});
-//     }
-//     this.clearCurrentEvent();
-// }
-//

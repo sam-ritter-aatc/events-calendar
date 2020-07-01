@@ -8,6 +8,12 @@
     pointer-events: none;
 }
 
+.ck.ck-reset.ck-editor {
+    max-width: 80%;
+    max-height: 500px;
+    margin: auto;
+}
+
 .App-header {
     background-color: #282c34;
     min-height: 100vh;

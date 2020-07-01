@@ -31,8 +31,8 @@ export default class EventEditor extends Component {
 
         this.state = {
             isEditing: true,
-            date: props.location.state.eventInfo.date,
-            description: "",
+            // date: props.location.state.eventInfo.date,
+            // description: "",
             eventInfo: props.location.state.eventInfo,
             member: props.location.state.member,
             fetch: true
@@ -49,29 +49,51 @@ export default class EventEditor extends Component {
 
         console.log("STATE",this.state);
         // recurring event
-        if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                let e = Object.assign({}, data);
-                // this.setState({fetch: false});
-                console.log("props", this.props);
+        if (this.state.eventInfo.event) {   // user clicked on an event
+            if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
+                await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
+                    let e = Object.assign({}, data);
+                    // this.setState({fetch: false});
+                    console.log("props", this.props);
 
-                let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
-                console.log("foundSession", sess);
-                if (sess) {
-                    e.sessionId = sess[0].Id;
-                    e.Name = sess[0].Title;
-                    e.StartDate = sess[0].StartDate;
-                    e.EndDate = sess[0].EndDate;
+                    let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
+                    console.log("foundSession", sess);
+                    if (sess) {
+                        e.sessionId = sess[0].Id;
+                        e.Name = sess[0].Title;
+                        e.StartDate = sess[0].StartDate;
+                        e.EndDate = sess[0].EndDate;
+                    }
+                    console.log("theEvent", e);
+                    this.setState({event: e, fetch: false});
+                });
+            } else {
+                await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
+                    this.setState({event: data});
+                });
+            }
+        } else if (this.state.eventInfo.date) {  // user clicked on a date to create event.
+            this.setState({
+                fetch: false,
+                event: {
+                    StartDate: new  Date(this.state.eventInfo.date),
+                    Details: {
+                        DescriptionHtml: ""
+                    }
                 }
-                console.log("theEvent", e);
-                this.setState({event: e, fetch:false});
-            });
+//                date: new Date(this.state.eventInfo.date), fetch: false
+            })
         } else {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                this.setState({event: data});
+            this.setState({
+                fetch: false,
+                event: {
+                    Details: {
+                        DescriptionHtml: ""
+                    }
+                }
             });
         }
-        console.log('state', this.state);
+        console.log('===>state', this.state);
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
@@ -89,7 +111,7 @@ export default class EventEditor extends Component {
         } else {
             return (
                 <div className="App">
-                    {/*<SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={parseISO(this.state.event.StartDate)} handleChange={this.handleStartChange} start={this.state.date} end={this.state.date}/>*/}
+                    <SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} start={this.state.date} end={this.state.date}/>
                     <h2>Description</h2>
                     <CKEditor
                         editor={ ClassicEditor }
