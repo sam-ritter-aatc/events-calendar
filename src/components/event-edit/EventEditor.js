@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 // NOTE: Use the editor from source (not a build)!
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import SwitchableDatePicker from "../SwitchableDatePicker";
+// import SwitchableDatePicker from "../SwitchableDatePicker";
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
