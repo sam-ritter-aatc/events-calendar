@@ -10,7 +10,6 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import listPlugin from '@fullcalendar/list';
-import {Redirect} from 'react-router-dom';
 import queryString from 'query-string';
 
 import "./EventCalendar.css";
@@ -60,26 +59,22 @@ export default class EventCalendar extends Component {
         });
     }
 
-    fixEventName(name) {
-        return name;
-    }
-
     getEventColor(event) {
         if ( /Race/.test(event.Name) ) {
             return 'red'
         }
         return 'blue';
     }
-
-    buildRedirect(path) {
-        return <Redirect to={{
-            pathname: path,
-            state: {
-                member: this.state.member,
-                eventInfo: this.state.eventInfo
-            }
-        }} push/>
-    }
+    //
+    // buildRedirect(path) {
+    //     return <Redirect to={{
+    //         pathname: path,
+    //         state: {
+    //             member: this.state.member,
+    //             eventInfo: this.state.eventInfo
+    //         }
+    //     }} push/>
+    // }
 
     render() {
         if (this.state.showEvent) {

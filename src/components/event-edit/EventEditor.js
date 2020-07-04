@@ -9,19 +9,8 @@ import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {searchForSessionAndAdjustFields} from "../EventCommon";
 
-// import Essentials from "@ckeditor/ckeditor5-essentials";
-// import Bold from "@ckeditor/ckeditor5-basic-styles";
-// import Italic from "@ckeditor/ckeditor5-basic-styles";
-// import Paragraph from "@ckeditor/ckeditor5-paragraph";
-
-// const editorConfiguration = {
-//     // plugins: [Essentials, Bold, Italic, Paragraph],
-//     // plugins: [Essentials],
-//     // toolbar: ["bold", "italic"]
-//     height: '500px',
-//     width: '80%'
-// };
-
+import "./EventEditor.css";
+import SwitchableTextInput from "../SwitchableTextInput";
 
 export default class EventEditor extends Component {
     constructor(props) {
@@ -29,12 +18,39 @@ export default class EventEditor extends Component {
         console.log("INCOMING PROPS", props);
 
         this.state = {
+            event: this.emptyEvent(),
             isEditing: true,
-            // date: props.location.state.eventInfo.date,
-            // description: "",
             eventInfo: props.location.state.eventInfo,
             member: props.location.state.member,
             fetch: true
+        }
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+
+        // TODO: submit logic here
+
+        this.setState({event: this.emptyEvent()});
+    }
+    emptyEvent() {
+        return {
+            Id: '',
+            Url: '',
+            EventType: '',
+            StartDate: '',
+            EndDate: '',
+            Location: '',
+            RegistrationEnabled: true,
+            RegistrationsLimit: null,
+            Tags: [],
+            AccessLevel: 'Public',
+            Details: {
+                DescriptionHtml: '',
+                Organizer: 0
+            },
+            Name: ''
         }
     }
 
@@ -51,39 +67,17 @@ export default class EventEditor extends Component {
         if (this.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                    this.setState({
-                        event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),
-                        fetch:false
-                    });
+                    this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id)});
                 });
             } else {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                    this.setState({
-                        event: data
-                    });
+                    this.setState({event: data});
                 });
             }
         } else if (this.state.eventInfo.date) {  // user clicked on a date to create event.
-            this.setState({
-                fetch: false,
-                event: {
-                    StartDate: new  Date(this.state.eventInfo.date),
-                    Details: {
-                        DescriptionHtml: ""
-                    }
-                }
-//                date: new Date(this.state.eventInfo.date), fetch: false
-            })
-        } else {
-            this.setState({
-                fetch: false,
-                event: {
-                    Details: {
-                        DescriptionHtml: ""
-                    }
-                }
-            });
+            this.setState({event: {...this.state.event, StartDate: new  Date(this.state.eventInfo.date)}})
         }
+        this.setState({fetch:false});
         console.log('===>state', this.state);
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
@@ -102,30 +96,41 @@ export default class EventEditor extends Component {
         } else {
             return (
                 <div className="App">
+                    {/*<SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>*/}
+                    {/*<SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>*/}
+                    {/*<SwitchableTextInput className="event-start" label="Event Start Date/Time: "*/}
+                    {/*                     value={this.state.event.StartDate}/>*/}
+                    {/*<SwitchableTextInput className="event-end" label="Event End Date/Time: "*/}
+                    {/*                     value={this.state.event.EndDate}/>*/}
+                    {/*<SwitchableTextInput className="location" label="Event Location: "*/}
+                    {/*                     value={this.state.event.Location}/>*/}
+                    {/*{this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: "*/}
+                    {/*                                              value={this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}/>}*/}
                     {/*<SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} />*/}
-                    <h2>Description</h2>
-                    <CKEditor
-                        editor={ ClassicEditor }
-                        data={this.state.event.Details.DescriptionHtml}
-                        onInit={ editor => {
-                            // You can store the "editor" and use when it is needed.
-                            console.log( 'Editor is ready to use!', editor );
-                        } }
-                        onChange={ ( event, editor ) => {
-                            const data = editor.getData();
-                            console.log( { event, editor, data } );
-                        } }
-                        onBlur={ ( event, editor ) => {
-                            console.log( 'Blur.', editor );
-                        } }
-                        onFocus={ ( event, editor ) => {
-                            console.log( 'Focus.', editor );
-                        } }
-                    />
+                    <div className="editor">
+                        <label>Description</label>
+                        <CKEditor
+                            editor={ ClassicEditor }
+                            data={this.state.event.Details.DescriptionHtml}
+                            onInit={ editor => {
+                                // You can store the "editor" and use when it is needed.
+                                console.log( 'Editor is ready to use!', editor );
+                            } }
+                            onChange={ ( event, editor ) => {
+                                const data = editor.getData();
+                                console.log( { event, editor, data } );
+                            } }
+                            onBlur={ ( event, editor ) => {
+                                console.log( 'Blur.', editor );
+                            } }
+                            onFocus={ ( event, editor ) => {
+                                console.log( 'Focus.', editor );
+                            } }
+                        />
+                    </div>
                 </div>
             )
         }
-
     }
 
     handleStartChange = async (dt) => {
