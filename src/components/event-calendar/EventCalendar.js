@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
 import eventConvert from '../../utils/WildApricotConversions';
+import {buildRedirect} from "../EventCommon";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -82,10 +83,10 @@ export default class EventCalendar extends Component {
 
     render() {
         if (this.state.showEvent) {
-            return this.buildRedirect('showEvent');
+            return buildRedirect('showEvent', this.state.member, this.state.eventInfo);
         }
         if (this.state.editEvent) {
-            return this.buildRedirect('editEvent');
+            return buildRedirect('editEvent', this.state.member, this.state.eventInfo);
         }
         return (
             <div className='EventCalendar'>

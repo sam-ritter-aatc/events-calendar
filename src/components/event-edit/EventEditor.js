@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 // import SwitchableTextInput from "../SwitchableTextInput";
 import CKEditor from "@ckeditor/ckeditor5-react";
-// NOTE: Use the editor from source (not a build)!
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 // import SwitchableDatePicker from "../SwitchableDatePicker";
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
+import {searchForSessionAndAdjustFields} from "../EventCommon";
+
 // import Essentials from "@ckeditor/ckeditor5-essentials";
 // import Bold from "@ckeditor/ckeditor5-basic-styles";
 // import Italic from "@ckeditor/ckeditor5-basic-styles";
@@ -50,24 +51,16 @@ export default class EventEditor extends Component {
         if (this.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                    let e = Object.assign({}, data);
-                    // this.setState({fetch: false});
-                    console.log("props", this.props);
-
-                    let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
-                    console.log("foundSession", sess);
-                    if (sess) {
-                        e.sessionId = sess[0].Id;
-                        e.Name = sess[0].Title;
-                        e.StartDate = sess[0].StartDate;
-                        e.EndDate = sess[0].EndDate;
-                    }
-                    console.log("theEvent", e);
-                    this.setState({event: e, fetch:false});
+                    this.setState({
+                        event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),
+                        fetch:false
+                    });
                 });
             } else {
                 await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                    this.setState({event: data});
+                    this.setState({
+                        event: data
+                    });
                 });
             }
         } else if (this.state.eventInfo.date) {  // user clicked on a date to create event.

@@ -7,7 +7,7 @@ import {getContact} from "../../utils/WildApricotContacts";
 import SwitchableHtmlDisplay from "../SwitchableHtmlDisplay";
 import SwitchableButton from "../SwitchableButton";
 import "./EventDisplay.css";
-import {Redirect} from "react-router-dom";
+import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
 
 export default class EventDisplay extends Component {
     state = {
@@ -38,24 +38,16 @@ export default class EventDisplay extends Component {
         // recurring event
         if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
             await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                let e = Object.assign({}, data);
-                // this.setState({fetch: false});
-                console.log("props", this.props);
-
-                let sess = data.Sessions.filter(x => x.Id === Number(this.state.eventInfo.event.id));
-                console.log("foundSession", sess);
-                if (sess) {
-                    e.sessionId = sess[0].Id;
-                    e.Name = sess[0].Title;
-                    e.StartDate = sess[0].StartDate;
-                    e.EndDate = sess[0].EndDate;
-                }
-                console.log("theEvent", e);
-                this.setState({event: e, fetch:false});
+                this.setState({
+                    event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),
+                    fetch:false
+                });
             });
         } else {
             await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                this.setState({event: data});
+                this.setState({
+                    event: data
+                });
             });
         }
         console.log('state', this.state);
@@ -70,16 +62,6 @@ export default class EventDisplay extends Component {
         console.log("state", this.state);
     }
 
-    buildRedirect(path) {
-        return <Redirect to={{
-            pathname: path,
-            state: {
-                member: this.state.member,
-                eventInfo: this.state.eventInfo
-            }
-        }} push/>
-    }
-
     handleEditClick() {
         this.setState({editEvent: true});
     }
@@ -92,7 +74,7 @@ export default class EventDisplay extends Component {
         if (this.state.fetch) {
             return (<EventDataLoader name={this.props.location.state.name}/>);
         } else if (this.state.editEvent) {
-            return this.buildRedirect('editEvent');
+            return buildRedirect('editEvent', this.state.member, this.state.eventInfo);
         } else {
             return (
                 <div>
