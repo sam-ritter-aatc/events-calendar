@@ -34,6 +34,15 @@ export default class EventEditor extends Component {
 
         this.setState({event: this.emptyEvent()});
     }
+
+    onChangeEventName(e) {
+        this.setState({event: {...this.state.event, Name: e.target.value }})
+    }
+
+    onChangeEventLocation(e) {
+        this.setState({event:{...this.state.event, Location: e.target.value}})
+    }
+
     emptyEvent() {
         return {
             Id: '',
@@ -108,25 +117,50 @@ export default class EventEditor extends Component {
                     {/*                                              value={this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}/>}*/}
                     {/*<SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} />*/}
                     <div className="editor">
-                        <label>Description</label>
-                        <CKEditor
-                            editor={ ClassicEditor }
-                            data={this.state.event.Details.DescriptionHtml}
-                            onInit={ editor => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log( 'Editor is ready to use!', editor );
-                            } }
-                            onChange={ ( event, editor ) => {
-                                const data = editor.getData();
-                                console.log( { event, editor, data } );
-                            } }
-                            onBlur={ ( event, editor ) => {
-                                console.log( 'Blur.', editor );
-                            } }
-                            onFocus={ ( event, editor ) => {
-                                console.log( 'Focus.', editor );
-                            } }
-                        />
+                        <form onSubmit={this.onSubmit}>
+                            <div className="form-group">
+                                <label>Event Name: </label>
+                                <input type="text"
+                                        className="form-control"
+                                        value={this.state.event.Name}
+                                        onChange={this.onChangeEventName}/>
+                            </div>
+                            <div className="form-group">
+                                <label>Event Location: </label>
+                                <input type="text"
+                                        className="form-control"
+                                        value={this.state.event.Location}
+                                        onChange={this.onChangeEventLocation}/>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Description</label>
+                                <CKEditor
+                                    editor={ ClassicEditor }
+                                    data={this.state.event.Details.DescriptionHtml}
+                                    onInit={ editor => {
+                                        // You can store the "editor" and use when it is needed.
+                                        console.log( 'Editor is ready to use!', editor );
+                                    } }
+                                    onChange={ ( event, editor ) => {
+                                        let details = this.state.event.Details;
+                                        details.DescriptionHtml = editor.getData();
+                                        this.setState({event: {...this.state.event, Details: details}});
+                                        console.log("state", this.state);
+                                    } }
+                                    onBlur={ ( event, editor ) => {
+                                        console.log( 'Blur.', editor );
+                                    } }
+                                    onFocus={ ( event, editor ) => {
+                                        console.log( 'Focus.', editor );
+                                    } }
+                                />
+                            </div>
+
+                        </form>
+
+
+
                     </div>
                 </div>
             )
