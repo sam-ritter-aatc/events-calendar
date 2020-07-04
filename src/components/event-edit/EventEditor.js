@@ -138,21 +138,11 @@ export default class EventEditor extends Component {
                                 <CKEditor
                                     editor={ ClassicEditor }
                                     data={this.state.event.Details.DescriptionHtml}
-                                    onInit={ editor => {
-                                        // You can store the "editor" and use when it is needed.
-                                        console.log( 'Editor is ready to use!', editor );
-                                    } }
                                     onChange={ ( event, editor ) => {
                                         let details = this.state.event.Details;
                                         details.DescriptionHtml = editor.getData();
                                         this.setState({event: {...this.state.event, Details: details}});
                                         console.log("state", this.state);
-                                    } }
-                                    onBlur={ ( event, editor ) => {
-                                        console.log( 'Blur.', editor );
-                                    } }
-                                    onFocus={ ( event, editor ) => {
-                                        console.log( 'Focus.', editor );
                                     } }
                                 />
                             </div>
