@@ -7,10 +7,10 @@ import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
-import {searchForSessionAndAdjustFields} from "../EventCommon";
+import {emptyEvent, searchForSessionAndAdjustFields} from "../EventCommon";
 
 import "./EventEditor.css";
-import SwitchableTextInput from "../SwitchableTextInput";
+// import SwitchableTextInput from "../SwitchableTextInput";
 
 export default class EventEditor extends Component {
     constructor(props) {
@@ -18,21 +18,25 @@ export default class EventEditor extends Component {
         console.log("INCOMING PROPS", props);
 
         this.state = {
-            event: this.emptyEvent(),
+            event: emptyEvent(),
             isEditing: true,
             eventInfo: props.location.state.eventInfo,
             member: props.location.state.member,
             fetch: true
         }
         this.onSubmit = this.onSubmit.bind(this);
+        this.onChangeEventLocation = this.onChangeEventLocation.bind(this);
+        this.onChangeEventName = this.onChangeEventName.bind(this);
     }
 
     onSubmit(e) {
         e.preventDefault();
 
+        let theEvent = Object.assign({}, this.state.event);
+        console.log("SAVING EVENT", this.state, theEvent);
         // TODO: submit logic here
 
-        this.setState({event: this.emptyEvent()});
+        this.setState({event: emptyEvent()});
     }
 
     onChangeEventName(e) {
@@ -41,26 +45,6 @@ export default class EventEditor extends Component {
 
     onChangeEventLocation(e) {
         this.setState({event:{...this.state.event, Location: e.target.value}})
-    }
-
-    emptyEvent() {
-        return {
-            Id: '',
-            Url: '',
-            EventType: '',
-            StartDate: '',
-            EndDate: '',
-            Location: '',
-            RegistrationEnabled: true,
-            RegistrationsLimit: null,
-            Tags: [],
-            AccessLevel: 'Public',
-            Details: {
-                DescriptionHtml: '',
-                Organizer: 0
-            },
-            Name: ''
-        }
     }
 
     async componentDidMount() {
@@ -105,19 +89,12 @@ export default class EventEditor extends Component {
         } else {
             return (
                 <div className="App">
-                    {/*<SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>*/}
-                    {/*<SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>*/}
-                    {/*<SwitchableTextInput className="event-start" label="Event Start Date/Time: "*/}
-                    {/*                     value={this.state.event.StartDate}/>*/}
-                    {/*<SwitchableTextInput className="event-end" label="Event End Date/Time: "*/}
-                    {/*                     value={this.state.event.EndDate}/>*/}
-                    {/*<SwitchableTextInput className="location" label="Event Location: "*/}
-                    {/*                     value={this.state.event.Location}/>*/}
-                    {/*{this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: "*/}
-                    {/*                                              value={this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}/>}*/}
-                    {/*<SwitchableDatePicker label="Date: " editFlag={this.state.isEditing} selected={this.state.event.StartDate} handleChange={this.handleStartChange} />*/}
-                    <div className="editor">
+                     <div className="editor">
                         <form onSubmit={this.onSubmit}>
+                            <div className="form-group">
+                                <label>Event Id: </label>
+                                {this.state.event.Id}
+                            </div>
                             <div className="form-group">
                                 <label>Event Name: </label>
                                 <input type="text"
@@ -142,15 +119,15 @@ export default class EventEditor extends Component {
                                         let details = this.state.event.Details;
                                         details.DescriptionHtml = editor.getData();
                                         this.setState({event: {...this.state.event, Details: details}});
-                                        console.log("state", this.state);
                                     } }
                                 />
                             </div>
 
+                            <div className="form-group">
+                                <input type="submit" value="Save Event" className="btn btn-primary" />
+                            </div>
+
                         </form>
-
-
-
                     </div>
                 </div>
             )

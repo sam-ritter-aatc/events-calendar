@@ -25,3 +25,23 @@ export const buildRedirect = (path, member, eventInfo) => {
         }
     }} push/>
 }
+
+export const emptyEvent = () => {
+    return {
+        Id: '',
+        Url: '',
+        EventType: '',
+        StartDate: '',
+        EndDate: '',
+        Location: '',
+        RegistrationEnabled: true,
+        RegistrationsLimit: null,
+        Tags: [],
+        AccessLevel: 'Public',
+        Details: {
+            DescriptionHtml: '',
+            Organizer: 0
+        },
+        Name: ''
+    }
+}

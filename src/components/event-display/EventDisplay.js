@@ -5,7 +5,6 @@ import SwitchableTextInput from "../SwitchableTextInput";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import SwitchableHtmlDisplay from "../SwitchableHtmlDisplay";
-import SwitchableButton from "../SwitchableButton";
 import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
 
@@ -20,10 +19,6 @@ export default class EventDisplay extends Component {
     }
 
     async eventDetails() {
-    }
-
-    componentWillUnmount() {
-        console.log("unmounting########");
     }
 
     async componentDidMount() {
@@ -60,6 +55,7 @@ export default class EventDisplay extends Component {
             console.log("contact", this.state.organizer);
         }
         console.log("state", this.state);
+        console.log("CAN EDIT", this.canEdit());
     }
 
     handleEditClick() {
@@ -67,7 +63,10 @@ export default class EventDisplay extends Component {
     }
 
     canEdit() {
-        return this.member.isAdmin;
+        return  this.state.member && (
+            this.state.member.isAdmin
+            || (this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id)
+        )
     }
 
     render() {
@@ -78,7 +77,7 @@ export default class EventDisplay extends Component {
         } else {
             return (
                 <div>
-                    <SwitchableButton isVisible={this.canEdit} color="warning" onClick={() => this.handleEditClick()} isDisabled={false} name="Edit" />
+                    {this.canEdit() && <input type="submit" value="Edit Event" className="btn btn-primary" onClick={() => this.handleEditClick()} />}
                     <h2>{this.state.event.Name}</h2>
                     <SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>
                     <SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>
