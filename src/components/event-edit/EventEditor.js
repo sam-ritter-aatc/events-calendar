@@ -1,16 +1,13 @@
 import React, {Component} from 'react';
-// import SwitchableTextInput from "../SwitchableTextInput";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-// import SwitchableDatePicker from "../SwitchableDatePicker";
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {emptyEvent, searchForSessionAndAdjustFields} from "../EventCommon";
-
 import "./EventEditor.css";
-// import SwitchableTextInput from "../SwitchableTextInput";
+import DateTimeRange from "../date-time-range/DateTimeRange";
 
 export default class EventEditor extends Component {
     constructor(props) {
@@ -27,6 +24,8 @@ export default class EventEditor extends Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeEventLocation = this.onChangeEventLocation.bind(this);
         this.onChangeEventName = this.onChangeEventName.bind(this);
+        this.startDateHandler = this.startDateHandler.bind(this);
+        this.endDateHandler = this.endDateHandler.bind(this);
     }
 
     onSubmit(e) {
@@ -73,6 +72,12 @@ export default class EventEditor extends Component {
         this.setState({fetch:false});
         console.log('===>state', this.state);
 
+        if (this.props.location.state.eventInfo.date) {
+            let maxTime = new Date(this.props.location.state.eventInfo.date.getTime());
+            this.setState({...this.state.event, startDate: this.props.location.state.eventInfo.date});
+            this.setState({...this.state.event, endDate: new Date(maxTime.setHours(23,59,59))});
+        }
+
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
@@ -81,6 +86,14 @@ export default class EventEditor extends Component {
             console.log("contact", this.state.organizer);
         }
         console.log("state", this.state);
+    }
+
+    async startDateHandler(date) {
+        await this.setState({startDate: date})
+    }
+
+    async endDateHandler(date) {
+        await this.setState({endDate: date});
     }
 
     render() {
@@ -101,6 +114,15 @@ export default class EventEditor extends Component {
                                         className="form-control"
                                         value={this.state.event.Name}
                                         onChange={this.onChangeEventName}/>
+                            </div>
+                            <div className="form-group">
+                                <DateTimeRange dateLabel="Event Date: "
+                                               startLabel="Start Time: "
+                                               endLabel="End Time: "
+                                               endDate={this.state.endDate}
+                                               startDate={this.state.startDate}
+                                               onChangeStartDate={this.startDateHandler}
+                                               onChangeEndDate={this.endDateHandler}/>
                             </div>
                             <div className="form-group">
                                 <label>Event Location: </label>

@@ -33,18 +33,14 @@ export default class EventDisplay extends Component {
         // recurring event
         if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
             await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                this.setState({
-                    event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),
-                    fetch:false
-                });
+                this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),});
             });
         } else {
             await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                this.setState({
-                    event: data
-                });
+                this.setState({event: data});
             });
         }
+        this.setState({fetch:false});
         console.log('state', this.state);
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {

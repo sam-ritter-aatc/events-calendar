@@ -1,5 +1,11 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
+.container-fluid {
+  max-width: 95%;
+  margin: auto;
+  font-size: smaller;
+}
+
 .App {
   text-align: center;
   padding: 0;

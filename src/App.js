@@ -8,7 +8,7 @@ import EventEditor from "./components/event-edit/EventEditor";
 function App() {
     return (
         <Router basename="/">
-            <div className="App container">
+            <div className="App container-fluid">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     {/*<a className="navbar-brand" href="" target="_blank">*/}
                     {/*    <img src="logo" width="30" height="30"></img>*/}
