@@ -59,7 +59,7 @@ export default class EventDisplay extends Component {
     }
 
     canEdit() {
-        return  this.state.member && (
+        return  this.state.member && this.state.eventInfo.event.extendedProps.parentId === undefined && (
             this.state.member.isAdmin
             || (this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id)
         )

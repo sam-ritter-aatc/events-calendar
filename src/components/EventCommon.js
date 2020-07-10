@@ -1,6 +1,9 @@
 import {Redirect} from "react-router-dom";
 import React from "react";
 
+export const memberEventTag = () => {
+    return 'member-event'
+}
 export const searchForSessionAndAdjustFields = (sessionData, sessionId) => {
     let e = Object.assign({}, sessionData);
 
@@ -37,7 +40,7 @@ export const emptyEvent = () => {
         RegistrationEnabled: true,
         EndTimeSpecified: true,
         RegistrationsLimit: 100,
-        Tags: ["memberEvent"],
+        Tags: [memberEventTag()],
         AccessLevel: 'Public',
         Details: {
             DescriptionHtml: '',

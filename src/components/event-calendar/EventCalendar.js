@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
 import eventConvert from '../../utils/WildApricotConversions';
-import {buildRedirect} from "../EventCommon";
+import {buildRedirect,memberEventTag} from "../EventCommon";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -57,11 +57,14 @@ export default class EventCalendar extends Component {
             });
             this.setState({events: myEvents});
         });
+        console.log("EVENTS", this.state.events);
     }
 
     getEventColor(event) {
         if ( /Race/.test(event.Name) ) {
             return 'red'
+        } else if ( event.Tags && event.Tags.indexOf(memberEventTag())> -1) {
+             return 'green'
         }
         return 'blue';
     }
