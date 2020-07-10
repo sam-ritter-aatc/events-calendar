@@ -6,3 +6,11 @@ export const makeBaseUrl = (token) => {
 export const makeAuthHeader = (token) => {
     return token.token_type + ' ' +token.access_token;
 }
+
+export const makeHeaders = (token) => {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': makeAuthHeader(token)
+        // 'Host': 'api.wildapricot.org'
+    }
+}

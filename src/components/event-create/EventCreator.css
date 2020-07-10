@@ -1,0 +1,28 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+.editor {
+    margin: auto;
+    text-align: left;
+    /*max-width: 80%;*/
+}
+
+.editor label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+/*.ck.ck-reset.ck-editor {*/
+/*    margin: auto;*/
+/*    max-width: 80%;*/
+/*    max-height: 500px;*/
+/*}*/
+/*.ck-editor__editable {*/
+/*    min-height: 800px;*/
+/*    max-height: 800px;*/
+/*    min-width: 860px;*/
+/*}*/
+/*!*Toolbar*!*/
+/*.ck-editor__top {*/
+/*    min-width: 860px;*/
+/*}*/

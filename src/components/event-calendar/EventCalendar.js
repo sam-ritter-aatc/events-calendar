@@ -65,23 +65,13 @@ export default class EventCalendar extends Component {
         }
         return 'blue';
     }
-    //
-    // buildRedirect(path) {
-    //     return <Redirect to={{
-    //         pathname: path,
-    //         state: {
-    //             member: this.state.member,
-    //             eventInfo: this.state.eventInfo
-    //         }
-    //     }} push/>
-    // }
 
     render() {
         if (this.state.showEvent) {
             return buildRedirect('showEvent', this.state.member, this.state.eventInfo);
         }
         if (this.state.editEvent) {
-            return buildRedirect('editEvent', this.state.member, this.state.eventInfo);
+            return buildRedirect('createEvent', this.state.member, this.state.eventInfo);
         }
         return (
             <div className='EventCalendar'>

@@ -28,19 +28,31 @@ export const buildRedirect = (path, member, eventInfo) => {
 
 export const emptyEvent = () => {
     return {
-        Id: '',
-        Url: '',
-        EventType: '',
+        // Id: '',
+        // Url: '',
+        EventType: 'Rsvp',
         StartDate: '',
         EndDate: '',
         Location: '',
         RegistrationEnabled: true,
-        RegistrationsLimit: null,
-        Tags: [],
+        EndTimeSpecified: true,
+        RegistrationsLimit: 100,
+        Tags: ["memberEvent"],
         AccessLevel: 'Public',
         Details: {
             DescriptionHtml: '',
-            Organizer: 0
+            Organizer: {
+                Id: 0,
+                // Url: ''
+            },
+            AccessControl: {
+                AccessLevel: "Public",
+                AvailableForAnyLevel: false,
+                AvailableForLevels: [],
+                AvailableForAnyGroup: false,
+                AvailableForGroups: []
+            },
+
         },
         Name: ''
     }

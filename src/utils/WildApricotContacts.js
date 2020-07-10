@@ -18,6 +18,7 @@ export const getContact = async (token, contactId, cb) => {
             e.email = result.data.Email;
             e.displayName = result.data.DisplayName;
             e.isAdmin = isAdmin(result.data.FieldValues);
+            e.url = result.data.Url;
 
             cb(e);
         })

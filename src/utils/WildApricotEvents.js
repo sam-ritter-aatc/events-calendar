@@ -1,17 +1,31 @@
-import {makeAuthHeader, makeBaseUrl} from "./WildApricotUtils";
+import {makeBaseUrl, makeHeaders} from "./WildApricotUtils";
 const axios = require('axios');
 
-const eventsUrlPart = '/events';
+const eventsUrl = (token) => {
+    return makeBaseUrl(token)+'/events';
+}
+
+export const createEvent = async (token, eventObj, cb) => {
+    console.log("creating new event", eventObj);
+    await axios.post(eventsUrl(token), eventObj,{headers: makeHeaders(token)})
+        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
+        .then((result) => {
+            console.log("RESULT", result)
+            cb(result.data);
+        })
+        .catch((err) => {
+            console.log("## Error ##", err);
+            console.log("error", err);
+            cb({err});
+        })
+}
 
 export const getEventById = async (token, eventId, cb) => {
     console.log("getEventById", eventId);
     await axios({
-        url: makeBaseUrl(token)+eventsUrlPart+'/'+eventId,
+        url: eventsUrl(token)+'/'+eventId,
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': makeAuthHeader(token)
-        }
+        headers: makeHeaders(token)
     })
         .then((result) => {
             console.log("RESULT", result)
@@ -25,11 +39,8 @@ export const getEventById = async (token, eventId, cb) => {
 }
 
 export const getEvents = async (token, startDate, cb) => {
-    await axios.get(makeBaseUrl(token)+eventsUrlPart, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': makeAuthHeader(token)
-        },
+    await axios.get(eventsUrl(token), {
+        headers: makeHeaders(token),
         params: {
             $filter: "StartDate ge "+startDate
         }
