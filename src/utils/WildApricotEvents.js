@@ -20,6 +20,36 @@ export const createEvent = async (token, eventObj, cb) => {
         })
 }
 
+export const updateEvent = async (token, eventId, eventObj, cb) => {
+    console.log("creating new event", eventObj);
+    await axios.put(eventsUrl(token)+'/'+eventId, eventObj,{headers: makeHeaders(token)})
+        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
+        .then((result) => {
+            console.log("RESULT", result)
+            cb(result.data);
+        })
+        .catch((err) => {
+            console.log("## Error ##", err);
+            console.log("error", err);
+            cb({err});
+        })
+}
+
+export const deleteEvent = async (token, eventId, cb) => {
+    console.log("deleting event", eventId);
+    await axios.delete(eventsUrl(token)+'/'+eventId, {headers: makeHeaders(token)})
+        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
+        .then((result) => {
+            console.log("RESULT", result)
+            cb(result.data);
+        })
+        .catch((err) => {
+            console.log("## Error ##", err);
+            console.log("error", err);
+            cb({err});
+        })
+}
+
 export const getEventById = async (token, eventId, cb) => {
     console.log("getEventById", eventId);
     await axios({

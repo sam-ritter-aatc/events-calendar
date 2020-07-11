@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
-import {getEventById} from "../../utils/WildApricotEvents";
+import {getEventById, updateEvent} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {emptyEvent, searchForSessionAndAdjustFields} from "../EventCommon";
@@ -33,7 +33,8 @@ export default class EventEditor extends Component {
 
         let theEvent = Object.assign({}, this.state.event);
         console.log("SAVING EVENT", this.state, theEvent);
-        // TODO: submit logic here
+
+        updateEvent(this.state.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
 
         this.setState({event: emptyEvent()});
     }
@@ -69,8 +70,10 @@ export default class EventEditor extends Component {
         } else if (this.state.eventInfo.date) {  // user clicked on a date to create event.
             this.setState({event: {...this.state.event, StartDate: new  Date(this.state.eventInfo.date)}})
         }
-        this.setState({fetch:false});
+        this.setState({event:{...this.state.event,StartDate: new Date(this.state.event.StartDate)}});
+        this.setState({event:{...this.state.event,EndDate: new Date(this.state.event.EndDate)}});
         console.log('===>state', this.state);
+        this.setState({fetch:false});
 
         if (this.props.location.state.eventInfo.date) {
             let maxTime = new Date(this.props.location.state.eventInfo.date.getTime());
@@ -88,12 +91,14 @@ export default class EventEditor extends Component {
         console.log("state", this.state);
     }
 
-    async startDateHandler(date) {
-        await this.setState({startDate: date})
+    startDateHandler(date) {
+        console.log("CreatorState", this.state);
+        this.setState({event: {...this.state.event, StartDate: date}});
     }
 
-    async endDateHandler(date) {
-        await this.setState({endDate: date});
+    endDateHandler(date) {
+        console.log("CreatorState", this.state);
+        this.setState({event: {...this.state.event, EndDate: date}});
     }
 
     render() {
@@ -119,8 +124,8 @@ export default class EventEditor extends Component {
                                 <DateTimeRange dateLabel="Event Date: "
                                                startLabel="Start Time: "
                                                endLabel="End Time: "
-                                               endDate={this.state.endDate}
-                                               startDate={this.state.startDate}
+                                               startDate={this.state.event.StartDate}
+                                               endDate={this.state.event.EndDate}
                                                onChangeStartDate={this.startDateHandler}
                                                onChangeEndDate={this.endDateHandler}/>
                             </div>

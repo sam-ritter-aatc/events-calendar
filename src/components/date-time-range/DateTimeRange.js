@@ -12,11 +12,12 @@ export default class DateTimeRange extends Component {
     constructor(props) {
         super(props);
 
+        console.log("PROPS", props);
         this.state = {
             startDate: this.props.startDate,
             endDate: this.props.endDate,
-            maxDate: this.props.endDate? new Date(this.props.endDate.setHours(23,59,59)): null,
-            minDate: this.props.startDate? new Date(this.props.startDate.setHours(0,0,0)): null,
+            maxDate: this.props.endDate? new Date(new Date(this.props.endDate.getTime()).setHours(23,59,59)): null,
+            minDate: this.props.startDate? new Date(new Date(this.props.startDate.getTime()).setHours(0,0,0)): null,
         }
         this.onChangeStartDate = this.onChangeStartDate.bind(this);
         this.onChangeStartTime = this.onChangeStartTime.bind(this);
