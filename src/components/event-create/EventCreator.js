@@ -37,6 +37,9 @@ export default class EventCreator extends Component {
         createEvent(this.state.waToken, theEvent, (data) => {console.log("CREATE RESULT", data)});
 
         this.setState({event: emptyEvent()});
+
+        let queryString = "/?mid="+this.state.member.Id;
+        this.props.history.push(queryString);
     }
 
     onChangeEventName(e) {

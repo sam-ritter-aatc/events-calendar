@@ -37,6 +37,9 @@ export default class EventEditor extends Component {
         updateEvent(this.state.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
 
         this.setState({event: emptyEvent()});
+
+        let queryString = "/?mid="+this.state.member.Id;
+        this.props.history.push(queryString);
     }
 
     onChangeEventName(e) {
