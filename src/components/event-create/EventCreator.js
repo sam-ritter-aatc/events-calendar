@@ -38,8 +38,7 @@ export default class EventCreator extends Component {
 
         this.setState({event: emptyEvent()});
 
-        let queryString = "/?mid="+this.state.member.Id;
-        this.props.history.push(queryString);
+        this.props.history.push(`/?mid=${this.state.member.id}`);
     }
 
     onChangeEventName(e) {
