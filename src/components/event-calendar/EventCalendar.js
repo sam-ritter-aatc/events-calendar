@@ -64,9 +64,9 @@ export default class EventCalendar extends Component {
         if ( /Race/.test(event.Name) ) {
             return 'red'
         } else if ( event.Tags && event.Tags.indexOf(memberEventTag())> -1) {
-             return 'green'
+             return '#66CC00'
         }
-        return 'blue';
+        return '#3399FF';
     }
 
     render() {
