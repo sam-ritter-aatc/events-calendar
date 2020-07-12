@@ -13,8 +13,8 @@ export default class DateTimeRange extends Component {
 
         console.log("PROPS", props);
         this.state = {
-            startDate: this.props.startDate,
-            endDate: this.props.endDate,
+            startDate: new Date(this.props.startDate.getTime()),
+            endDate: new Date(this.props.endDate.getTime()),
             maxDate: this.props.endDate? new Date(new Date(this.props.endDate.getTime()).setHours(23,59,59)): null,
             minDate: this.props.startDate? new Date(new Date(this.props.startDate.getTime()).setHours(0,0,0)): null,
         }
@@ -24,10 +24,11 @@ export default class DateTimeRange extends Component {
     }
 
     async onChangeStartDate (date) {
-        console.log("Date from component", date);
+        let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+        console.log("Date from component", date, newDate);
         await this.setState({
-            startDate: new Date(date.setHours(8,0,0)),
-            endDate: new Date(date.setHours(20, 0,0)),
+            startDate: newDate,
+            endDate: new Date(this.state.endDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())),
             minDate: new Date(date.setHours(0,0,0)),
             maxDate: new Date(date.setHours(23,59,59)),
         });
@@ -37,17 +38,18 @@ export default class DateTimeRange extends Component {
         this.props.onChangeEndDate(this.state.endDate);
     }
 
-    onChangeStartTime (date) {
+    async onChangeStartTime (date) {
         if( this.state.endDate < this.state.startDate) {
-            this.setState({
+            await this.setState({
                 startDate: date,
                 endDate: date
             })
         } else {
-            this.setState({startDate: date});
+            await this.setState({startDate: date});
         }
         this.props.onChangeStartDate(this.state.startDate);
         this.props.onChangeEndDate(this.state.endDate);
+        console.log("State after start time change", this.state);
     }
 
     onChangeEndTime (date) {
@@ -57,7 +59,7 @@ export default class DateTimeRange extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if( this.state.startDate !== prevState.startDate || this.state.endDate !== prevState.endDate) {
-            this.renderComponent();
+            this.render();
         }
     }
 

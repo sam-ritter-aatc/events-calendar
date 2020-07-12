@@ -59,17 +59,12 @@ export default class EventCreator extends Component {
 
         console.log("STATE",this.state);
         if (this.state.eventInfo.date) {  // user clicked on a date to create event.
-            this.setState({event: {...this.state.event, StartDate: new  Date(this.state.eventInfo.date)}})
-            this.setState({event: {...this.state.event, EndDate: new  Date(this.state.eventInfo.date)}})
+            this.setState({event: {...this.state.event, StartDate: new  Date(new Date(this.state.eventInfo.date).setHours(8,0,0))}})
+            this.setState({event: {...this.state.event, EndDate: new  Date(new Date(this.state.eventInfo.date).setHours(20,0,0))}})
         }
         this.setState({fetch:false});
         console.log('===>state', this.state);
 
-        if (this.props.location.state.eventInfo.date) {
-            let maxTime = new Date(this.props.location.state.eventInfo.date.getTime());
-            this.setState({event: {...this.state.event, startDate: this.props.location.state.eventInfo.date}});
-            this.setState({event: {...this.state.event, endDate: new Date(maxTime.setHours(23,59,59))}});
-        }
         let details = Object.assign({}, this.state.event.Details)
          details.Organizer = {
             Id: this.state.member.id
@@ -79,13 +74,19 @@ export default class EventCreator extends Component {
     }
 
     startDateHandler(date) {
-        console.log("CreatorState", this.state);
+        console.log("CreatorState-start", this.state);
         this.setState({event: {...this.state.event, StartDate: date}});
     }
 
     endDateHandler(date) {
-        console.log("CreatorState", this.state);
+        console.log("CreatorState-end", this.state);
         this.setState({event: {...this.state.event, EndDate: date}});
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.event.StartDate !== prevState.event.StartDate || this.state.event.EndDate !== prevState.event.EndDate) {
+            this.render()
+        }
     }
 
     render() {
