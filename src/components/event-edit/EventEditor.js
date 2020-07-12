@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
-import {getEventById, updateEvent} from "../../utils/WildApricotEvents";
+import {getEventById, updateEvent, deleteEvent} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {emptyEvent, searchForSessionAndAdjustFields} from "../EventCommon";
@@ -26,6 +26,7 @@ export default class EventEditor extends Component {
         this.onChangeEventName = this.onChangeEventName.bind(this);
         this.startDateHandler = this.startDateHandler.bind(this);
         this.endDateHandler = this.endDateHandler.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     onSubmit(e) {
@@ -103,6 +104,14 @@ export default class EventEditor extends Component {
         this.setState({event: {...this.state.event, EndDate: date}});
     }
 
+    handleDelete() {
+        console.log("Deleting Event", this.state.event.Id);
+
+        deleteEvent(this.state.waToken, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
+
+        this.props.history.push(`/?mid=${this.state.member.id}`);
+    }
+
     render() {
         if (this.state.fetch) {
             return <EventDataLoader name={this.props.location.state.name}/>;
@@ -154,6 +163,9 @@ export default class EventEditor extends Component {
 
                             <div className="form-group">
                                 <input type="submit" value="Save Event" className="btn btn-primary" />
+                            </div>
+                            <div className="form-group">
+                                <input type="button" value="Delete Event" className="btn btn-danger" onClick={this.handleDelete}/>
                             </div>
 
                         </form>
