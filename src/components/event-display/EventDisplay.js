@@ -73,7 +73,7 @@ export default class EventDisplay extends Component {
         } else {
             return (
                 <div>
-                    {this.canEdit() && <input type="submit" value="Edit Event" className="btn btn-primary" onClick={() => this.handleEditClick()} />}
+                    {this.canEdit() && <input type="submit" value="Edit Event" className="btn btn-primary btn-sm" onClick={() => this.handleEditClick()} />}
                     <h2>{this.state.event.Name}</h2>
                     <SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>
                     <SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>

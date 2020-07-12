@@ -162,10 +162,10 @@ export default class EventEditor extends Component {
                             </div>
 
                             <div className="form-group">
-                                <input type="submit" value="Save Event" className="btn btn-primary" />
+                                <input type="submit" value="Save Event" className="btn btn-primary btn-sm" />
                             </div>
                             <div className="form-group">
-                                <input type="button" value="Delete Event" className="btn btn-danger" onClick={this.handleDelete}/>
+                                <input type="button" value="Delete Event" className="btn btn-danger btn-sm" onClick={this.handleDelete}/>
                             </div>
 
                         </form>

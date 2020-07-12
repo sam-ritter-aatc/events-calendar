@@ -135,7 +135,7 @@ export default class EventCreator extends Component {
                             </div>
 
                             <div className="form-group">
-                                <input type="submit" value="Create Event" className="btn btn-primary" />
+                                <input type="submit" value="Create Event" className="btn btn-primary btn-sm" />
                             </div>
 
                         </form>
