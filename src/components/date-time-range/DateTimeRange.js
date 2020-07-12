@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
+import { registerLocale, setDefaultLocale } from "react-datepicker";
 import "./DateTimeRange.css";
+import enGB from "date-fns/locale/en-GB";
+registerLocale("en-GB", enGB);
 
-// moment.locale('en-GB', {
-//     week: {
-//         dow: 1,
-//     }
-// });
+setDefaultLocale("en-GB")
 
 export default class DateTimeRange extends Component {
     constructor(props) {
@@ -56,7 +55,17 @@ export default class DateTimeRange extends Component {
         this.props.onChangeEndDate(date);
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if( this.state.startDate !== prevState.startDate || this.state.endDate !== prevState.endDate) {
+            this.renderComponent();
+        }
+    }
+
     render() {
+        return this.renderComponent();
+    }
+
+    renderComponent() {
         return (
             <div className="dateTimeRangeSelector">
                 <div className="dateTimeRangeSelector-date">
@@ -64,7 +73,6 @@ export default class DateTimeRange extends Component {
                     <DatePicker
                         selected={this.props.startDate}
                         placeholderText="Click to select a date"
-                        local="en-GB"
                         onChange= {date => this.onChangeStartDate(date)}
                     />
                 </div>
