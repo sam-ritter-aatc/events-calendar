@@ -31,22 +31,19 @@ export const buildRedirect = (path, member, eventInfo) => {
 
 export const emptyEvent = () => {
     return {
-        // Id: '',
-        // Url: '',
         EventType: 'Rsvp',
         StartDate: '',
         EndDate: '',
         Location: '',
         RegistrationEnabled: true,
         EndTimeSpecified: true,
-        RegistrationsLimit: 100,
+        RegistrationsLimit: 300,
         Tags: [memberEventTag()],
         AccessLevel: 'Public',
         Details: {
             DescriptionHtml: '',
             Organizer: {
                 Id: 0,
-                // Url: ''
             },
             AccessControl: {
                 AccessLevel: "Public",
@@ -55,8 +52,32 @@ export const emptyEvent = () => {
                 AvailableForAnyGroup: false,
                 AvailableForGroups: []
             },
-
+            GuestRegistrationSettings: {
+                Enabled: true,
+                CreateContactMode: "NeverCreateContact"
+            }
         },
         Name: ''
+    }
+}
+
+export const baseRegistration = (contactId, eventId, message) => {
+    return {
+        Event: {
+            Id: eventId
+        },
+        "Contact": {
+            "Id" : contactId
+        },
+        "RegistrationTypeId": 5895025,
+        "GuestRegistrationsSummary": {
+            "NumberOfGuests": 0,
+            "NumberOfGuestsCheckedIn": 0
+        },
+        "IsCheckedIn": false,
+        "ShowToPublic": true,
+        "RegistrationDate": new Date().toDateString(),
+        "Memo": message,
+        "RecreateInvoice": false
     }
 }

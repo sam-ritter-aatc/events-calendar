@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
-import SwitchableTextInput from "../SwitchableTextInput";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
-import SwitchableHtmlDisplay from "../SwitchableHtmlDisplay";
 import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
+import renderHTML from "react-render-html";
 
 export default class EventDisplay extends Component {
     state = {
@@ -16,9 +15,6 @@ export default class EventDisplay extends Component {
         url: '',
         event: null,
         organizer: null,
-    }
-
-    async eventDetails() {
     }
 
     async componentDidMount() {
@@ -75,18 +71,36 @@ export default class EventDisplay extends Component {
                 <div>
                     {this.canEdit() && <input type="submit" value="Edit Event" className="btn btn-primary btn-sm" onClick={() => this.handleEditClick()} />}
                     <h2>{this.state.event.Name}</h2>
-                    <SwitchableTextInput className="event_id" label="Event Id: " value={this.state.event.Id}/>
-                    <SwitchableTextInput className="event-title" label="Event Name: " value={this.state.event.Name}/>
-                    <SwitchableTextInput className="event-start" label="Event Start Date/Time: "
-                                         value={this.state.event.StartDate}/>
-                    <SwitchableTextInput className="event-end" label="Event End Date/Time: "
-                                         value={this.state.event.EndDate}/>
-                    <SwitchableTextInput className="location" label="Event Location: "
-                                         value={this.state.event.Location}/>
-                    {this.state.organizer && <SwitchableTextInput className="organizer" label="Organizer: "
-                                                                  value={this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}/>}
+                    <div className="event_id">
+                        <label>Event Id: </label>
+                        {this.state.event.Id}
+                    </div>
+                    <div className="event-title">
+                        <label>Event Name: </label>
+                        {this.state.event.Name}
+                    </div>
+                    <div className="event-start">
+                        <label>Event Start Date/Time: </label>
+                        {this.state.event.StartDate}
+                    </div>
+                    <div className="event-end">
+                        <label>Event End Date/Time: </label>
+                        {this.state.event.EndDate}
+                    </div>
+                    <div className="location">
+                        <label>Event Location: </label>
+                        {this.state.event.Location}
+                    </div>
 
-                    <SwitchableHtmlDisplay className="descriptionHtml" label="Description" value={this.state.event.Details.DescriptionHtml} displayFlag={this.state.event.Details && this.state.event.Details.DescriptionHtml} />
+                    {this.state.organizer && <div className="organizer">
+                        <label>Organizer: </label>
+                        {this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}
+                    </div>}
+
+                    <div className="descriptionHtml">
+                        <label>Description: </label><br/>
+                        <div>{renderHTML(this.state.event.Details.DescriptionHtml)}</div>
+                    </div>
                 </div>
             );
         }
