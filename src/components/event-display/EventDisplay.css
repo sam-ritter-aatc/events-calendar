@@ -53,3 +53,30 @@
     font-weight: bolder;
     text-decoration: underline;
 }
+
+.registrations {
+    text-align: left;
+}
+.registrations label {
+    text-align: left;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+#registrations {
+    text-align: left;
+    border-collapse: collapse;
+    border: 3px solid #ddd;
+    width: 95%;
+}
+
+#registrations td, #registrations th {
+    border: 1px solid #ddd;
+}
+
+/*#registrations tr:nth-child(even){*/
+/*    background-color: #f2f2f2;*/
+/*}*/
+#registrations tr:hover {
+    background-color: #b1dfbb;
+}
