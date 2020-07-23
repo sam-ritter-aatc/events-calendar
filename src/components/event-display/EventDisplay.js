@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import {Button} from 'react-bootstrap-buttons';
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
-import {getRegistrationsForEventId} from "../../utils/WildApricotRegistrations";
+import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent} from "../../utils/WildApricotRegistrations";
 import renderHTML from "react-render-html";
 
 export default class EventDisplay extends Component {
@@ -38,16 +39,7 @@ export default class EventDisplay extends Component {
             });
         }
         await getRegistrationsForEventId(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-            let regArray = data.map((reg) => {
-                return {
-                    regId: reg.Id,
-                    memberId: reg.Contact.Id,
-                    name: reg.DisplayName,
-                    message: reg.Memo,
-                    numGuests: reg.GuestRegistrationsSummary.NumberOfGuests,
-                    dateRegistered: reg.RegistrationDate
-                }
-            })
+            let regArray = data.map((reg) => this.convertRegistrationData(reg))
             this.setState({registrations: regArray});
         })
         this.setState({fetch:false});
@@ -64,6 +56,18 @@ export default class EventDisplay extends Component {
         console.log("CAN EDIT", this.canEdit());
     }
 
+    convertRegistrationData(reg) {
+        console.log("CONVERT REG", reg);
+        return {
+            regId: reg.Id,
+            memberId: reg.Contact.Id,
+            name: reg.DisplayName,
+            message: reg.Memo,
+            numGuests: reg.GuestRegistrationsSummary.NumberOfGuests,
+            dateRegistered: reg.RegistrationDate
+        }
+    }
+
     handleEditClick() {
         this.setState({editEvent: true});
     }
@@ -73,6 +77,32 @@ export default class EventDisplay extends Component {
             this.state.member.isAdmin
             || (this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id)
         )
+    }
+
+    notAlreadyRegistered() {
+        return this.state.member && this.state.registrations.filter( x => this.state.member.id === x.memberId).length === 0
+    }
+
+    async handleRegisterClick() {
+        await registerUserForEventId(this.state.waToken, this.state.event.Id, this.state.member.id, (data) => {
+            console.log("registration response", data);
+            this.setState( state => {
+                const registrations = [this.convertRegistrationData(data), ...state.registrations];
+                return {
+                    registrations
+                }
+            });
+        });
+    }
+
+    async handleUnRegisterClick(regId) {
+        await unregisterFromEvent(this.state.waToken, regId, (data) => {});
+        this.setState( state => {
+            const registrations = state.registrations.filter(reg => reg.regId !== regId);
+            return {
+                registrations
+            }
+        })
     }
 
     renderRegistrationData() {
@@ -85,9 +115,9 @@ export default class EventDisplay extends Component {
                 <td>{dateRegistered}</td>
                 <td>{message}</td>
                 <td style={{display:'inline-block'}}>
-                    {memberId===this.state.member.id && <button className="btn btn-danger btn-sm" bsSize="xsmall">Unregister</button> }
-                    {memberId===this.state.member.id && <button className="btn btn-info btn-sm" bsSize="xsmall">Add Guest</button> }
-                    {memberId===this.state.member.id && <button className="btn btn-success btn-sm" bsSize="xsmall">Add/Edit Message</button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="secondary">Add Guest</Button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="secondary">Add/Edit Message</Button> }
                 </td>
             </tr>
         })
@@ -101,7 +131,8 @@ export default class EventDisplay extends Component {
         } else {
             return (
                 <div>
-                    {this.canEdit() && <input type="submit" value="Edit Event" className="btn btn-primary btn-sm" onClick={() => this.handleEditClick()} />}
+                    {this.canEdit() && <Button xs btnStyle="primary" onClick={() => this.handleEditClick()}>Edit Event</Button>}
+                    {this.notAlreadyRegistered() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
                     <h2>{this.state.event.Name}</h2>
                     <div className="event_id">
                         <label>Event Id: </label>
