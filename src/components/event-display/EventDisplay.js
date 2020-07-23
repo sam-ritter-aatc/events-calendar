@@ -6,7 +6,7 @@ import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
-import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent} from "../../utils/WildApricotRegistrations";
+import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent, addGuestToRegistration} from "../../utils/WildApricotRegistrations";
 import renderHTML from "react-render-html";
 
 export default class EventDisplay extends Component {
@@ -61,6 +61,7 @@ export default class EventDisplay extends Component {
         return {
             regId: reg.Id,
             memberId: reg.Contact.Id,
+            eventId: reg.Event.Id,
             name: reg.DisplayName,
             message: reg.Memo,
             numGuests: reg.GuestRegistrationsSummary.NumberOfGuests,
@@ -105,6 +106,38 @@ export default class EventDisplay extends Component {
         })
     }
 
+    async handleAddGuest(regId) {
+        let reg = this.findRegistrationByRegId(regId);
+        await addGuestToRegistration(this.state.waToken, reg, (data) => {
+            console.log("ADDED GUEST", data);
+            this.setState(state => {
+                console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
+                const registrations = state.registrations.map((item) => {
+                    return item.regId === regId ? this.convertRegistrationData(data) : item;
+                });
+                console.log("REGISTRATION", registrations);
+
+                return {
+                    registrations
+                };
+            })
+        });
+        console.log("STATE", this.state);
+    }
+
+    async handleAddMessage() {
+
+    }
+
+    findRegistrationByRegId(regId) {
+        let regArray = this.state.registrations.filter(reg => reg.regId === regId);
+        if (regArray.length === 1) {
+            return regArray[0];
+        } else {
+            return null;
+        }
+    }
+
     renderRegistrationData() {
         return this.state.registrations.map( (reg, index) => {
             const { regId, memberId, name, message, numGuests, dateRegistered} = reg;
@@ -116,8 +149,8 @@ export default class EventDisplay extends Component {
                 <td>{message}</td>
                 <td style={{display:'inline-block'}}>
                     {memberId===this.state.member.id && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
-                    {memberId===this.state.member.id && <Button xs btnStyle="secondary">Add Guest</Button> }
-                    {memberId===this.state.member.id && <Button xs btnStyle="secondary">Add/Edit Message</Button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regId)}>Add Guest</Button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddMessage(regId)}>Add/Edit Message</Button> }
                 </td>
             </tr>
         })

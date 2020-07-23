@@ -22,7 +22,7 @@ export const getRegistrationsForEventId = async (token, eventId, cb) => {
 
 export const registerUserForEventId = async (token, eventId, userId, cb) => {
     console.log("registering user for event", eventId, userId);
-    await axios.post(registrationsUrl(token), createRegistration(eventId, userId), {headers: makeHeaders(token)} )
+    await axios.post(registrationsUrl(token), createRegistration(eventId, userId, null, null), {headers: makeHeaders(token)} )
         .then((result) => {
             console.log("RESULT", result)
             cb(result.data);
@@ -48,7 +48,24 @@ export const unregisterFromEvent = async (token, regId, cb) => {
         })
 }
 
-const createRegistration = (eventId, userId) => {
+export const addGuestToRegistration = async (token, reg, cb) => {
+    let updatedReg = createRegistration(reg.eventId, reg.memberId, reg.message, reg.numGuests+1);
+    updatedReg.Id = reg.regId;
+    updatedReg.RegistrationDate = reg.dateRegistered;
+
+    await axios.put(registrationsUrl(token)+'/'+ reg.regId, updatedReg, {headers: makeHeaders(token)})
+        .then((result) => {
+            console.log("RESULT", result)
+            cb(result.data);
+        })
+        .catch((err) => {
+            console.log("## Error ##", err);
+            console.log("error", err);
+            cb({err});
+        })
+}
+
+const createRegistration = (eventId, userId, msg, numGuests) => {
     return {
         "Event": {
             "Id": eventId
@@ -58,9 +75,10 @@ const createRegistration = (eventId, userId) => {
         },
         "RegistrationTypeId": 5895025,
         "GuestRegistrationsSummary": {
-            "NumberOfGuests": 0,
+            "NumberOfGuests": numGuests,
             "NumberOfGuestsCheckedIn": 0
         },
+        "Memo": msg,
         "IsCheckedIn": false,
         "ShowToPublic": true,
         "RegistrationDate": new Date(),
