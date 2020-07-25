@@ -7,6 +7,7 @@ import {createEvent} from "../../utils/WildApricotEvents";
 import {emptyEvent} from "../EventCommon";
 import "./EventCreator.css";
 import DateTimeRange from "../date-time-range/DateTimeRange";
+import {createInitialRegistrationForEvent} from "../../utils/WildApricotRegistrations";
 
 export default class EventCreator extends Component {
     constructor(props) {
@@ -34,7 +35,10 @@ export default class EventCreator extends Component {
         theEvent.StartDate = theEvent.StartDate.toISOString();
         theEvent.EndDate = theEvent.EndDate.toISOString();
         console.log("SAVING EVENT", this.state, theEvent);
-        createEvent(this.state.waToken, theEvent, (data) => {console.log("CREATE RESULT", data)});
+        createEvent(this.state.waToken, theEvent, (data) => {
+            console.log("CREATE RESULT", data);
+            createInitialRegistrationForEvent(this.state.waToken, data, this.state.member.id, (data)=> {console.log("INITIAL REG", data)});
+        });
 
         this.setState({event: emptyEvent()});
 

@@ -87,9 +87,12 @@ export default class EventDisplay extends Component {
 
     canEdit() {
         return  this.state.member && this.state.eventInfo.event.extendedProps.parentId === undefined && (
-            this.state.member.isAdmin
-            || (this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id)
+            this.state.member.isAdmin || this.isUserEventOrganizer()
         )
+    }
+
+    isUserEventOrganizer() {
+        return this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id;
     }
 
     notAlreadyRegistered() {
@@ -120,6 +123,7 @@ export default class EventDisplay extends Component {
 
     async handleAddGuest(regId) {
         let reg = this.findRegistrationByRegId(regId);
+        reg.numGuests = reg.numGuests+1;
         await updateRegistration(this.state.waToken, reg, (data) => {
             console.log("ADDED GUEST", data);
             this.updateRegistrationInState(reg, data);
@@ -184,7 +188,7 @@ export default class EventDisplay extends Component {
                 <td>{dateRegistered}</td>
                 <td>{message}</td>
                 <td style={{display:'inline-block'}}>
-                    {memberId===this.state.member.id && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
+                    {memberId===this.state.member.id && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
                     {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regId)}>Add Guest</Button> }
                     {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regId)}>Add/Edit Message</Button> }
                 </td>
