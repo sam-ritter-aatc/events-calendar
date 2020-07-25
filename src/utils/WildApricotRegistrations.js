@@ -48,7 +48,7 @@ export const unregisterFromEvent = async (token, regId, cb) => {
         })
 }
 
-export const addGuestToRegistration = async (token, reg, cb) => {
+export const updateRegistration = async (token, reg, cb) => {
     let updatedReg = createRegistration(reg.eventId, reg.memberId, reg.message, reg.numGuests+1);
     updatedReg.Id = reg.regId;
     updatedReg.RegistrationDate = reg.dateRegistered;

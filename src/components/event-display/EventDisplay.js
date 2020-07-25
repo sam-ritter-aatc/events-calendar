@@ -6,17 +6,29 @@ import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
-import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent, addGuestToRegistration} from "../../utils/WildApricotRegistrations";
+import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent, updateRegistration} from "../../utils/WildApricotRegistrations";
 import renderHTML from "react-render-html";
+import Modal from "react-bootstrap/Modal";
 
 export default class EventDisplay extends Component {
-    state = {
-        fetch: true,
-        eventId: '',
-        waToken: {},
-        url: '',
-        event: null,
-        organizer: null,
+    constructor(props) {
+        super(props);
+        this.state = {
+            fetch: true,
+            eventId: '',
+            waToken: {},
+            url: '',
+            event: null,
+            organizer: null,
+            modalToggle: false,
+            rsvpMessage: "",
+        }
+        this.toggle = this.toggle.bind(this);
+        this.onChangeRsvpMessage = this.onChangeRsvpMessage.bind(this);
+    }
+
+    toggle() {
+        this.setState({modalToggle:!this.state.modalToggle});
     }
 
     async componentDidMount() {
@@ -108,25 +120,49 @@ export default class EventDisplay extends Component {
 
     async handleAddGuest(regId) {
         let reg = this.findRegistrationByRegId(regId);
-        await addGuestToRegistration(this.state.waToken, reg, (data) => {
+        await updateRegistration(this.state.waToken, reg, (data) => {
             console.log("ADDED GUEST", data);
-            this.setState(state => {
-                console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
-                const registrations = state.registrations.map((item) => {
-                    return item.regId === regId ? this.convertRegistrationData(data) : item;
-                });
-                console.log("REGISTRATION", registrations);
-
-                return {
-                    registrations
-                };
-            })
+            this.updateRegistrationInState(reg, data);
         });
         console.log("STATE", this.state);
     }
 
     async handleAddMessage() {
+        let reg = Object.assign({}, this.state.registration);
+        reg.message = this.state.rsvpMessage;
 
+        await updateRegistration(this.state.waToken, reg, (data)=> {
+            console.log("DATA from add MEssage", data);
+            this.updateRegistrationInState(reg, data);
+        })
+
+        this.setState({registration:null, rsvpMessage:''});
+        this.toggle();
+        console.log("SAVED MESSAGE");
+    }
+
+    updateRegistrationInState(reg, data) {
+        this.setState(state => {
+            console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
+            const registrations = state.registrations.map((item) => {
+                return item.regId === reg.regId ? this.convertRegistrationData(data) : item;
+            });
+            console.log("REGISTRATION", registrations);
+
+            return {
+                registrations
+            };
+        });
+    }
+
+    addMessageModal(regId) {
+        let reg = this.findRegistrationByRegId(regId);
+        this.setState({registration: reg, rsvpMessage: reg.message});
+        this.toggle();
+    }
+
+    onChangeRsvpMessage(x) {
+        this.setState({rsvpMessage: x.target.value});
     }
 
     findRegistrationByRegId(regId) {
@@ -150,7 +186,7 @@ export default class EventDisplay extends Component {
                 <td style={{display:'inline-block'}}>
                     {memberId===this.state.member.id && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
                     {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regId)}>Add Guest</Button> }
-                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddMessage(regId)}>Add/Edit Message</Button> }
+                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regId)}>Add/Edit Message</Button> }
                 </td>
             </tr>
         })
@@ -214,6 +250,35 @@ export default class EventDisplay extends Component {
                             </tbody>
                         </table>
                     </div>
+
+                    <Modal
+                        show={this.state.modalToggle}
+                        onHide={this.toggle}
+                        size="lg"
+                        backdrop="static"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title id="contained-modal-title-vcenter">
+                                RSVP Message
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <h4>Please enter your message:</h4>
+                            <p>
+                                <input type="text"
+                                       value={this.state.rsvpMessage}
+                                       className="form-control"
+                                       onChange={this.onChangeRsvpMessage}
+                                />
+                            </p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button xs btnStyle="danger" onClick={this.toggle}>Cancel</Button>
+                            <Button xs onClick={() => this.handleAddMessage()}>Save</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             );
         }
