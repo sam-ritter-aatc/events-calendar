@@ -17,16 +17,22 @@ import {getContact} from "../../utils/WildApricotContacts";
 
 
 export default class EventCalendar extends Component {
-    calendarComponentRef = React.createRef()
+    constructor(props) {
+        super(props);
 
-    state = {
-        events: [],
-        member: null,
-        calendarWeekends: true,
-        waToken: {},
-        showEvent: false,
-        editEvent: false
+        this.calendarComponentRef = React.createRef()
+
+        this.state = {
+            events: [],
+            member: null,
+            calendarWeekends: true,
+            waToken: {},
+            showEvent: false,
+            editEvent: false,
+            xid: props.match.params.xid
+        }
     }
+
 
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
@@ -69,6 +75,11 @@ export default class EventCalendar extends Component {
         return 'blue';
     }
 
+    handleWindowResize(arg) {
+        console.log("RESIZE", arg);
+        arg.updateSize();
+    }
+
     render() {
         if (this.state.showEvent) {
             return buildRedirect('showEvent', this.state.member, this.state.eventInfo);
@@ -82,6 +93,9 @@ export default class EventCalendar extends Component {
                     defaultView="dayGridMonth"
                     firstDay={1}
                     fixedWeekCount={false}
+                    handleWindowResize={true}
+                    contentHeight='auto'
+                    height='auto'
                     header={{
                         left: 'prev today next',
                         center: 'title',
@@ -96,6 +110,7 @@ export default class EventCalendar extends Component {
                     events={this.state.events}
                     dateClick={this.handleDateClick}
                     eventClick={this.handleEventClick}
+                    windowResize={this.handleWindowResize}
                 />
                 <button onClick={this.createEvent}>Create Event</button>
             </div>

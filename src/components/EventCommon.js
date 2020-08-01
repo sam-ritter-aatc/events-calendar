@@ -19,6 +19,15 @@ export const searchForSessionAndAdjustFields = (sessionData, sessionId) => {
     return e;
 }
 
+export const calendarViewClick = () => {
+    this.props.history.push(`/?mid=${this.state.member.id}`);
+    console.log("CAL VIEW", this.state.member);
+}
+
+export const redirect = (path) => {
+    return <Redirect to={{pathname: path}} push />
+}
+
 export const buildRedirect = (path, member, eventInfo) => {
     return <Redirect to={{
         pathname: path,

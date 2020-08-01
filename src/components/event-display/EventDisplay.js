@@ -4,11 +4,11 @@ import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
-import "./EventDisplay.css";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
 import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent, updateRegistration} from "../../utils/WildApricotRegistrations";
 import renderHTML from "react-render-html";
 import Modal from "react-bootstrap/Modal";
+import "./EventDisplay.css";
 
 export default class EventDisplay extends Component {
     constructor(props) {
@@ -27,6 +27,11 @@ export default class EventDisplay extends Component {
         this.onChangeRsvpMessage = this.onChangeRsvpMessage.bind(this);
     }
 
+    calendarViewClick() {
+        this.props.history.push(`/?mid=${this.state.member.id}`);
+        console.log("CAL VIEW", this.state.member);
+    }
+
     toggle() {
         this.setState({modalToggle:!this.state.modalToggle});
     }
@@ -41,15 +46,7 @@ export default class EventDisplay extends Component {
 
         console.log("STATE",this.state);
         // recurring event
-        if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),});
-            });
-        } else {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                this.setState({event: data});
-            });
-        }
+        await this.getEvent();
         await getRegistrationsForEventId(this.state.waToken, this.state.eventInfo.event.id, (data) => {
             let regArray = data.map((reg) => this.convertRegistrationData(reg))
             this.setState({registrations: regArray});
@@ -68,6 +65,19 @@ export default class EventDisplay extends Component {
         console.log("CAN EDIT", this.canEdit());
     }
 
+    async getEvent() {
+        if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
+            await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
+                this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),});
+            });
+        } else {
+            await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
+                this.setState({event: data});
+            });
+        }
+
+    }
+
     convertRegistrationData(reg) {
         console.log("CONVERT REG", reg);
         return {
@@ -76,7 +86,7 @@ export default class EventDisplay extends Component {
             eventId: reg.Event.Id,
             name: reg.DisplayName,
             message: reg.Memo,
-            numGuests: reg.GuestRegistrationsSummary.NumberOfGuests,
+            numGuests: reg.GuestRegistrationsSummary && reg.GuestRegistrationsSummary.NumberOfGuests ? reg.GuestRegistrationsSummary.NumberOfGuests : 0,
             dateRegistered: reg.RegistrationDate
         }
     }
@@ -180,23 +190,20 @@ export default class EventDisplay extends Component {
 
     renderRegistrationData() {
         return this.state.registrations.map( (reg, index) => {
-            const { regId, memberId, name, message, numGuests, dateRegistered} = reg;
+            const { regId, name, message, numGuests, dateRegistered} = reg;
             return <tr key={regId}>
                 <td>{regId}</td>
                 <td>{name}</td>
                 <td>{numGuests}</td>
                 <td>{dateRegistered}</td>
                 <td>{message}</td>
-                <td style={{display:'inline-block'}}>
-                    {memberId===this.state.member.id && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regId) }>Unregister</Button> }
-                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regId)}>Add Guest</Button> }
-                    {memberId===this.state.member.id && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regId)}>Add/Edit Message</Button> }
-                </td>
             </tr>
         })
     }
 
     render() {
+        let regData = this.state.registrations ? this.state.registrations.filter(reg => reg.memberId === this.state.member.id):[];
+
         if (this.state.fetch) {
             return (<EventDataLoader name={this.props.location.state.name}/>);
         } else if (this.state.editEvent) {
@@ -204,8 +211,13 @@ export default class EventDisplay extends Component {
         } else {
             return (
                 <div>
+                    <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
                     {this.canEdit() && <Button xs btnStyle="primary" onClick={() => this.handleEditClick()}>Edit Event</Button>}
                     {this.notAlreadyRegistered() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
+                    {regData.length===1 && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regData[0].regId) }>Unregister</Button> }
+                    {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regData[0].regId)}>Add Guest</Button> }
+                    {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regData[0].regId)}>Add/Edit Message</Button> }
+
                     <h2>{this.state.event.Name}</h2>
                     <div className="event_id">
                         <label>Event Id: </label>
@@ -248,7 +260,6 @@ export default class EventDisplay extends Component {
                                     <th scope="col">#Guests</th>
                                     <th scope="col">Date Registered</th>
                                     <th scope="col">Message</th>
-                                    <th scope="col"></th>
                                 </tr>
                                 {this.renderRegistrationData()}
                             </tbody>
