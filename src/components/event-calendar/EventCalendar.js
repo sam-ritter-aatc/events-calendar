@@ -80,6 +80,20 @@ export default class EventCalendar extends Component {
         arg.updateSize();
     }
 
+    createEvent = () => {
+        this.setState({editEvent: true, eventInfo: {}})
+    }
+
+    handleEventClick = (arg) => {
+        console.log("going to event", arg);
+        this.setState({showEvent: true, eventInfo: arg});
+    }
+
+    handleDateClick = (e) => {
+        console.log("DATE CLICKED", e);
+        this.setState({editEvent: true, eventInfo: e});
+    }
+
     render() {
         if (this.state.showEvent) {
             return buildRedirect('showEvent', this.state.member, this.state.eventInfo);
@@ -116,19 +130,5 @@ export default class EventCalendar extends Component {
                 <Button xs onClick={this.createEvent}>Create Event</Button>
             </div>
         )
-    }
-
-    createEvent = () => {
-        this.setState({editEvent: true, eventInfo: {}})
-    }
-
-    handleEventClick = (arg) => {
-        console.log("going to event", arg);
-        this.setState({showEvent: true, eventInfo: arg});
-    }
-
-    handleDateClick = (e) => {
-        console.log("DATE CLICKED", e);
-        this.setState({editEvent: true, eventInfo: e});
     }
 }

@@ -13,8 +13,8 @@ export default class DateTimeRange extends Component {
 
         console.log("PROPS", props);
         this.state = {
-            startDate: new Date(this.props.startDate.getTime()),
-            endDate: new Date(this.props.endDate.getTime()),
+            startDate: this.props.startDate != null ? new Date(this.props.startDate.getTime()) : null,
+            endDate: this.props.endDate != null ? new Date(this.props.endDate.getTime()) : null,
             maxDate: this.props.endDate? new Date(new Date(this.props.endDate.getTime()).setHours(23,59,59)): null,
             minDate: this.props.startDate? new Date(new Date(this.props.startDate.getTime()).setHours(0,0,0)): null,
         }
@@ -26,6 +26,10 @@ export default class DateTimeRange extends Component {
     async onChangeStartDate (date) {
         let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
         console.log("Date from component", date, newDate);
+        if( this.props.endDate === null ) {
+            let myEndDate = new Date(newDate.getTime());
+            await this.setState({endDate:new Date(myEndDate.setHours(23, 59,59))});
+        }
         await this.setState({
             startDate: newDate,
             endDate: new Date(this.state.endDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())),

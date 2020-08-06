@@ -66,6 +66,9 @@ export default class EventCreator extends Component {
         if (this.state.eventInfo.date) {  // user clicked on a date to create event.
             this.setState({event: {...this.state.event, StartDate: new  Date(new Date(this.state.eventInfo.date).setHours(8,0,0))}})
             this.setState({event: {...this.state.event, EndDate: new  Date(new Date(this.state.eventInfo.date).setHours(20,0,0))}})
+        } else {
+            this.setState({event: {...this.state.event, StartDate: null}})
+            this.setState({event: {...this.state.event, EndDate: null}})
         }
         this.setState({fetch:false});
         console.log('===>state', this.state);
