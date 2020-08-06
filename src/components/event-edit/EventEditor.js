@@ -6,8 +6,10 @@ import {getEventById, updateEvent, deleteEvent} from "../../utils/WildApricotEve
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {emptyEvent, searchForSessionAndAdjustFields} from "../EventCommon";
-import "./EventEditor.css";
 import DateTimeRange from "../date-time-range/DateTimeRange";
+import {Button} from "react-bootstrap-buttons";
+
+import "./EventEditor.css";
 
 export default class EventEditor extends Component {
     constructor(props) {
@@ -112,6 +114,11 @@ export default class EventEditor extends Component {
         this.props.history.push(`/?mid=${this.state.member.id}`);
     }
 
+    calendarViewClick() {
+        this.props.history.push(`/?mid=${this.state.member.id}`);
+        console.log("CAL VIEW", this.state.member);
+    }
+
     render() {
         if (this.state.fetch) {
             return <EventDataLoader name={this.props.location.state.name}/>;
@@ -119,6 +126,10 @@ export default class EventEditor extends Component {
             return (
                 <div className="App">
                      <div className="editor">
+                         <div className="form-group" style={{'text-align':'center'}}>
+                             <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
+                             <Button xs btnStyle="danger" onClick={() => this.handleDelete()}>Delete Event</Button>
+                         </div>
                         <form onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label>Event Id: </label>
@@ -161,11 +172,8 @@ export default class EventEditor extends Component {
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <input type="submit" value="Save Event" className="btn btn-primary btn-sm" />
-                            </div>
-                            <div className="form-group">
-                                <input type="button" value="Delete Event" className="btn btn-danger btn-sm" onClick={this.handleDelete}/>
+                            <div className="form-group button" style={{'text-align':'center'}}>
+                                <Button xs btnStyle="primary" type="submit">Save Event</Button>
                             </div>
 
                         </form>
