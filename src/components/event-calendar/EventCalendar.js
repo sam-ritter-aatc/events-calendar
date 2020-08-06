@@ -11,10 +11,10 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import listPlugin from '@fullcalendar/list';
 import queryString from 'query-string';
-
-import "./EventCalendar.css";
+import {Button} from "react-bootstrap-buttons";
 import {getContact} from "../../utils/WildApricotContacts";
 
+import "./EventCalendar.css";
 
 export default class EventCalendar extends Component {
     constructor(props) {
@@ -96,6 +96,7 @@ export default class EventCalendar extends Component {
                     handleWindowResize={true}
                     contentHeight='auto'
                     height='auto'
+                    // aspectRatio={2}
                     header={{
                         left: 'prev today next',
                         center: 'title',
@@ -112,7 +113,7 @@ export default class EventCalendar extends Component {
                     eventClick={this.handleEventClick}
                     windowResize={this.handleWindowResize}
                 />
-                <button onClick={this.createEvent}>Create Event</button>
+                <Button xs onClick={this.createEvent}>Create Event</Button>
             </div>
         )
     }

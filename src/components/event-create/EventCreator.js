@@ -8,6 +8,7 @@ import {emptyEvent} from "../EventCommon";
 import "./EventCreator.css";
 import DateTimeRange from "../date-time-range/DateTimeRange";
 import {createInitialRegistrationForEvent} from "../../utils/WildApricotRegistrations";
+import {Button} from "react-bootstrap-buttons";
 
 export default class EventCreator extends Component {
     constructor(props) {
@@ -93,6 +94,11 @@ export default class EventCreator extends Component {
         }
     }
 
+    calendarViewClick() {
+        this.props.history.push(`/?mid=${this.state.member.id}`);
+        console.log("CAL VIEW", this.state.member);
+    }
+
     render() {
         if (this.state.fetch) {
             return <EventDataLoader name={this.props.location.state.name}/>;
@@ -100,7 +106,10 @@ export default class EventCreator extends Component {
             return (
                 <div className="App">
                      <div className="editor">
-                        <form onSubmit={this.onSubmit}>
+                         <form onSubmit={this.onSubmit}>
+                             <div className="form-group" style={{'text-align':'center'}}>
+                                 <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
+                             </div>
                             <div className="form-group">
                                 <label>Event Name: </label>
                                 <input type="text"
@@ -138,8 +147,8 @@ export default class EventCreator extends Component {
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <input type="submit" value="Create Event" className="btn btn-primary btn-sm" />
+                            <div className="form-group" style={{'text-align':'center'}}>
+                                <Button xs btnStyle="primary" type="submit">Create Event</Button>
                             </div>
 
                         </form>
