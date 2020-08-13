@@ -6,6 +6,7 @@ import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
 import {searchForSessionAndAdjustFields, buildRedirect} from "../EventCommon";
 import {getRegistrationsForEventId, registerUserForEventId, unregisterFromEvent, updateRegistration} from "../../utils/WildApricotRegistrations";
+import {sendEmail} from "../../utils/WildApricotEmailSender";
 import renderHTML from "react-render-html";
 import Modal from "react-bootstrap/Modal";
 import "./EventDisplay.css";
@@ -22,6 +23,8 @@ export default class EventDisplay extends Component {
             organizer: null,
             modalToggle: false,
             rsvpMessage: "",
+            rsvpModalTitle: "",
+            modalTextBoxType: ""
         }
         this.toggle = this.toggle.bind(this);
         this.onChangeRsvpMessage = this.onChangeRsvpMessage.bind(this);
@@ -155,6 +158,12 @@ export default class EventDisplay extends Component {
         console.log("SAVED MESSAGE");
     }
 
+    async handleMessagingClick() {
+        await this.setState({rsvpModalTitle: "Message to RSVP Contacts", modalTextBoxType: "textarea"})
+        this.toggle();
+        sendEmail(this.state.event.Id, this.state.registrations, "some subject", "the text of message");
+    }
+
     updateRegistrationInState(reg, data) {
         this.setState(state => {
             console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
@@ -169,9 +178,9 @@ export default class EventDisplay extends Component {
         });
     }
 
-    addMessageModal(regId) {
+    async addMessageModal(regId) {
         let reg = this.findRegistrationByRegId(regId);
-        this.setState({registration: reg, rsvpMessage: reg.message});
+        await this.setState({registration: reg, rsvpMessage: reg.message, rsvpModalTitle: "RSVP Message", modalTextBoxType: "text"});
         this.toggle();
     }
 
@@ -202,6 +211,7 @@ export default class EventDisplay extends Component {
     }
 
     render() {
+        console.log("STATE", this.state);
         let regData = this.state.registrations ? this.state.registrations.filter(reg => reg.memberId === this.state.member.id):[];
 
         if (this.state.fetch) {
@@ -213,6 +223,7 @@ export default class EventDisplay extends Component {
                 <div>
                     <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
                     {this.canEdit() && <Button xs btnStyle="primary" onClick={() => this.handleEditClick()}>Edit Event</Button>}
+                    {this.canEdit() && <Button xs btnStyle="warning" onClick={() => this.handleMessagingClick()}>Message RSVPd Members</Button>}
                     {this.notAlreadyRegistered() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
                     {regData.length===1 && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regData[0].regId) }>Unregister</Button> }
                     {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regData[0].regId)}>Add Guest</Button> }
@@ -276,17 +287,24 @@ export default class EventDisplay extends Component {
                     >
                         <Modal.Header closeButton>
                             <Modal.Title id="contained-modal-title-vcenter">
-                                RSVP Message
+                                {this.state.rsvpModalTitle}
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <h4>Please enter your message:</h4>
                             <p>
-                                <input type="text"
+                                {this.state.modalTextBoxType=='textarea' ? <textarea
+                                        value={this.state.rsvpMessage}
+                                        className="form-control"
+                                        onChange={this.onChangeRsvpMessage}
+                                    />
+                                    :
+                                    <input type="text"
                                        value={this.state.rsvpMessage}
                                        className="form-control"
                                        onChange={this.onChangeRsvpMessage}
-                                />
+                                       />
+                                    }
                             </p>
                         </Modal.Body>
                         <Modal.Footer>
