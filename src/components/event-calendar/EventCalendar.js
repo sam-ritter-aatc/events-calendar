@@ -63,7 +63,7 @@ export default class EventCalendar extends Component {
             });
             this.setState({events: myEvents});
         });
-        console.log("EVENTS", this.state.events);
+        // console.log("EVENTS", this.state.events);
     }
 
     getEventColor(event) {
@@ -110,7 +110,7 @@ export default class EventCalendar extends Component {
                     handleWindowResize={true}
                     contentHeight='auto'
                     height='auto'
-                    // aspectRatio={2}
+                    // aspectRatio={3}
                     header={{
                         left: 'prev today next',
                         center: 'title',

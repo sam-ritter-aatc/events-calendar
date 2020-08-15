@@ -161,7 +161,23 @@ export default class EventDisplay extends Component {
     async handleMessagingClick() {
         await this.setState({rsvpModalTitle: "Message to RSVP Contacts", modalTextBoxType: "textarea"})
         this.toggle();
-        sendEmail(this.state.event.Id, this.state.registrations, "some subject", "the text of message");
+    }
+
+    async handleSendMessage() {
+        sendEmail(this.state.waToken, this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
+        await this.setState({
+            rsvpModalTitle: '',
+            rsvpMessage: '',
+            modalTextBoxType: "text"
+        });
+        this.toggle();
+    }
+    messageSubject() {
+        return "Event Update: "+this.state.event.Name+ "  "+ this.state.event.StartDate;
+    }
+    memberMessage() {
+        return "<html><body>This is concerning the event you RSVP'd to on: "+this.state.event.StartDate+"<br/><br/><h2>"+this.state.event.Name
+        + "</h2><p><h3>Message from the event organizer:</h3><br/><p>"+ this.state.rsvpMessage+"</p></body></html>";
     }
 
     updateRegistrationInState(reg, data) {
@@ -211,7 +227,7 @@ export default class EventDisplay extends Component {
     }
 
     render() {
-        console.log("STATE", this.state);
+        // console.log("STATE", this.state);
         let regData = this.state.registrations ? this.state.registrations.filter(reg => reg.memberId === this.state.member.id):[];
 
         if (this.state.fetch) {
@@ -293,7 +309,7 @@ export default class EventDisplay extends Component {
                         <Modal.Body>
                             <h4>Please enter your message:</h4>
                             <p>
-                                {this.state.modalTextBoxType=='textarea' ? <textarea
+                                {this.state.modalTextBoxType==='textarea' ? <textarea
                                         value={this.state.rsvpMessage}
                                         className="form-control"
                                         onChange={this.onChangeRsvpMessage}
@@ -309,7 +325,11 @@ export default class EventDisplay extends Component {
                         </Modal.Body>
                         <Modal.Footer>
                             <Button xs btnStyle="danger" onClick={this.toggle}>Cancel</Button>
-                            <Button xs onClick={() => this.handleAddMessage()}>Save</Button>
+                            {this.state.modalTextBoxType === 'textarea' ?
+                                <Button xs onClick={() => this.handleSendMessage()}>Send Message</Button>
+                                :
+                                <Button xs onClick={() => this.handleAddMessage()}>Save</Button>
+                            }
                         </Modal.Footer>
                     </Modal>
                 </div>
