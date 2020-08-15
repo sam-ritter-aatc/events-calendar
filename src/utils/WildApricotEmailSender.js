@@ -2,14 +2,11 @@ import {makeHeaders} from "./WildApricotUtils";
 const axios = require('axios');
 
 const makeEmailUrl = (token) => {
-    // return 'https://api.wildapricot.org/v2.2/rpc/' + token.Permissions[0].AccountId + '/email/SendEmail';
     return 'https://cors-anywhere.herokuapp.com/https://api.wildapricot.org/v2.2/rpc/' + token.Permissions[0].AccountId + '/email/SendEmail';
 }
 
 export const sendEmail = async (token, eventId, recipArray, subject, text, cb) => {
-    console.log("Sending email", makeEmailUrl(token))
     let msg = makeMessage(eventId,recipArray,subject, text);
-    console.log("RequestBody for SendEmail", msg, process.env.REACT_APP_WA_BASE_URL);
 
     await axios.post(makeEmailUrl(token), makeMessage(eventId, recipArray, subject, text), {headers: makeHeaders(token)} )
         .then((result) => {

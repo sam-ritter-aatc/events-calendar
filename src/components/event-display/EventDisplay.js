@@ -173,11 +173,11 @@ export default class EventDisplay extends Component {
         this.toggle();
     }
     messageSubject() {
-        return "Event Update: "+this.state.event.Name+ "  "+ this.state.event.StartDate;
+        return "Event Update: "+this.state.event.Name+ "  "+ new Date(this.state.event.StartDate).toLocaleString();
     }
     memberMessage() {
-        return "<html><body>This is concerning the event you RSVP'd to on: "+this.state.event.StartDate+"<br/><br/><h2>"+this.state.event.Name
-        + "</h2><p><h3>Message from the event organizer:</h3><br/><p>"+ this.state.rsvpMessage+"</p></body></html>";
+        return "<html><body>This is concerning the event you RSVP'd to on: "+new Date(this.state.event.StartDate).toLocaleString()+"<h2>"+this.state.event.Name
+        + "</h2><p><h3><u>Message from the event organizer</u>:</h3>"+ this.state.rsvpMessage+"</body></html>";
     }
 
     updateRegistrationInState(reg, data) {
@@ -247,33 +247,33 @@ export default class EventDisplay extends Component {
 
                     <h2>{this.state.event.Name}</h2>
                     <div className="event_id">
-                        <label>Event Id: </label>
+                        <label>Event Id: </label>&nbsp;&nbsp;
                         {this.state.event.Id}
                     </div>
                     <div className="event-title">
-                        <label>Event Name: </label>
+                        <label>Event Name: </label>&nbsp;&nbsp;
                         {this.state.event.Name}
                     </div>
                     <div className="event-start">
-                        <label>Event Start Date/Time: </label>
-                        {this.state.event.StartDate}
+                        <label>Event Start Date/Time:</label>&nbsp;&nbsp;
+                        {new Date(this.state.event.StartDate).toLocaleString()}
                     </div>
                     <div className="event-end">
-                        <label>Event End Date/Time: </label>
-                        {this.state.event.EndDate}
+                        <label>Event End Date/Time:</label>&nbsp;&nbsp;
+                        {new Date(this.state.event.EndDate).toLocaleString()}
                     </div>
                     <div className="location">
-                        <label>Event Location: </label>
+                        <label>Event Location: </label>&nbsp;&nbsp;
                         {this.state.event.Location}
                     </div>
 
                     {this.state.organizer && <div className="organizer">
-                        <label>Organizer: </label>
+                        <label>Organizer: </label>&nbsp;&nbsp;
                         {this.state.organizer.displayName + '(' + this.state.organizer.email + ')'}
                     </div>}
 
                     <div className="descriptionHtml">
-                        <label>Description: </label><br/>
+                        <label>Description: </label><br/>&nbsp;&nbsp;
                         <div>{renderHTML(this.state.event.Details.DescriptionHtml)}</div>
                     </div>
 
