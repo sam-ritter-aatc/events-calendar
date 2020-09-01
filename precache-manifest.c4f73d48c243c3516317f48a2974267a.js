@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c9716997d61acda8452afaeb473161ce",
+    "revision": "d7a8f27a6d10ed7f065b05cae6815f30",
     "url": "/calendar-events/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/calendar-events/static/css/2.ce7fe964.chunk.css"
   },
   {
-    "revision": "f3b7943c8d8859173866",
+    "revision": "2eb876003b48ba77c9bc",
     "url": "/calendar-events/static/css/main.883bba82.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/calendar-events/static/js/2.39cf03a8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f3b7943c8d8859173866",
-    "url": "/calendar-events/static/js/main.139d6b6a.chunk.js"
+    "revision": "2eb876003b48ba77c9bc",
+    "url": "/calendar-events/static/js/main.6f86f4e5.chunk.js"
   },
   {
     "revision": "04ea2b208ce53ea4bf5c",
