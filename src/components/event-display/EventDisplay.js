@@ -215,12 +215,12 @@ export default class EventDisplay extends Component {
 
     renderRegistrationData() {
         return this.state.registrations.map( (reg, index) => {
-            const { regId, name, message, numGuests, dateRegistered} = reg;
+            const { regId, name, message, numGuests /*, dateRegistered */} = reg;
             return <tr key={regId}>
-                <td>{regId}</td>
+                {/*<td>{regId}</td>*/}
                 <td>{name}</td>
                 <td>{numGuests}</td>
-                <td>{dateRegistered}</td>
+                {/*<td>{dateRegistered}</td>*/}
                 <td>{message}</td>
             </tr>
         })
@@ -282,11 +282,11 @@ export default class EventDisplay extends Component {
                         <table id='registrations' className="table-striped">
                             <tbody>
                                 <tr>
-                                    <th scope="col">Registration Id</th>
+                                    {/*<th scope="col">Registration Id</th>*/}
                                     <th scope="col">Name</th>
                                     <th scope="col">#Guests</th>
-                                    <th scope="col">Date Registered</th>
-                                    <th scope="col">Message</th>
+                                    {/*<th scope="col">Date Registered</th>*/}
+                                    <th scope="col">Comments</th>
                                 </tr>
                                 {this.renderRegistrationData()}
                             </tbody>
