@@ -212,6 +212,13 @@ export default class EventDisplay extends Component {
             return null;
         }
     }
+    canRegisterForEvent() {
+        console.log("CHECKING IF CAN REGISTER", this.state.event);
+        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0) {
+            return true;
+        }
+        return false;
+    }
 
     renderRegistrationData() {
         return this.state.registrations.map( (reg, index) => {
@@ -240,7 +247,7 @@ export default class EventDisplay extends Component {
                     <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
                     {this.canEdit() && <Button xs btnStyle="primary" onClick={() => this.handleEditClick()}>Edit Event</Button>}
                     {this.canEdit() && <Button xs btnStyle="warning" onClick={() => this.handleMessagingClick()}>Message RSVPd Members</Button>}
-                    {this.notAlreadyRegistered() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
+                    {this.notAlreadyRegistered() && this.canRegisterForEvent() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
                     {regData.length===1 && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regData[0].regId) }>Unregister</Button> }
                     {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regData[0].regId)}>Add Guest</Button> }
                     {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regData[0].regId)}>Add/Edit Message</Button> }

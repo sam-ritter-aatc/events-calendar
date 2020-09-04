@@ -11,6 +11,23 @@ import {Button} from "react-bootstrap-buttons";
 
 import "./EventEditor.css";
 
+const editorConfiguration = {
+    link: {
+        link: {
+            decorators: {
+                addTargetToExternalLinks: {
+                    mode: 'automatic',
+                    callback: url => /^(https?:)?\/\//.test( url ),
+                    attributes: {
+                        target: '_blank',
+                        rel: 'noopener noreferrer'
+                    }
+                }
+            }
+        }
+    }
+};
+
 export default class EventEditor extends Component {
     constructor(props) {
         super(props);
@@ -162,13 +179,15 @@ export default class EventEditor extends Component {
                             <div className="form-group">
                                 <label>Description</label>
                                 <CKEditor
+                                    config={editorConfiguration}
                                     editor={ ClassicEditor }
                                     data={this.state.event.Details.DescriptionHtml}
                                     onChange={ ( event, editor ) => {
-                                        let details = this.state.event.Details;
-                                        details.DescriptionHtml = editor.getData();
-                                        this.setState({event: {...this.state.event, Details: details}});
-                                    } }
+                                            let details = this.state.event.Details;
+                                            details.DescriptionHtml = editor.getData();
+                                            this.setState({event: {...this.state.event, Details: details}});
+                                        }
+                                    }
                                 />
                             </div>
 
