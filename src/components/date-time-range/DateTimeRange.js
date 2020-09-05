@@ -68,10 +68,6 @@ export default class DateTimeRange extends Component {
     }
 
     render() {
-        return this.renderComponent();
-    }
-
-    renderComponent() {
         return (
             <div className="dateTimeRangeSelector">
                 <div className="dateTimeRangeSelector-date">
