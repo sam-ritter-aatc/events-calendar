@@ -250,7 +250,7 @@ export default class EventDisplay extends Component {
                     {this.notAlreadyRegistered() && this.canRegisterForEvent() && <Button xs btnStyle="success" onClick={() => this.handleRegisterClick()}>RSVP</Button>}
                     {regData.length===1 && !this.isUserEventOrganizer() && <Button xs btnStyle="danger" onClick={() => this.handleUnRegisterClick(regData[0].regId) }>Unregister</Button> }
                     {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.handleAddGuest(regData[0].regId)}>Add Guest</Button> }
-                    {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regData[0].regId)}>Add/Edit Message</Button> }
+                    {regData.length===1 && <Button xs btnStyle="secondary" onClick={() => this.addMessageModal(regData[0].regId)}>Add/Edit Comment</Button> }
 
                     <h2>{this.state.event.Name}</h2>
                     <div className="event_id">
