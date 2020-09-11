@@ -24,12 +24,13 @@ export default class EventCalendar extends Component {
 
         this.state = {
             events: [],
-            member: null,
+            member: {id: 0, isAdmin: false},
             calendarWeekends: true,
             waToken: {},
             showEvent: false,
             editEvent: false,
-            xid: props.match.params.xid
+            xid: props.match.params.xid,
+            isLoggedInUser: false
         }
     }
 
@@ -46,6 +47,7 @@ export default class EventCalendar extends Component {
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
             await getContact(this.state.waToken, queryStringValues.mid, (contact) => {this.setState({member: contact})})
             console.log("Retrieve Member", this.state.member);
+            this.setState({isLoggedInUser:true})
         }
         await getEvents(this.state.waToken, firstDate.toISOString(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
@@ -81,7 +83,7 @@ export default class EventCalendar extends Component {
     }
 
     createEvent = () => {
-        this.setState({editEvent: true, eventInfo: {}})
+        this.setState({editEvent: this.state.isLoggedInUser, eventInfo: {}})
     }
 
     handleEventClick = (arg) => {
@@ -91,7 +93,7 @@ export default class EventCalendar extends Component {
 
     handleDateClick = (e) => {
         console.log("DATE CLICKED", e);
-        this.setState({editEvent: true, eventInfo: e});
+        this.setState({editEvent: this.state.isLoggedInUser, eventInfo: e});
     }
 
     render() {
@@ -127,7 +129,7 @@ export default class EventCalendar extends Component {
                     eventClick={this.handleEventClick}
                     windowResize={this.handleWindowResize}
                 />
-                <Button xs onClick={this.createEvent}>Create Event</Button>
+                {this.state.isLoggedInUser ? <Button xs onClick={this.createEvent}>Create Event</Button> : <div> </div> }
             </div>
         )
     }

@@ -214,7 +214,7 @@ export default class EventDisplay extends Component {
     }
     canRegisterForEvent() {
         console.log("CHECKING IF CAN REGISTER", this.state.event);
-        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0) {
+        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.state.member.id !== 0) {
             return true;
         }
         return false;
