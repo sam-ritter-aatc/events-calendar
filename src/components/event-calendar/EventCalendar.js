@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
 import eventConvert from '../../utils/WildApricotConversions';
-import {buildRedirect,memberEventTag} from "../EventCommon";
+import {buildRedirect,memberEventTag,firstDateEventsToRetrieve} from "../EventCommon";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -23,7 +23,6 @@ export default class EventCalendar extends Component {
         this.calendarComponentRef = React.createRef()
 
         this.state = {
-            events: [],
             member: {id: 0, isAdmin: false},
             calendarWeekends: true,
             waToken: {},
@@ -38,10 +37,6 @@ export default class EventCalendar extends Component {
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
         console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
-        let firstDate = new Date();
-        firstDate.setFullYear(firstDate.getFullYear() - 1);
-        firstDate.setMonth(firstDate.getMonth() - 6);
-        console.log("FIRST DATE", firstDate)
 
         await getAuthTokens((data) => this.setState({waToken: data}));
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
@@ -49,7 +44,7 @@ export default class EventCalendar extends Component {
             console.log("Retrieve Member", this.state.member);
             this.setState({isLoggedInUser:true})
         }
-        await getEvents(this.state.waToken, firstDate.toISOString(), (data) => {
+        await getEvents(this.state.waToken, firstDateEventsToRetrieve(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
                     id: event.Id,
@@ -63,9 +58,8 @@ export default class EventCalendar extends Component {
                     parentId: event.parentId
                 }
             });
-            this.setState({events: myEvents});
+            this.props.onEventChange(myEvents);
         });
-        // console.log("EVENTS", this.state.events);
     }
 
     getEventColor(event) {
@@ -124,7 +118,7 @@ export default class EventCalendar extends Component {
                     selectable={true}
                     ref={this.calendarComponentRef}
                     weekends={this.state.calendarWeekends}
-                    events={this.state.events}
+                    events={this.props.events}
                     dateClick={this.handleDateClick}
                     eventClick={this.handleEventClick}
                     windowResize={this.handleWindowResize}

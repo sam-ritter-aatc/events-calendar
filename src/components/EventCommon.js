@@ -90,3 +90,12 @@ export const baseRegistration = (contactId, eventId, message) => {
         "RecreateInvoice": false
     }
 }
+
+
+export const firstDateEventsToRetrieve = () => {
+    let firstDate = new Date();
+    firstDate.setFullYear(firstDate.getFullYear() - 1);
+    firstDate.setMonth(firstDate.getMonth() - 6);
+    console.log("FIRST DATE", firstDate)
+    return firstDate.toISOString()
+}
