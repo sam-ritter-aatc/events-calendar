@@ -10,7 +10,7 @@ jest.mock('axios');
 describe('OAuth Utils', () => {
     test('WildApricot OAuth returns expected token', async () => {
         // const resp = { data: makeAToken()};
-        axios.post.mockImplementationOnce(() => Promise.resolve({ data: makeAToken()}));
+        axios.mockImplementationOnce(() => Promise.resolve({ data: makeAToken()}));
         let rcvd = null;
         await getAuthTokens((data) => { rcvd = Object.assign({}, data)});
 
