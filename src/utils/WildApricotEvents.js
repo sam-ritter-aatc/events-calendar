@@ -7,7 +7,12 @@ const eventsUrl = (token) => {
 
 export const createEvent = async (token, eventObj, cb) => {
     console.log("creating new event", eventObj);
-    await axios.post(eventsUrl(token), eventObj,{headers: makeHeaders(token)})
+    await axios( {
+        method: 'POST',
+        url: eventsUrl(token),
+        data: eventObj,
+        headers: makeHeaders(token)
+    })
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
@@ -22,7 +27,12 @@ export const createEvent = async (token, eventObj, cb) => {
 
 export const updateEvent = async (token, eventId, eventObj, cb) => {
     console.log("creating new event", eventObj);
-    await axios.put(eventsUrl(token)+'/'+eventId, eventObj,{headers: makeHeaders(token)})
+    await axios({
+        method: 'PUT',
+        url: eventsUrl(token)+'/'+eventId,
+        data: eventObj,
+        headers: makeHeaders(token)
+    })
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
@@ -37,7 +47,11 @@ export const updateEvent = async (token, eventId, eventObj, cb) => {
 
 export const deleteEvent = async (token, eventId, cb) => {
     console.log("deleting event", eventId);
-    await axios.delete(eventsUrl(token)+'/'+eventId, {headers: makeHeaders(token)})
+    await axios({
+        method: 'DELETE',
+        url: eventsUrl(token)+'/'+eventId,
+        headers: makeHeaders(token)
+    })
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
@@ -69,7 +83,9 @@ export const getEventById = async (token, eventId, cb) => {
 }
 
 export const getEvents = async (token, startDate, cb) => {
-    await axios.get(eventsUrl(token), {
+    await axios({
+        method: 'GET',
+        url: eventsUrl(token),
         headers: makeHeaders(token),
         params: {
             $filter: "StartDate ge "+startDate
@@ -83,4 +99,3 @@ export const getEvents = async (token, startDate, cb) => {
             cb([]);
         });
 };
-

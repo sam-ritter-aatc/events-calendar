@@ -7,8 +7,13 @@ const makeEmailUrl = (token) => {
 
 export const sendEmail = async (token, eventId, recipArray, subject, text, cb) => {
     // let msg = makeMessage(eventId,recipArray,subject, text);
-
-    await axios.post(makeEmailUrl(token), makeMessage(eventId, recipArray, subject, text), {headers: makeHeaders(token)} )
+    await axios({
+        method: 'POST',
+        url: makeEmailUrl(token),
+        data: makeMessage(eventId, recipArray, subject, text),
+        headers: makeHeaders(token)
+    })
+    // await axios.post(makeEmailUrl(token), makeMessage(eventId, recipArray, subject, text), {headers: makeHeaders(token)} )
         .then((result) => {
             // console.log("RESULT", result)
             cb(result.data);

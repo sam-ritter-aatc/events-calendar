@@ -1,13 +1,12 @@
-import {makeBaseUrl, makeAuthHeader} from "./WildApricotUtils";
+import {makeBaseUrl, makeHeaders} from "./WildApricotUtils";
 
 const axios = require('axios');
 
 export const getContact = async (token, contactId, cb) => {
-    await axios.get(makeBaseUrl(token) + '/contacts/' + contactId, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': makeAuthHeader(token)
-        }
+    await axios({
+        method: 'GET',
+        url: makeBaseUrl(token) + '/contacts/' + contactId,
+        headers: makeHeaders(token)
     })
         .then((result) => {
             let e = {};
@@ -22,9 +21,7 @@ export const getContact = async (token, contactId, cb) => {
 
             cb(e);
         })
-        .catch((err) => {
-            cb(null);
-        })
+        .catch((err) => {cb(null);})
 }
 
 const isAdmin = (fields) => {

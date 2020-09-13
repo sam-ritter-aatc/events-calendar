@@ -7,7 +7,12 @@ const registrationsUrl = (token) => {
 
 export const getRegistrationsForEventId = async (token, eventId, cb) => {
     // console.log("getting registrations for eventId", eventId);
-    await axios.get(registrationsUrl(token)+'?eventId='+eventId,{headers: makeHeaders(token)})
+    await axios({
+        method: 'GET',
+        url: registrationsUrl(token)+'?eventId='+eventId,
+        headers: makeHeaders(token)
+    })
+    // await axios.get(registrationsUrl(token)+'?eventId='+eventId,{headers: makeHeaders(token)})
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
@@ -41,7 +46,13 @@ export const registerUserForEventId = async (token, eventId, userId, cb) => {
 }
 
 const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => {
-    await axios.post(registrationsUrl(token), createRegistration(eventId, userId, '', 0, regType), {headers: makeHeaders(token)} )
+    await axios({
+        method: 'POST',
+        url: registrationsUrl(token),
+        data: createRegistration(eventId, userId, '', 0, regType),
+        headers: makeHeaders(token)
+    })
+    // await axios.post(registrationsUrl(token), createRegistration(eventId, userId, '', 0, regType), {headers: makeHeaders(token)} )
         .then((result) => {
             // console.log("RESULT", result)
             cb(result.data);
@@ -55,7 +66,12 @@ const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => 
 
 export const unregisterFromEvent = async (token, regId, cb) => {
     console.log("unregistering", regId);
-    await axios.delete(registrationsUrl(token)+'/'+regId, {headers: makeHeaders(token)})
+    await axios({
+        method: 'DELETE',
+        url: registrationsUrl(token)+'/'+regId,
+        headers: makeHeaders(token)
+    })
+    // await axios.delete(registrationsUrl(token)+'/'+regId, {headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
             cb(result.data);
@@ -72,7 +88,13 @@ export const updateRegistration = async (token, reg, cb) => {
     updatedReg.Id = reg.regId;
     updatedReg.RegistrationDate = reg.dateRegistered;
 
-    await axios.put(registrationsUrl(token)+'/'+ reg.regId, updatedReg, {headers: makeHeaders(token)})
+    await axios({
+        method: 'PUT',
+        url: registrationsUrl(token)+'/'+ reg.regId,
+        data: updatedReg,
+        headers: makeHeaders(token)
+    })
+    // await axios.put(registrationsUrl(token)+'/'+ reg.regId, updatedReg, {headers: makeHeaders(token)})
         .then((result) => {
             // console.log("RESULT", result)
             cb(result.data);
@@ -85,7 +107,12 @@ export const updateRegistration = async (token, reg, cb) => {
 }
 
 const getRegistrationTypesForEvent = async (token, eventId, cb) => {
-    await axios.get(makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, {headers: makeHeaders(token)})
+    await axios({
+        method: 'GET',
+        url: makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId,
+        headers: makeHeaders(token)
+    })
+    // await axios.get(makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, {headers: makeHeaders(token)})
         .then( (result) => {
             // console.log("registrationTypes result", result);
             cb(result.data);
@@ -99,7 +126,13 @@ const getRegistrationTypesForEvent = async (token, eventId, cb) => {
 
 const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => {
     let regTypeUpdate = createRegistrationTypeUpdateRecord(regTypeId, eventId);
-    await axios.put(makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, {headers: makeHeaders(token)})
+    await axios({
+        method: 'PUT',
+        url: makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId,
+        data: regTypeUpdate,
+        headers: makeHeaders(token)
+    })
+    // await axios.put(makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, {headers: makeHeaders(token)})
         .then( (result) => {
             // console.log("registrationTypes result", result);
             cb(result.data);

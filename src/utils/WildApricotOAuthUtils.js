@@ -12,13 +12,21 @@ export const getAuthTokens = async (cb) => {
         obtain_refresh_token: true
     };
 
-    const postConfig = {
+    // const postConfig = {
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded',
+    //         'Authorization': basicAuthHeader},
+    // }
+
+    await axios({
+        method: 'POST',
+        url: process.env.REACT_APP_WA_OAUTH_URL,
+        data: qs.stringify(body),
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': basicAuthHeader},
-    }
-
-    await axios.post(process.env.REACT_APP_WA_OAUTH_URL, qs.stringify(body), postConfig)
+    })
+    // await axios.post(process.env.REACT_APP_WA_OAUTH_URL, qs.stringify(body), postConfig)
         .then( (result) => {
             cb(result.data);
         })
