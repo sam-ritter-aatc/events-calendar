@@ -1,5 +1,6 @@
 
 export const makeBaseUrl = (token) => {
+    // console.log("TOKEN", token)
     return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + token.Permissions[0].AccountId;
 }
 
@@ -11,6 +12,5 @@ export const makeHeaders = (token) => {
     return {
         'Content-Type': 'application/json',
         'Authorization': makeAuthHeader(token)
-        // 'Host': 'api.wildapricot.org'
-    }
+     }
 }

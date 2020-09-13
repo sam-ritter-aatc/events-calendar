@@ -15,7 +15,7 @@ export const getRegistrationsForEventId = async (token, eventId, cb) => {
             cb(result.data);
         })
         .catch((err) => {
-            cb({err});
+            cb({err });
         })
 }
 

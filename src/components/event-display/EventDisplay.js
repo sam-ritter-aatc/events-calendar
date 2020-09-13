@@ -32,7 +32,6 @@ export default class EventDisplay extends Component {
 
     calendarViewClick() {
         this.props.history.push(`/?mid=${this.state.member.id}`);
-        console.log("CAL VIEW", this.state.member);
     }
 
     toggle() {
@@ -47,7 +46,6 @@ export default class EventDisplay extends Component {
             eventInfo: this.props.location.state.eventInfo
         })
 
-        // console.log("STATE",this.state);
         // recurring event
         await this.getEvent();
         await getRegistrationsForEventId(this.state.waToken, this.state.eventInfo.event.id, (data) => {
