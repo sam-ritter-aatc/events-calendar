@@ -10,12 +10,12 @@ export const createEvent = async (token, eventObj, cb) => {
     await axios.post(eventsUrl(token), eventObj,{headers: makeHeaders(token)})
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -25,12 +25,12 @@ export const updateEvent = async (token, eventId, eventObj, cb) => {
     await axios.put(eventsUrl(token)+'/'+eventId, eventObj,{headers: makeHeaders(token)})
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -40,30 +40,30 @@ export const deleteEvent = async (token, eventId, cb) => {
     await axios.delete(eventsUrl(token)+'/'+eventId, {headers: makeHeaders(token)})
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
 
 export const getEventById = async (token, eventId, cb) => {
-    console.log("getEventById", eventId);
+    // console.log("getEventById", eventId);
     await axios({
         url: eventsUrl(token)+'/'+eventId,
         method: 'GET',
         headers: makeHeaders(token)
     })
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
              // return result.data;
         })
         .catch((err) => {
-            console.log("## Error ##", err);
+            // console.log("## Error ##", err);
             cb({});
         })
 }
@@ -79,7 +79,7 @@ export const getEvents = async (token, startDate, cb) => {
             cb(result.data.Events);
         })
         .catch((err) => {
-            console.log("Error", err);
+            // console.log("Error", err);
             cb([]);
         });
 };

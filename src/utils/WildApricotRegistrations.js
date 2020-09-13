@@ -6,16 +6,16 @@ const registrationsUrl = (token) => {
 }
 
 export const getRegistrationsForEventId = async (token, eventId, cb) => {
-    console.log("getting registrations for eventId", eventId);
+    // console.log("getting registrations for eventId", eventId);
     await axios.get(registrationsUrl(token)+'?eventId='+eventId,{headers: makeHeaders(token)})
         // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -43,12 +43,12 @@ export const registerUserForEventId = async (token, eventId, userId, cb) => {
 const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => {
     await axios.post(registrationsUrl(token), createRegistration(eventId, userId, '', 0, regType), {headers: makeHeaders(token)} )
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -57,12 +57,12 @@ export const unregisterFromEvent = async (token, regId, cb) => {
     console.log("unregistering", regId);
     await axios.delete(registrationsUrl(token)+'/'+regId, {headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -74,12 +74,12 @@ export const updateRegistration = async (token, reg, cb) => {
 
     await axios.put(registrationsUrl(token)+'/'+ reg.regId, updatedReg, {headers: makeHeaders(token)})
         .then((result) => {
-            console.log("RESULT", result)
+            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -87,12 +87,12 @@ export const updateRegistration = async (token, reg, cb) => {
 const getRegistrationTypesForEvent = async (token, eventId, cb) => {
     await axios.get(makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, {headers: makeHeaders(token)})
         .then( (result) => {
-            console.log("registrationTypes result", result);
+            // console.log("registrationTypes result", result);
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }
@@ -101,12 +101,12 @@ const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => 
     let regTypeUpdate = createRegistrationTypeUpdateRecord(regTypeId, eventId);
     await axios.put(makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, {headers: makeHeaders(token)})
         .then( (result) => {
-            console.log("registrationTypes result", result);
+            // console.log("registrationTypes result", result);
             cb(result.data);
         })
         .catch((err) => {
-            console.log("## Error ##", err);
-            console.log("error", err);
+            // console.log("## Error ##", err);
+            // console.log("error", err);
             cb({err});
         })
 }

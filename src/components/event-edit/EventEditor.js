@@ -51,8 +51,8 @@ export default class EventEditor extends Component {
     onSubmit(e) {
         e.preventDefault();
 
-        let theEvent = Object.assign({}, this.state.event);
-        console.log("SAVING EVENT", this.state, theEvent);
+        // let theEvent = Object.assign({}, this.state.event);
+        // console.log("SAVING EVENT", this.state, theEvent);
 
         updateEvent(this.state.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
 
@@ -71,13 +71,13 @@ export default class EventEditor extends Component {
 
     async componentDidMount() {
         await getAuthTokens((data) => this.setState({waToken: data}));
-        console.log("EVENT DETAILS", this.props.location.state);
+        // console.log("EVENT DETAILS", this.props.location.state);
         this.setState({
             member: this.props.location.state.member,
             eventInfo: this.props.location.state.eventInfo
         })
 
-        console.log("STATE",this.state);
+        // console.log("STATE",this.state);
         // recurring event
         if (this.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
@@ -94,7 +94,7 @@ export default class EventEditor extends Component {
         }
         this.setState({event:{...this.state.event,StartDate: new Date(this.state.event.StartDate)}});
         this.setState({event:{...this.state.event,EndDate: new Date(this.state.event.EndDate)}});
-        console.log('===>state', this.state);
+        // console.log('===>state', this.state);
         this.setState({fetch:false});
 
         if (this.props.location.state.eventInfo.date) {
@@ -106,25 +106,25 @@ export default class EventEditor extends Component {
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
-                console.log("=====ORG", data, this.state.organizer);
+                // console.log("=====ORG", data, this.state.organizer);
             });
             console.log("contact", this.state.organizer);
         }
-        console.log("state", this.state);
+        // console.log("state", this.state);
     }
 
     startDateHandler(date) {
-        console.log("CreatorState", this.state);
+        // console.log("CreatorState", this.state);
         this.setState({event: {...this.state.event, StartDate: date}});
     }
 
     endDateHandler(date) {
-        console.log("CreatorState", this.state);
+        // console.log("CreatorState", this.state);
         this.setState({event: {...this.state.event, EndDate: date}});
     }
 
     handleDelete() {
-        console.log("Deleting Event", this.state.event.Id);
+        // console.log("Deleting Event", this.state.event.Id);
 
         deleteEvent(this.state.waToken, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
 
@@ -133,7 +133,7 @@ export default class EventEditor extends Component {
 
     calendarViewClick() {
         this.props.history.push(`/?mid=${this.state.member.id}`);
-        console.log("CAL VIEW", this.state.member);
+        // console.log("CAL VIEW", this.state.member);
     }
 
     render() {

@@ -41,13 +41,13 @@ export default class EventDisplay extends Component {
 
     async componentDidMount() {
         await getAuthTokens((data) => this.setState({waToken: data}));
-        console.log("EVENT DETAILS", this.props.location.state);
+        // console.log("EVENT DETAILS", this.props.location.state);
         this.setState({
             member: this.props.location.state.member,
             eventInfo: this.props.location.state.eventInfo
         })
 
-        console.log("STATE",this.state);
+        // console.log("STATE",this.state);
         // recurring event
         await this.getEvent();
         await getRegistrationsForEventId(this.state.waToken, this.state.eventInfo.event.id, (data) => {
@@ -55,17 +55,17 @@ export default class EventDisplay extends Component {
             this.setState({registrations: regArray});
         })
         this.setState({fetch:false});
-        console.log('state', this.state);
+        // console.log('state', this.state);
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
             await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
-                console.log("=====ORG", data, this.state.organizer);
+                // console.log("=====ORG", data, this.state.organizer);
             });
-            console.log("contact", this.state.organizer);
+            // console.log("contact", this.state.organizer);
         }
-        console.log("state", this.state);
-        console.log("CAN EDIT", this.canEdit());
+        // console.log("state", this.state);
+        // console.log("CAN EDIT", this.canEdit());
     }
 
     async getEvent() {
@@ -82,7 +82,7 @@ export default class EventDisplay extends Component {
     }
 
     convertRegistrationData(reg) {
-        console.log("CONVERT REG", reg);
+        // console.log("CONVERT REG", reg);
         return {
             regId: reg.Id,
             memberId: reg.Contact.Id,
@@ -138,10 +138,10 @@ export default class EventDisplay extends Component {
         let reg = this.findRegistrationByRegId(regId);
         reg.numGuests = reg.numGuests+1;
         await updateRegistration(this.state.waToken, reg, (data) => {
-            console.log("ADDED GUEST", data);
+            // console.log("ADDED GUEST", data);
             this.updateRegistrationInState(reg, data);
         });
-        console.log("STATE", this.state);
+        // console.log("STATE", this.state);
     }
 
     async handleAddMessage() {
@@ -149,13 +149,13 @@ export default class EventDisplay extends Component {
         reg.message = this.state.rsvpMessage;
 
         await updateRegistration(this.state.waToken, reg, (data)=> {
-            console.log("DATA from add MEssage", data);
+            // console.log("DATA from add MEssage", data);
             this.updateRegistrationInState(reg, data);
         })
 
         this.setState({registration:null, rsvpMessage:''});
         this.toggle();
-        console.log("SAVED MESSAGE");
+        // console.log("SAVED MESSAGE");
     }
 
     async handleMessagingClick() {
@@ -182,11 +182,11 @@ export default class EventDisplay extends Component {
 
     updateRegistrationInState(reg, data) {
         this.setState(state => {
-            console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
+            // console.log("REGISTRATION convertedDAta", this.convertRegistrationData(data));
             const registrations = state.registrations.map((item) => {
                 return item.regId === reg.regId ? this.convertRegistrationData(data) : item;
             });
-            console.log("REGISTRATION", registrations);
+            // console.log("REGISTRATION", registrations);
 
             return {
                 registrations
@@ -213,7 +213,7 @@ export default class EventDisplay extends Component {
         }
     }
     canRegisterForEvent() {
-        console.log("CHECKING IF CAN REGISTER", this.state.event);
+        // console.log("CHECKING IF CAN REGISTER", this.state.event);
         if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.state.member.id !== 0) {
             return true;
         }

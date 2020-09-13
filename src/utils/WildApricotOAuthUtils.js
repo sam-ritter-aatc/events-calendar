@@ -2,8 +2,8 @@ const axios = require('axios');
 const qs = require('querystring');
 
 export const getAuthTokens = async (cb) => {
-    console.log("url", process.env.REACT_APP_WA_OAUTH_URL);
-    console.log("key", process.env.REACT_APP_WA_API_KEY);
+    // console.log("url", process.env.REACT_APP_WA_OAUTH_URL);
+    // console.log("key", process.env.REACT_APP_WA_API_KEY);
 
     let basicAuthHeader = 'Basic ' + new Buffer('APIKEY:' + process.env.REACT_APP_WA_API_KEY).toString('base64');
     let body = {

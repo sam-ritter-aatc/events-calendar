@@ -36,12 +36,12 @@ export default class EventCalendar extends Component {
 
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
-        console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
+        // console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
 
         await getAuthTokens((data) => this.setState({waToken: data}));
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
             await getContact(this.state.waToken, queryStringValues.mid, (contact) => {this.setState({member: contact})})
-            console.log("Retrieve Member", this.state.member);
+            // console.log("Retrieve Member", this.state.member);
             this.setState({isLoggedInUser:true})
         }
         await getEvents(this.state.waToken, firstDateEventsToRetrieve(), (data) => {
@@ -81,12 +81,12 @@ export default class EventCalendar extends Component {
     }
 
     handleEventClick = (arg) => {
-        console.log("going to event", arg);
+        // console.log("going to event", arg);
         this.setState({showEvent: true, eventInfo: arg});
     }
 
     handleDateClick = (e) => {
-        console.log("DATE CLICKED", e);
+        // console.log("DATE CLICKED", e);
         this.setState({editEvent: this.state.isLoggedInUser, eventInfo: e});
     }
 
