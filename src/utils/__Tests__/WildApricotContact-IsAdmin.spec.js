@@ -8,7 +8,7 @@ describe('checks FieldValues in contact for admin access', () => {
 
     it('should return contact as not admin', async () => {
         let data = makeData(NoAdminValue.FieldValues);
-        axios.get.mockImplementationOnce(() => Promise.resolve(data));
+        axios.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
         await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
@@ -17,7 +17,7 @@ describe('checks FieldValues in contact for admin access', () => {
 
     it('should return contact as admin', async () => {
         let data = makeData(HasAdminValue.FieldValues);
-        axios.get.mockImplementationOnce(() => Promise.resolve(data));
+        axios.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
         await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
