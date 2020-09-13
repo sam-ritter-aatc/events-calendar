@@ -6,21 +6,15 @@ const registrationsUrl = (token) => {
 }
 
 export const getRegistrationsForEventId = async (token, eventId, cb) => {
-    // console.log("getting registrations for eventId", eventId);
     await axios({
         method: 'GET',
         url: registrationsUrl(token)+'?eventId='+eventId,
         headers: makeHeaders(token)
     })
-    // await axios.get(registrationsUrl(token)+'?eventId='+eventId,{headers: makeHeaders(token)})
-        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -52,14 +46,10 @@ const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => 
         data: createRegistration(eventId, userId, '', 0, regType),
         headers: makeHeaders(token)
     })
-    // await axios.post(registrationsUrl(token), createRegistration(eventId, userId, '', 0, regType), {headers: makeHeaders(token)} )
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -71,14 +61,10 @@ export const unregisterFromEvent = async (token, regId, cb) => {
         url: registrationsUrl(token)+'/'+regId,
         headers: makeHeaders(token)
     })
-    // await axios.delete(registrationsUrl(token)+'/'+regId, {headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -94,14 +80,10 @@ export const updateRegistration = async (token, reg, cb) => {
         data: updatedReg,
         headers: makeHeaders(token)
     })
-    // await axios.put(registrationsUrl(token)+'/'+ reg.regId, updatedReg, {headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -112,14 +94,10 @@ const getRegistrationTypesForEvent = async (token, eventId, cb) => {
         url: makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId,
         headers: makeHeaders(token)
     })
-    // await axios.get(makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, {headers: makeHeaders(token)})
         .then( (result) => {
-            // console.log("registrationTypes result", result);
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -132,14 +110,10 @@ const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => 
         data: regTypeUpdate,
         headers: makeHeaders(token)
     })
-    // await axios.put(makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, {headers: makeHeaders(token)})
         .then( (result) => {
-            // console.log("registrationTypes result", result);
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }

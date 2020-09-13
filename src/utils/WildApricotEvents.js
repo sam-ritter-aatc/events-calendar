@@ -13,14 +13,10 @@ export const createEvent = async (token, eventObj, cb) => {
         data: eventObj,
         headers: makeHeaders(token)
     })
-        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -33,14 +29,10 @@ export const updateEvent = async (token, eventId, eventObj, cb) => {
         data: eventObj,
         headers: makeHeaders(token)
     })
-        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -52,14 +44,10 @@ export const deleteEvent = async (token, eventId, cb) => {
         url: eventsUrl(token)+'/'+eventId,
         headers: makeHeaders(token)
     })
-        // eventsUrl(token), qs.stringify(eventObj), { headers: makeHeaders(token)})
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 }
@@ -72,12 +60,9 @@ export const getEventById = async (token, eventId, cb) => {
         headers: makeHeaders(token)
     })
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
-             // return result.data;
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
             cb({});
         })
 }
@@ -95,7 +80,6 @@ export const getEvents = async (token, startDate, cb) => {
             cb(result.data.Events);
         })
         .catch((err) => {
-            // console.log("Error", err);
             cb([]);
         });
 };

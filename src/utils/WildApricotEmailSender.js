@@ -13,14 +13,10 @@ export const sendEmail = async (token, eventId, recipArray, subject, text, cb) =
         data: makeMessage(eventId, recipArray, subject, text),
         headers: makeHeaders(token)
     })
-    // await axios.post(makeEmailUrl(token), makeMessage(eventId, recipArray, subject, text), {headers: makeHeaders(token)} )
         .then((result) => {
-            // console.log("RESULT", result)
             cb(result.data);
         })
         .catch((err) => {
-            // console.log("## Error ##", err);
-            // console.log("error", err);
             cb({err});
         })
 
