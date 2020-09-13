@@ -35,9 +35,7 @@ export default class EventCreator extends Component {
         let theEvent = Object.assign({}, this.state.event);
         theEvent.StartDate = theEvent.StartDate.toISOString();
         theEvent.EndDate = theEvent.EndDate.toISOString();
-        console.log("SAVING EVENT", this.state, theEvent);
         createEvent(this.state.waToken, theEvent, (data) => {
-            console.log("CREATE RESULT", data);
             createInitialRegistrationForEvent(this.state.waToken, data, this.state.member.id, (data)=> {console.log("INITIAL REG", data)});
         });
 
@@ -56,7 +54,6 @@ export default class EventCreator extends Component {
 
     async componentDidMount() {
         await getAuthTokens((data) => this.setState({waToken: data}));
-        console.log("EVENT DETAILS", this.props.location.state);
         this.setState({
             member: this.props.location.state.member,
             eventInfo: this.props.location.state.eventInfo
@@ -71,23 +68,19 @@ export default class EventCreator extends Component {
             this.setState({event: {...this.state.event, EndDate: null}})
         }
         this.setState({fetch:false});
-        console.log('===>state', this.state);
 
         let details = Object.assign({}, this.state.event.Details)
          details.Organizer = {
             Id: this.state.member.id
         }
         this.setState({event: {...this.state.event, Details:details}});
-        console.log("state", this.state);
     }
 
     startDateHandler(date) {
-        console.log("CreatorState-start", this.state);
         this.setState({event: {...this.state.event, StartDate: date}});
     }
 
     endDateHandler(date) {
-        console.log("CreatorState-end", this.state);
         this.setState({event: {...this.state.event, EndDate: date}});
     }
 

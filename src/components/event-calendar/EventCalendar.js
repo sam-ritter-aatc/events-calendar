@@ -59,6 +59,7 @@ export default class EventCalendar extends Component {
                 }
             });
             this.props.onEventChange(myEvents);
+            console.log("events have been reloaded")
         });
     }
 
