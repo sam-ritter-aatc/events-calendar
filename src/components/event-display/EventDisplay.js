@@ -198,7 +198,17 @@ export default class EventDisplay extends Component {
         }
     }
     canRegisterForEvent() {
-        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.state.member.id !== 0) {
+        let fee = 0.0;
+        let guestFee = 0.0;
+
+        this.state.event.Details.RegistrationTypes.map(reg => {
+            fee += reg.BasePrice;
+            guestFee += reg.GuestPrice;
+            return null;
+        })
+
+        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.state.member.id !== 0
+            && fee === 0.0 && guestFee === 0.0) {
             return true;
         }
         return false;
