@@ -5,14 +5,14 @@ export const makeBaseUrl = (token) => {
 }
 
 export const makeAuthHeader = (token) => {
-    return token.token_type + ' ' +token.access_token;
+    return token.token_type + ' ' + token.access_token;
 }
 
 export const makeHeaders = (token) => {
     return {
         'Content-Type': 'application/json',
         'Authorization': makeAuthHeader(token)
-     }
+    }
 }
 
 export const axiosCall = async (token, method, url, body, cb) => {
@@ -23,11 +23,11 @@ export const axiosCall = async (token, method, url, body, cb) => {
         data: body,
         url: url
     })
-        .then( (result) => {
+        .then((result) => {
             cb(result.data);
         })
         .catch((err) => {
-            if(err.response) {
+            if (err.response) {
                 console.log(err.response);
             }
             cb({err});
