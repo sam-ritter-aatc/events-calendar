@@ -82,3 +82,8 @@
 #registrations tr:hover {
     background-color: #b1dfbb;
 }
+
+.userName {
+    text-align: left;
+    font-size: xx-small;
+}

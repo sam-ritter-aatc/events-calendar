@@ -1,6 +1,5 @@
 
 export const makeBaseUrl = (token) => {
-    // console.log("TOKEN", token)
     return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + token.Permissions[0].AccountId;
 }
 

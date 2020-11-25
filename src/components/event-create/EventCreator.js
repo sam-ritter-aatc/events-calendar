@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {createEvent} from "../../utils/WildApricotEvents";
 import {emptyEvent} from "../EventCommon";
@@ -19,7 +18,6 @@ export default class EventCreator extends Component {
             event: emptyEvent(),
             isEditing: true,
             eventInfo: props.location.state.eventInfo,
-            member: props.location.state.member,
             fetch: true
         }
         this.onSubmit = this.onSubmit.bind(this);
@@ -35,13 +33,13 @@ export default class EventCreator extends Component {
         let theEvent = Object.assign({}, this.state.event);
         theEvent.StartDate = theEvent.StartDate.toISOString();
         theEvent.EndDate = theEvent.EndDate.toISOString();
-        createEvent(this.state.waToken, theEvent, (data) => {
-            createInitialRegistrationForEvent(this.state.waToken, data, this.state.member.id, (data)=> {console.log("INITIAL REG", data)});
+        createEvent(this.props.location.state.token.waToken, theEvent, (data) => {
+            createInitialRegistrationForEvent(this.props.location.state.token.waToken, data, this.props.location.state.member.id, (data)=> {console.log("INITIAL REG", data)});
         });
 
         this.setState({event: emptyEvent()});
 
-        this.props.history.push(`/?mid=${this.state.member.id}`);
+        this.props.history.push(`/?mid=${this.props.location.state.member.id}`);
     }
 
     onChangeEventName(e) {
@@ -53,27 +51,29 @@ export default class EventCreator extends Component {
     }
 
     async componentDidMount() {
-        await getAuthTokens((data) => this.setState({waToken: data}));
-        this.setState({
-            member: this.props.location.state.member,
+        let startDate = null;
+        let endDate = null;
+
+        await this.setState({
             eventInfo: this.props.location.state.eventInfo
         })
 
         console.log("STATE",this.state);
         if (this.state.eventInfo.date) {  // user clicked on a date to create event.
-            this.setState({event: {...this.state.event, StartDate: new  Date(new Date(this.state.eventInfo.date).setHours(8,0,0))}})
-            this.setState({event: {...this.state.event, EndDate: new  Date(new Date(this.state.eventInfo.date).setHours(20,0,0))}})
-        } else {
-            this.setState({event: {...this.state.event, StartDate: null}})
-            this.setState({event: {...this.state.event, EndDate: null}})
+            startDate = new  Date(new Date(this.state.eventInfo.date).setHours(8,0,0));
+            endDate = new  Date(new Date(this.state.eventInfo.date).setHours(20,0,0));
         }
-        this.setState({fetch:false});
+
+        await this.setState({event: {...this.state.event, StartDate: startDate}});
+        await this.setState({event: {...this.state.event, EndDate: endDate}});
+        await this.setState({fetch:false});
 
         let details = Object.assign({}, this.state.event.Details)
          details.Organizer = {
-            Id: this.state.member.id
+            Id: this.props.location.state.member.id
         }
         this.setState({event: {...this.state.event, Details:details}});
+        console.log("STATE", this.state);
     }
 
     startDateHandler(date) {
@@ -91,8 +91,7 @@ export default class EventCreator extends Component {
     }
 
     calendarViewClick() {
-        this.props.history.push(`/?mid=${this.state.member.id}`);
-        console.log("CAL VIEW", this.state.member);
+        this.props.history.push(`/?mid=${this.props.location.state.member.id}`);
     }
 
     render() {
@@ -148,6 +147,9 @@ export default class EventCreator extends Component {
                             </div>
 
                         </form>
+                    </div>
+                    <div className="userName">
+                        {this.props.location.state.member.displayName != null ? this.props.location.state.member.displayName : 'Anonymous'}
                     </div>
                 </div>
             )

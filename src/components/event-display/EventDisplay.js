@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Button} from 'react-bootstrap-buttons';
-import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById} from "../../utils/WildApricotEvents";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 import {getContact} from "../../utils/WildApricotContacts";
@@ -17,7 +16,6 @@ export default class EventDisplay extends Component {
         this.state = {
             fetch: true,
             eventId: '',
-            waToken: {},
             url: '',
             event: null,
             organizer: null,
@@ -31,7 +29,7 @@ export default class EventDisplay extends Component {
     }
 
     calendarViewClick() {
-        this.props.history.push(`/?mid=${this.state.member.id}`);
+        this.props.history.push(`/?mid=${this.props.location.state.member.id}`);
     }
 
     toggle() {
@@ -39,35 +37,32 @@ export default class EventDisplay extends Component {
     }
 
     async componentDidMount() {
-        await getAuthTokens((data) => this.setState({waToken: data}));
-        this.setState({
-            member: this.props.location.state.member,
-            eventInfo: this.props.location.state.eventInfo
-        })
+        console.log("incoming props => ", this.props);
+        console.log("Display Event Info: ", this.props.location.state.eventInfo);
 
         // recurring event
         await this.getEvent();
-        await getRegistrationsForEventId(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-            let regArray = data.map((reg) => this.convertRegistrationData(reg))
-            this.setState({registrations: regArray});
+        await getRegistrationsForEventId(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, async (data) => {
+            let regArray = data.map((reg) => this.convertRegistrationData(reg));
+            await this.setState({registrations: regArray});
         })
         this.setState({fetch:false});
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
-            await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
+            await getContact(this.props.location.state.token.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
             });
         }
     }
 
     async getEvent() {
-        if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
-                this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id),});
+        if (this.props.location.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
+            await getEventById(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.extendedProps.parentId, async (data) => {
+                await this.setState({event: searchForSessionAndAdjustFields(data, this.props.location.state.eventInfo.event.id),});
             });
         } else {
-            await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
-                this.setState({event: data});
+            await getEventById(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, async (data) => {
+                await this.setState({event: data});
             });
         }
 
@@ -91,21 +86,21 @@ export default class EventDisplay extends Component {
     }
 
     canEdit() {
-        return  this.state.member && this.state.eventInfo.event.extendedProps.parentId === undefined && (
-            this.state.member.isAdmin || this.isUserEventOrganizer()
+        return  this.props.location.state.member && this.props.location.state.eventInfo.event.extendedProps.parentId === undefined && (
+            this.props.location.state.member.isAdmin || this.isUserEventOrganizer()
         )
     }
 
     isUserEventOrganizer() {
-        return this.state.event.Details && this.state.event.Details.Organizer && this.state.member.id === this.state.event.Details.Organizer.Id;
+        return this.state.event.Details && this.state.event.Details.Organizer && this.props.location.state.member.id === this.state.event.Details.Organizer.Id;
     }
 
     notAlreadyRegistered() {
-        return this.state.member && this.state.registrations.filter( x => this.state.member.id === x.memberId).length === 0
+        return this.props.location.state.member && this.state.registrations.filter( x => this.props.location.state.member.id === x.memberId).length === 0
     }
 
     async handleRegisterClick() {
-        await registerUserForEventId(this.state.waToken, this.state.event.Id, this.state.member.id, (data) => {
+        await registerUserForEventId(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, this.props.location.state.member.id, (data) => {
             this.setState( state => {
                 const registrations = [this.convertRegistrationData(data), ...state.registrations];
                 return {
@@ -116,7 +111,7 @@ export default class EventDisplay extends Component {
     }
 
     async handleUnRegisterClick(regId) {
-        await unregisterFromEvent(this.state.waToken, regId, (data) => {});
+        await unregisterFromEvent(this.props.location.state.token.waToken, regId, (data) => {});
         this.setState( state => {
             const registrations = state.registrations.filter(reg => reg.regId !== regId);
             return {
@@ -128,8 +123,9 @@ export default class EventDisplay extends Component {
     async handleAddGuest(regId) {
         let reg = this.findRegistrationByRegId(regId);
         reg.numGuests = reg.numGuests+1;
-        await updateRegistration(this.state.waToken, reg, (data) => {
-            this.updateRegistrationInState(reg, data);
+        console.log("Registrations ", reg);
+        await updateRegistration(this.props.location.state.token.waToken, reg, async (data) => {
+            await this.updateRegistrationInState(reg, data);
         });
     }
 
@@ -137,8 +133,8 @@ export default class EventDisplay extends Component {
         let reg = Object.assign({}, this.state.registration);
         reg.message = this.state.rsvpMessage;
 
-        await updateRegistration(this.state.waToken, reg, (data)=> {
-            this.updateRegistrationInState(reg, data);
+        await updateRegistration(this.props.location.state.token.waToken, reg, async (data)=> {
+            await this.updateRegistrationInState(reg, data);
         })
 
         this.setState({registration:null, rsvpMessage:''});
@@ -151,7 +147,7 @@ export default class EventDisplay extends Component {
     }
 
     async handleSendMessage() {
-        sendEmail(this.state.waToken, this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
+        sendEmail(this.props.location.state.token.waToken, this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
         await this.setState({
             rsvpModalTitle: '',
             rsvpMessage: '',
@@ -167,8 +163,8 @@ export default class EventDisplay extends Component {
         + "</h2><p><h3><u>Message from the event organizer</u>:</h3>"+ this.state.rsvpMessage+"</body></html>";
     }
 
-    updateRegistrationInState(reg, data) {
-        this.setState(state => {
+    async updateRegistrationInState(reg, data) {
+        await this.setState(state => {
             const registrations = state.registrations.map((item) => {
                 return item.regId === reg.regId ? this.convertRegistrationData(data) : item;
             });
@@ -192,8 +188,10 @@ export default class EventDisplay extends Component {
     findRegistrationByRegId(regId) {
         let regArray = this.state.registrations.filter(reg => reg.regId === regId);
         if (regArray.length === 1) {
+            console.log("find reg returning -> ", regArray[0]);
             return regArray[0];
         } else {
+            console.log("find reg by reg id -- returning null");
             return null;
         }
     }
@@ -207,8 +205,8 @@ export default class EventDisplay extends Component {
             return null;
         })
 
-        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.state.member.id !== 0
-            && fee === 0.0 && guestFee === 0.0) {
+        if (this.state.event.Details.TotalDue === 0 && this.state.event.Details.TotalPaid === 0 && this.props.location.state.member.id !== 0
+            && fee === 0.0 && guestFee === 0.0 && !this.state.event.Sessions) {
             return true;
         }
         return false;
@@ -216,24 +214,22 @@ export default class EventDisplay extends Component {
 
     renderRegistrationData() {
         return this.state.registrations.map( (reg, index) => {
-            const { regId, name, message, numGuests /*, dateRegistered */} = reg;
+            const { regId, name, message, numGuests } = reg;
             return <tr key={regId}>
-                {/*<td>{regId}</td>*/}
                 <td>{name}</td>
                 <td>{numGuests}</td>
-                {/*<td>{dateRegistered}</td>*/}
                 <td>{message}</td>
             </tr>
         })
     }
 
     render() {
-        let regData = this.state.registrations ? this.state.registrations.filter(reg => reg.memberId === this.state.member.id):[];
+        let regData = this.state.registrations ? this.state.registrations.filter(reg => reg.memberId === this.props.location.state.member.id):[];
 
         if (this.state.fetch) {
             return (<EventDataLoader name={this.props.location.state.name}/>);
         } else if (this.state.editEvent) {
-            return buildRedirect('editEvent', this.state.member, this.state.eventInfo);
+            return buildRedirect('editEvent', this.props.location.state.member, this.props.location.state.token, this.props.location.state.eventInfo);
         } else {
             return (
                 <div>
@@ -332,6 +328,9 @@ export default class EventDisplay extends Component {
                             }
                         </Modal.Footer>
                     </Modal>
+                    <div className="userName">
+                        {this.props.location.state.member.displayName != null ? this.props.location.state.member.displayName : 'Anonymous'}
+                    </div>
                 </div>
             );
         }

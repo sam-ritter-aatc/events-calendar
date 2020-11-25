@@ -23,9 +23,7 @@ export default class EventCalendar extends Component {
         this.calendarComponentRef = React.createRef()
 
         this.state = {
-            member: {id: 0, isAdmin: false},
             calendarWeekends: true,
-            waToken: {},
             showEvent: false,
             editEvent: false,
             xid: props.match.params.xid,
@@ -38,13 +36,14 @@ export default class EventCalendar extends Component {
         const queryStringValues = queryString.parse(this.props.location.search);
         // console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
 
-        await getAuthTokens((data) => this.setState({waToken: data}));
+        console.log("GETTING TOKENS")
+        await getAuthTokens((data) => this.props.onTokenChange(data));
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
-            await getContact(this.state.waToken, queryStringValues.mid, (contact) => {this.setState({member: contact})})
-            // console.log("Retrieve Member", this.state.member);
+            await getContact(this.props.token.waToken, queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
             this.setState({isLoggedInUser:true})
         }
-        await getEvents(this.state.waToken, firstDateEventsToRetrieve(), (data) => {
+        console.log("===> getting events.")
+        await getEvents(this.props.token.waToken, firstDateEventsToRetrieve(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
                     id: event.Id,
@@ -82,7 +81,7 @@ export default class EventCalendar extends Component {
     }
 
     handleEventClick = (arg) => {
-        // console.log("going to event", arg);
+        console.log("going to event", arg);
         this.setState({showEvent: true, eventInfo: arg});
     }
 
@@ -93,10 +92,10 @@ export default class EventCalendar extends Component {
 
     render() {
         if (this.state.showEvent) {
-            return buildRedirect('showEvent', this.state.member, this.state.eventInfo);
+            return buildRedirect('showEvent', this.props.member, this.props.token, this.state.eventInfo);
         }
         if (this.state.editEvent) {
-            return buildRedirect('createEvent', this.state.member, this.state.eventInfo);
+            return buildRedirect('createEvent', this.props.member, this.props.token, this.state.eventInfo);
         }
         return (
             <div className='EventCalendar'>
@@ -125,6 +124,9 @@ export default class EventCalendar extends Component {
                     windowResize={this.handleWindowResize}
                 />
                 {this.state.isLoggedInUser ? <Button xs onClick={this.createEvent}>Create Event</Button> : <div> </div> }
+                <div className="userName">
+                    {this.props.member.displayName != null ? this.props.member.displayName : 'Anonymous'}
+                </div>
             </div>
         )
     }

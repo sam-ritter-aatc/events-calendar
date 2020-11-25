@@ -6,20 +6,11 @@ const registrationsUrl = (token) => {
 }
 
 export const getRegistrationsForEventId = async (token, eventId, cb) => {
-    await axios({
-        method: 'GET',
-        url: registrationsUrl(token)+'?eventId='+eventId,
-        headers: makeHeaders(token)
-    })
-        .then((result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            cb({err });
-        })
+    await axiosCall(token, 'GET',registrationsUrl(token)+'?eventId='+eventId, null, cb );
 }
 
 export const createInitialRegistrationForEvent = async (token, eventId, userId, cb) => {
+    console.log("Token ",token);
     let regTypeId = null;
     await getRegistrationTypesForEvent(token, eventId, (data) => {
         regTypeId = data[0].Id;
@@ -31,89 +22,58 @@ export const createInitialRegistrationForEvent = async (token, eventId, userId, 
 }
 
 export const registerUserForEventId = async (token, eventId, userId, cb) => {
-    console.log("registering user for event", eventId, userId);
+    console.log("registering user for event", eventId, userId, token);
     let regType = null;
     await getRegistrationTypesForEvent(token, eventId,(data) => {
+        console.log("Registration Data -> ", data);
         regType = data[0].Id;
     })
     await sendRegistrationForEvent(token, eventId, userId, regType, cb)
 }
 
 const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => {
-    await axios({
-        method: 'POST',
-        url: registrationsUrl(token),
-        data: createRegistration(eventId, userId, '', 0, regType),
-        headers: makeHeaders(token)
-    })
-        .then((result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            cb({err});
-        })
+    await axiosCall(token, 'POST', registrationsUrl(token),createRegistration(eventId, userId, '', 0, regType), cb);
 }
 
 export const unregisterFromEvent = async (token, regId, cb) => {
     console.log("unregistering", regId);
-    await axios({
-        method: 'DELETE',
-        url: registrationsUrl(token)+'/'+regId,
-        headers: makeHeaders(token)
-    })
-        .then((result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            cb({err});
-        })
+    await axiosCall(token, 'DELETE', registrationsUrl(token)+'/'+regId, null, cb);
 }
 
 export const updateRegistration = async (token, reg, cb) => {
+    console.log("UpdateReg - ", token, reg)
     let updatedReg = createRegistration(reg.eventId, reg.memberId, reg.message, reg.numGuests);
     updatedReg.Id = reg.regId;
     updatedReg.RegistrationDate = reg.dateRegistered;
 
-    await axios({
-        method: 'PUT',
-        url: registrationsUrl(token)+'/'+ reg.regId,
-        data: updatedReg,
-        headers: makeHeaders(token)
-    })
-        .then((result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            cb({err});
-        })
+    await axiosCall(token, 'PUT', registrationsUrl(token)+'/'+ reg.regId, updatedReg, cb)
 }
 
 const getRegistrationTypesForEvent = async (token, eventId, cb) => {
-    await axios({
-        method: 'GET',
-        url: makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId,
-        headers: makeHeaders(token)
-    })
-        .then( (result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            cb({err});
-        })
+    await axiosCall(token, 'GET', makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, null, cb);
 }
 
 const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => {
+    console.log("Token ",token);
     let regTypeUpdate = createRegistrationTypeUpdateRecord(regTypeId, eventId);
+    await axiosCall(token, 'PUT', makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, cb);
+}
+
+const axiosCall = async (token, method, url, body, cb) => {
+    console.log("Calling - ", url, body);
     await axios({
-        method: 'PUT',
-        url: makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId,
-        data: regTypeUpdate,
-        headers: makeHeaders(token)
+        method: method,
+        headers: makeHeaders(token),
+        data: body,
+        url: url
     })
         .then( (result) => {
             cb(result.data);
         })
         .catch((err) => {
+            if(err.response) {
+                console.log(err.response);
+            }
             cb({err});
         })
 }

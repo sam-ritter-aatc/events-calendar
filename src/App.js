@@ -10,6 +10,8 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            member: {id: 0, isAdmin: false},
+            token: { timestamp: Date.now(), waToken: {}},
             events: []
         }
     }
@@ -18,13 +20,32 @@ export default class App extends Component {
         this.setState({events: events})
     }
 
-    render() {
+    updateMember = (member) => {
+        console.log("Setting member data -> ", member)
+        if (member != null) {
+            this.setState({member: member});
+        }
+    }
 
+    updateToken = (token) => {
+        console.log("Updating Token -> ", token)
+        this.setState( {token: {timestamp: Date.now(), waToken: token}})
+    }
+
+
+    render() {
         return (
             <Router basename="/">
                 <div className="App container-fluid">
                     <Switch>
-                        <Route exact path="/" render={props => <EventCalendar  {...props} onEventChange={this.handleEventsChange} events={this.state.events}/>}/>
+                        <Route exact path="/" render={props => <EventCalendar  {...props}
+                                                                               onEventChange={this.handleEventsChange}
+                                                                               events={this.state.events}
+                                                                               onTokenChange={this.updateToken}
+                                                                               token={this.state.token}
+                                                                               onMemberChange={this.updateMember}
+                                                                               member={this.state.member}
+                        />}/>
                         <Route exact path="/showEvent" component={EventDisplay}/>
                         <Route exact path="/editEvent" component={EventEditor}/>
                         <Route exact path="/createEvent" component={EventCreator}/>

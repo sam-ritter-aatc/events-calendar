@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
+// import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById, updateEvent, deleteEvent} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
@@ -52,7 +52,7 @@ export default class EventEditor extends Component {
         e.preventDefault();
 
         // let theEvent = Object.assign({}, this.state.event);
-        updateEvent(this.state.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
+        updateEvent(this.props.location.state.token.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
 
         this.setState({event: emptyEvent()});
 
@@ -68,20 +68,20 @@ export default class EventEditor extends Component {
     }
 
     async componentDidMount() {
-        await getAuthTokens((data) => this.setState({waToken: data}));
+        // await getAuthTokens((data) => this.setState({waToken: data}));
         this.setState({
             member: this.props.location.state.member,
             eventInfo: this.props.location.state.eventInfo
         })
 
         // recurring event
-        if (this.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
+        if (this.props.location.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-                await getEventById(this.state.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
+                await getEventById(this.props.location.state.token.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
                     this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id)});
                 });
             } else {
-                await getEventById(this.state.waToken, this.state.eventInfo.event.id, (data) => {
+                await getEventById(this.props.location.state.token.waToken, this.state.eventInfo.event.id, (data) => {
                     this.setState({event: data});
                 });
             }
@@ -99,7 +99,7 @@ export default class EventEditor extends Component {
         }
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
-            await getContact(this.state.waToken, this.state.event.Details.Organizer.Id, (data) => {
+            await getContact(this.props.location.state.token.waToken, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
             });
             console.log("contact", this.state.organizer);
@@ -115,13 +115,13 @@ export default class EventEditor extends Component {
     }
 
     handleDelete() {
-        deleteEvent(this.state.waToken, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
+        deleteEvent(this.props.location.state.token.waToken, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
 
         this.props.history.push(`/?mid=${this.state.member.id}`);
     }
 
     calendarViewClick() {
-        this.props.history.push(`/?mid=${this.state.member.id}`);
+        this.props.history.push(`/?mid=${this.props.location.state.member.id}`);
     }
 
     handleStartChange = async (dt) => {
@@ -188,6 +188,9 @@ export default class EventEditor extends Component {
                             </div>
 
                         </form>
+                    </div>
+                    <div className="userName">
+                        {this.props.location.state.member.displayName != null ? this.props.location.state.member.displayName : 'Anonymous'}
                     </div>
                 </div>
             )

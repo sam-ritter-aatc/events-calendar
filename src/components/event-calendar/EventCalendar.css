@@ -11,3 +11,8 @@
 .fc-toolbar.fc-header-toolbar {
     margin-bottom: 0.5em;
 }
+
+.userName {
+    text-align: left;
+    font-size: xx-small;
+}
