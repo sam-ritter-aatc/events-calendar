@@ -1,5 +1,4 @@
-import {makeBaseUrl, makeHeaders, axiosCall} from "./WildApricotUtils";
-const axios = require('axios');
+import {makeBaseUrl, axiosCall, axiosGetCallWithParams} from "./WildApricotUtils";
 
 const eventsUrl = (token) => {
     return makeBaseUrl(token)+'/events';
@@ -26,18 +25,5 @@ export const getEventById = async (token, eventId, cb) => {
 }
 
 export const getEvents = async (token, startDate, cb) => {
-    await axios({
-        method: 'GET',
-        url: eventsUrl(token),
-        headers: makeHeaders(token),
-        params: {
-            $filter: "StartDate ge "+startDate
-        }
-    })
-        .then((result) => {
-            cb(result.data.Events);
-        })
-        .catch((err) => {
-            cb([]);
-        });
+    await axiosGetCallWithParams(token, eventsUrl(token), {$filter: "StartDate ge "+startDate}, (result) => cb(result.Events) )
 };

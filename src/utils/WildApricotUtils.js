@@ -33,3 +33,19 @@ export const axiosCall = async (token, method, url, body, cb) => {
             cb({err});
         })
 }
+
+export const axiosGetCallWithParams = async (token, url, params, cb) => {
+    await axios({
+        method: 'GET',
+        url: url,
+        headers: makeHeaders(token),
+        params: params
+    })
+        .then((result) => {
+            cb(result.data);
+        })
+        .catch((err) => {
+            cb([]);
+        });
+
+}
