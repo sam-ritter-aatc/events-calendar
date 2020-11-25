@@ -1,29 +1,22 @@
-import {makeBaseUrl, makeHeaders} from "./WildApricotUtils";
-
-const axios = require('axios');
+import {makeBaseUrl, axiosCall} from "./WildApricotUtils";
 
 export const getContact = async (token, contactId, cb) => {
-    await axios({
-        method: 'GET',
-        url: makeBaseUrl(token) + '/contacts/' + contactId,
-        headers: makeHeaders(token)
-    })
-        .then((result) => {
-            let e = {};
-
-            e.id = result.data.Id;
-            e.firstName = result.data.FirstName;
-            e.lastName = result.data.LastName;
-            e.email = result.data.Email;
-            e.displayName = result.data.DisplayName;
-            e.isAdmin = isAdmin(result.data.FieldValues);
-            e.url = result.data.Url;
-
-            cb(e);
-        })
-        .catch((err) => {cb(null);})
+    await axiosCall(token, 'GET', makeBaseUrl(token) + '/contacts/' + contactId, null, (result => convertContactData(result, cb)));
 }
 
+const convertContactData = async (data, cb) => {
+    let e = {};
+
+    e.id = data.Id;
+    e.firstName = data.FirstName;
+    e.lastName = data.LastName;
+    e.email = data.Email;
+    e.displayName = data.DisplayName;
+    e.isAdmin = isAdmin(data.FieldValues);
+    e.url = data.Url;
+
+    cb(e);
+}
 const isAdmin = (fields) => {
     let adminField = fields.filter(x => x.SystemCode === 'AdminRole');
     return adminField.length>0 && adminField[0].Value.length > 0;

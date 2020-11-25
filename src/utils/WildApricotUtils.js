@@ -1,3 +1,4 @@
+const axios = require('axios');
 
 export const makeBaseUrl = (token) => {
     return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + token.Permissions[0].AccountId;
@@ -12,4 +13,23 @@ export const makeHeaders = (token) => {
         'Content-Type': 'application/json',
         'Authorization': makeAuthHeader(token)
      }
+}
+
+export const axiosCall = async (token, method, url, body, cb) => {
+    console.log("Calling - ", url, body);
+    await axios({
+        method: method,
+        headers: makeHeaders(token),
+        data: body,
+        url: url
+    })
+        .then( (result) => {
+            cb(result.data);
+        })
+        .catch((err) => {
+            if(err.response) {
+                console.log(err.response);
+            }
+            cb({err});
+        })
 }

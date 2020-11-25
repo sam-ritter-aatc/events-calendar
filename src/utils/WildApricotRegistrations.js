@@ -1,5 +1,4 @@
-import {makeBaseUrl, makeHeaders} from "./WildApricotUtils";
-const axios = require('axios');
+import {makeBaseUrl, axiosCall} from "./WildApricotUtils";
 
 const registrationsUrl = (token) => {
     return makeBaseUrl(token)+'/eventregistrations';
@@ -59,24 +58,6 @@ const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => 
     await axiosCall(token, 'PUT', makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, cb);
 }
 
-const axiosCall = async (token, method, url, body, cb) => {
-    console.log("Calling - ", url, body);
-    await axios({
-        method: method,
-        headers: makeHeaders(token),
-        data: body,
-        url: url
-    })
-        .then( (result) => {
-            cb(result.data);
-        })
-        .catch((err) => {
-            if(err.response) {
-                console.log(err.response);
-            }
-            cb({err});
-        })
-}
 
 const createRegistration = (eventId, userId, msg, numGuests, regType) => {
     return {
