@@ -28,12 +28,11 @@ export const redirect = (path) => {
     return <Redirect to={{pathname: path}} push />
 }
 
-export const buildRedirect = (path, member, token, eventInfo) => {
+export const buildRedirect = (path, member, eventInfo) => {
     return <Redirect to={{
         pathname: path,
         state: {
             member: member,
-            token: token,
             eventInfo: eventInfo
         }
     }} push/>

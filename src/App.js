@@ -11,7 +11,6 @@ export default class App extends Component {
         super(props);
         this.state = {
             member: {id: 0, isAdmin: false},
-            token: { timestamp: Date.now(), waToken: {}},
             events: []
         }
     }

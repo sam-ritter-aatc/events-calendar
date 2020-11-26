@@ -33,8 +33,8 @@ export default class EventCreator extends Component {
         let theEvent = Object.assign({}, this.state.event);
         theEvent.StartDate = theEvent.StartDate.toISOString();
         theEvent.EndDate = theEvent.EndDate.toISOString();
-        createEvent(this.props.location.state.token, theEvent, (data) => {
-            createInitialRegistrationForEvent(this.props.location.state.token, data, this.props.location.state.member.id, (data)=> {console.log("INITIAL REG", data)});
+        createEvent(theEvent, (data) => {
+            createInitialRegistrationForEvent(data, this.props.location.state.member.id, (data)=> {console.log("INITIAL REG", data)});
         });
 
         this.setState({event: emptyEvent()});

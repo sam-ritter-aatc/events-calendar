@@ -1,18 +1,19 @@
 const axios = require('axios');
 const qs = require('querystring');
 
-export const makeBaseUrl = (token) => {
-    return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + token.waToken.Permissions[0].AccountId;
+
+export const makeBaseUrl = () => {
+    return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + localStorage.getItem('AccountId');
 }
 
-export const makeAuthHeader = (token) => {
-    return token.waToken.token_type + ' ' + token.waToken.access_token;
+export const makeAuthHeader = () => {
+    return localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token');
 }
 
-export const makeHeaders = (token) => {
+export const makeHeaders = () => {
     return {
         'Content-Type': 'application/json',
-        'Authorization': makeAuthHeader(token)
+        'Authorization': makeAuthHeader()
     }
 }
 
@@ -48,7 +49,11 @@ const axiosAuthRequest = async (body, cb) => {
             'Authorization': makeBasicAuthHeader()},
     })
         .then( (result) => {
-            cb(result.data);
+            let token = result.data;
+            localStorage.setItem('AccountId',token.Permissions[0].AccountId);
+            localStorage.setItem('access_token', token.access_token);
+            localStorage.setItem('refresh_token', token.refresh_token);
+            localStorage.setItem('token_type', token.token_type);
         })
         .catch( (err) => {
             console.log('error', err);
@@ -56,11 +61,11 @@ const axiosAuthRequest = async (body, cb) => {
 
 }
 
-export const axiosCall = async (token, method, url, body, cb) => {
+export const axiosCall = async (method, url, body, cb) => {
     console.log("Calling - ", url, body);
     await axios({
         method: method,
-        headers: makeHeaders(token),
+        headers: makeHeaders(),
         data: body,
         url: url
     })
@@ -75,11 +80,11 @@ export const axiosCall = async (token, method, url, body, cb) => {
         })
 }
 
-export const axiosGetCallWithParams = async (token, url, params, cb) => {
+export const axiosGetCallWithParams = async (url, params, cb) => {
     await axios({
         method: 'GET',
         url: url,
-        headers: makeHeaders(token),
+        headers: makeHeaders(),
         params: params
     })
         .then((result) => {

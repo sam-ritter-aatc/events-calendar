@@ -1,12 +1,12 @@
 import {axiosCall} from "./WildApricotUtils";
 
-const makeEmailUrl = (token) => {
-    return 'https://cors-anywhere.herokuapp.com/https://api.wildapricot.org/v2.2/rpc/' + token.Permissions[0].AccountId + '/email/SendEmail';
+const makeEmailUrl = () => {
+    return 'https://cors-anywhere.herokuapp.com/https://api.wildapricot.org/v2.2/rpc/' + localStorage.getItem('AccountId') + '/email/SendEmail';
 }
 
-export const sendEmail = async (token, eventId, recipArray, subject, text, cb) => {
+export const sendEmail = async (eventId, recipArray, subject, text, cb) => {
     // let msg = makeMessage(eventId,recipArray,subject, text);
-    axiosCall(token, 'POST', makeEmailUrl(token), makeMessage(eventId, recipArray, subject, text), cb);
+    axiosCall('POST', makeEmailUrl(), makeMessage(eventId, recipArray, subject, text), cb);
 }
 
 const makeMessage = (eventId, recipArray, subject, text) => {

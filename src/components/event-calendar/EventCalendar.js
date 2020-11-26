@@ -38,11 +38,11 @@ export default class EventCalendar extends Component {
         console.log("GETTING TOKENS")
         await getAuthTokens((data) => this.props.onTokenChange(data));
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
-            await getContact(this.props.token, queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
+            await getContact(queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
             this.setState({isLoggedInUser:true})
         }
         console.log("===> getting events.")
-        await getEvents(this.props.token, firstDateEventsToRetrieve(), (data) => {
+        await getEvents(firstDateEventsToRetrieve(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
                     id: event.Id,
@@ -91,10 +91,10 @@ export default class EventCalendar extends Component {
 
     render() {
         if (this.state.showEvent) {
-            return buildRedirect('showEvent', this.props.member, this.props.token, this.state.eventInfo);
+            return buildRedirect('showEvent', this.props.member, this.state.eventInfo);
         }
         if (this.state.editEvent) {
-            return buildRedirect('createEvent', this.props.member, this.props.token, this.state.eventInfo);
+            return buildRedirect('createEvent', this.props.member, this.state.eventInfo);
         }
         return (
             <div className='EventCalendar'>

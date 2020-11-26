@@ -1,61 +1,58 @@
 import {makeBaseUrl, axiosCall} from "./WildApricotUtils";
 
-const registrationsUrl = (token) => {
-    return makeBaseUrl(token)+'/eventregistrations';
+const registrationsUrl = () => {
+    return makeBaseUrl()+'/eventregistrations';
 }
 
-export const getRegistrationsForEventId = async (token, eventId, cb) => {
-    await axiosCall(token, 'GET',registrationsUrl(token)+'?eventId='+eventId, null, cb );
+export const getRegistrationsForEventId = async ( eventId, cb) => {
+    await axiosCall( 'GET',registrationsUrl()+'?eventId='+eventId, null, cb );
 }
 
-export const createInitialRegistrationForEvent = async (token, eventId, userId, cb) => {
-    console.log("Token ",token);
+export const createInitialRegistrationForEvent = async (eventId, userId, cb) => {
     let regTypeId = null;
-    await getRegistrationTypesForEvent(token, eventId, (data) => {
+    await getRegistrationTypesForEvent(eventId, (data) => {
         regTypeId = data[0].Id;
     });
-    await updateRegistrationTypeForEvent(token, regTypeId, eventId, (data) => {
+    await updateRegistrationTypeForEvent(regTypeId, eventId, (data) => {
         console.log("updated registration type", data);
     });
-    await sendRegistrationForEvent(token, eventId, userId, regTypeId, cb);
+    await sendRegistrationForEvent(eventId, userId, regTypeId, cb);
 }
 
-export const registerUserForEventId = async (token, eventId, userId, cb) => {
-    console.log("registering user for event", eventId, userId, token);
+export const registerUserForEventId = async (eventId, userId, cb) => {
+    console.log("registering user for event", eventId, userId);
     let regType = null;
-    await getRegistrationTypesForEvent(token, eventId,(data) => {
+    await getRegistrationTypesForEvent(eventId,(data) => {
         console.log("Registration Data -> ", data);
         regType = data[0].Id;
     })
-    await sendRegistrationForEvent(token, eventId, userId, regType, cb)
+    await sendRegistrationForEvent(eventId, userId, regType, cb)
 }
 
-const sendRegistrationForEvent = async (token, eventId, userId, regType, cb) => {
-    await axiosCall(token, 'POST', registrationsUrl(token),createRegistration(eventId, userId, '', 0, regType), cb);
+const sendRegistrationForEvent = async (eventId, userId, regType, cb) => {
+    await axiosCall('POST', registrationsUrl(),createRegistration(eventId, userId, '', 0, regType), cb);
 }
 
-export const unregisterFromEvent = async (token, regId, cb) => {
+export const unregisterFromEvent = async (regId, cb) => {
     console.log("unregistering", regId);
-    await axiosCall(token, 'DELETE', registrationsUrl(token)+'/'+regId, null, cb);
+    await axiosCall('DELETE', registrationsUrl()+'/'+regId, null, cb);
 }
 
-export const updateRegistration = async (token, reg, cb) => {
-    console.log("UpdateReg - ", token, reg)
+export const updateRegistration = async (reg, cb) => {
     let updatedReg = createRegistration(reg.eventId, reg.memberId, reg.message, reg.numGuests);
     updatedReg.Id = reg.regId;
     updatedReg.RegistrationDate = reg.dateRegistered;
 
-    await axiosCall(token, 'PUT', registrationsUrl(token)+'/'+ reg.regId, updatedReg, cb)
+    await axiosCall('PUT', registrationsUrl()+'/'+ reg.regId, updatedReg, cb)
 }
 
-const getRegistrationTypesForEvent = async (token, eventId, cb) => {
-    await axiosCall(token, 'GET', makeBaseUrl(token)+'/EventRegistrationTypes?eventId='+eventId, null, cb);
+const getRegistrationTypesForEvent = async (eventId, cb) => {
+    await axiosCall('GET', makeBaseUrl()+'/EventRegistrationTypes?eventId='+eventId, null, cb);
 }
 
-const updateRegistrationTypeForEvent = async (token, regTypeId, eventId, cb) => {
-    console.log("Token ",token);
+const updateRegistrationTypeForEvent = async (regTypeId, eventId, cb) => {
     let regTypeUpdate = createRegistrationTypeUpdateRecord(regTypeId, eventId);
-    await axiosCall(token, 'PUT', makeBaseUrl(token)+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, cb);
+    await axiosCall('PUT', makeBaseUrl()+'/EventRegistrationTypes/'+regTypeId, regTypeUpdate, cb);
 }
 
 
