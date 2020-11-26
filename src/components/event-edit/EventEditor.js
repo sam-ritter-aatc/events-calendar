@@ -51,7 +51,7 @@ export default class EventEditor extends Component {
         e.preventDefault();
 
         // let theEvent = Object.assign({}, this.state.event);
-        updateEvent(this.props.location.state.token.waToken, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
+        updateEvent(this.props.location.state.token, this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
 
         this.setState({event: emptyEvent()});
 
@@ -76,11 +76,11 @@ export default class EventEditor extends Component {
         // recurring event
         if (this.props.location.state.eventInfo.event && this.state.fetch) {   // user clicked on an event
             if (this.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-                await getEventById(this.props.location.state.token.waToken, this.state.eventInfo.event.extendedProps.parentId, (data) => {
+                await getEventById(this.props.location.state.token, this.state.eventInfo.event.extendedProps.parentId, (data) => {
                     this.setState({event: searchForSessionAndAdjustFields(data, this.state.eventInfo.event.id)});
                 });
             } else {
-                await getEventById(this.props.location.state.token.waToken, this.state.eventInfo.event.id, (data) => {
+                await getEventById(this.props.location.state.token, this.state.eventInfo.event.id, (data) => {
                     this.setState({event: data});
                 });
             }
@@ -98,7 +98,7 @@ export default class EventEditor extends Component {
         }
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
-            await getContact(this.props.location.state.token.waToken, this.state.event.Details.Organizer.Id, (data) => {
+            await getContact(this.props.location.state.token, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
             });
             console.log("contact", this.state.organizer);
@@ -114,7 +114,7 @@ export default class EventEditor extends Component {
     }
 
     handleDelete() {
-        deleteEvent(this.props.location.state.token.waToken, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
+        deleteEvent(this.props.location.state.token, this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
 
         this.props.history.push(`/?mid=${this.state.member.id}`);
     }

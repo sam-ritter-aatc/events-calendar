@@ -42,14 +42,14 @@ export default class EventDisplay extends Component {
 
         // recurring event
         await this.getEvent();
-        await getRegistrationsForEventId(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, async (data) => {
+        await getRegistrationsForEventId(this.props.location.state.token, this.props.location.state.eventInfo.event.id, async (data) => {
             let regArray = data.map((reg) => this.convertRegistrationData(reg));
             await this.setState({registrations: regArray});
         })
         this.setState({fetch:false});
 
         if (this.state.event && this.state.event.Details && this.state.event.Details.Organizer) {
-            await getContact(this.props.location.state.token.waToken, this.state.event.Details.Organizer.Id, (data) => {
+            await getContact(this.props.location.state.token, this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
             });
         }
@@ -57,11 +57,11 @@ export default class EventDisplay extends Component {
 
     async getEvent() {
         if (this.props.location.state.eventInfo.event.extendedProps.parentId && this.state.fetch) {
-            await getEventById(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.extendedProps.parentId, async (data) => {
+            await getEventById(this.props.location.state.token, this.props.location.state.eventInfo.event.extendedProps.parentId, async (data) => {
                 await this.setState({event: searchForSessionAndAdjustFields(data, this.props.location.state.eventInfo.event.id),});
             });
         } else {
-            await getEventById(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, async (data) => {
+            await getEventById(this.props.location.state.token, this.props.location.state.eventInfo.event.id, async (data) => {
                 await this.setState({event: data});
             });
         }
@@ -100,7 +100,7 @@ export default class EventDisplay extends Component {
     }
 
     async handleRegisterClick() {
-        await registerUserForEventId(this.props.location.state.token.waToken, this.props.location.state.eventInfo.event.id, this.props.location.state.member.id, (data) => {
+        await registerUserForEventId(this.props.location.state.token, this.props.location.state.eventInfo.event.id, this.props.location.state.member.id, (data) => {
             this.setState( state => {
                 const registrations = [this.convertRegistrationData(data), ...state.registrations];
                 return {
@@ -111,7 +111,7 @@ export default class EventDisplay extends Component {
     }
 
     async handleUnRegisterClick(regId) {
-        await unregisterFromEvent(this.props.location.state.token.waToken, regId, (data) => {});
+        await unregisterFromEvent(this.props.location.state.token, regId, (data) => {});
         this.setState( state => {
             const registrations = state.registrations.filter(reg => reg.regId !== regId);
             return {
@@ -124,7 +124,7 @@ export default class EventDisplay extends Component {
         let reg = this.findRegistrationByRegId(regId);
         reg.numGuests = reg.numGuests+1;
         console.log("Registrations ", reg);
-        await updateRegistration(this.props.location.state.token.waToken, reg, async (data) => {
+        await updateRegistration(this.props.location.state.token, reg, async (data) => {
             await this.updateRegistrationInState(reg, data);
         });
     }
@@ -133,7 +133,7 @@ export default class EventDisplay extends Component {
         let reg = Object.assign({}, this.state.registration);
         reg.message = this.state.rsvpMessage;
 
-        await updateRegistration(this.props.location.state.token.waToken, reg, async (data)=> {
+        await updateRegistration(this.props.location.state.token, reg, async (data)=> {
             await this.updateRegistrationInState(reg, data);
         })
 
@@ -147,7 +147,7 @@ export default class EventDisplay extends Component {
     }
 
     async handleSendMessage() {
-        sendEmail(this.props.location.state.token.waToken, this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
+        sendEmail(this.props.location.state.token, this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
         await this.setState({
             rsvpModalTitle: '',
             rsvpMessage: '',

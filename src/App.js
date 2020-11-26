@@ -32,7 +32,6 @@ export default class App extends Component {
         this.setState( {token: {timestamp: Date.now(), waToken: token}})
     }
 
-
     render() {
         return (
             <Router basename="/">
