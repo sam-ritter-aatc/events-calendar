@@ -22,7 +22,6 @@ const makeBasicAuthHeader = () => {
 
 
 export const getAuthTokens = async (cb) => {
-    // let basicAuthHeader = makeBasicAuthHeader();
     let body = {
         grant_type: 'client_credentials',
         scope: 'auto',
@@ -32,7 +31,6 @@ export const getAuthTokens = async (cb) => {
 }
 
 export const refreshAuthTokens = async (refreshToken, cb) => {
-    // let basicAuthHeader = makeBasicAuthHeader();
     let body = {
         grant_type: 'refresh_token',
         refresh_token: refreshToken

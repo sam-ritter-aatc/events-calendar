@@ -34,7 +34,6 @@ export default class EventCalendar extends Component {
 
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
-        // console.log("QUERY_PARAMS", this.props.location.search,queryStringValues);
 
         console.log("GETTING TOKENS")
         await getAuthTokens((data) => this.props.onTokenChange(data));
