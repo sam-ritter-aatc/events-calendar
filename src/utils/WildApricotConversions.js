@@ -1,5 +1,5 @@
 
-const eventConvert = (waEvent) => {
+export const eventConvert = (waEvent) => {
     let eList = [];
     if( Array.isArray(waEvent)) {
         waEvent.forEach((item) => {
@@ -20,7 +20,6 @@ const eventConvert = (waEvent) => {
 
 const convertSingleEvent = (waEvent) => {
     let event = Object.assign({}, waEvent) ;
-
     if ( waEvent.Sessions ) {
         let eList = [];
         waEvent.Sessions.forEach((item) => {
@@ -42,4 +41,3 @@ const convertSingleEvent = (waEvent) => {
         return event;
     }
 }
-module.exports = eventConvert;

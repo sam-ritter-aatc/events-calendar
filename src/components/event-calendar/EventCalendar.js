@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {getAuthTokens} from "../../utils/WildApricotUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
-import eventConvert from '../../utils/WildApricotConversions';
+import {eventConvert} from '../../utils/WildApricotConversions';
 import {buildRedirect,memberEventTag,firstDateEventsToRetrieve} from "../EventCommon";
 
 import FullCalendar from '@fullcalendar/react'
@@ -35,8 +34,6 @@ export default class EventCalendar extends Component {
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
 
-        console.log("GETTING TOKENS")
-        await getAuthTokens((data) => this.props.onTokenChange(data));
         if ( queryStringValues.mid && queryStringValues.mid !== "0") {
             await getContact(queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
             this.setState({isLoggedInUser:true})

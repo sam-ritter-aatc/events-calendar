@@ -1,7 +1,7 @@
 import {makeBaseUrl, axiosCall} from "./WildApricotUtils";
 
 export const getContact = async (contactId, cb) => {
-    await axiosCall('GET', makeBaseUrl() + '/contacts/' + contactId, null, (result => convertContactData(result, cb)));
+    await axiosCall('GET', await makeBaseUrl() + '/contacts/' + contactId, null, result => convertContactData(result, cb));
 }
 
 const convertContactData = async (data, cb) => {
@@ -17,6 +17,7 @@ const convertContactData = async (data, cb) => {
 
     cb(e);
 }
+
 const isAdmin = (fields) => {
     let adminField = fields.filter(x => x.SystemCode === 'AdminRole');
     return adminField.length>0 && adminField[0].Value.length > 0;

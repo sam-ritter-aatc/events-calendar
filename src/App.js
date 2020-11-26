@@ -9,6 +9,7 @@ import EventCreator from "./components/event-create/EventCreator";
 export default class App extends Component {
     constructor(props) {
         super(props);
+        localStorage.clear();
         this.state = {
             member: {id: 0, isAdmin: false},
             events: []

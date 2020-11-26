@@ -1,29 +1,30 @@
 import {makeBaseUrl, axiosCall, axiosGetCallWithParams} from "./WildApricotUtils";
 
-const eventsUrl = () => {
-    return makeBaseUrl()+'/events';
+const eventsUrl = async () => {
+    return await makeBaseUrl()+'/events';
 }
 
 export const createEvent = async (eventObj, cb) => {
     console.log("creating new event", eventObj);
-    await axiosCall('POST', eventsUrl(), eventObj, cb);
+    await axiosCall('POST', await eventsUrl(), eventObj, cb);
 }
 
 export const updateEvent = async (eventId, eventObj, cb) => {
     console.log("creating new event", eventObj);
-    await axiosCall('PUT', eventsUrl()+'/'+eventId, eventObj, cb);
+    await axiosCall('PUT', await eventsUrl()+'/'+eventId, eventObj, cb);
 }
 
 export const deleteEvent = async (eventId, cb) => {
     console.log("deleting event", eventId);
-    await axiosCall('DELETE', eventsUrl()+'/'+eventId, null, cb);
+    await axiosCall('DELETE', await eventsUrl()+'/'+eventId, null, cb);
 }
 
 export const getEventById = async (eventId, cb) => {
     console.log("getEventById", eventId);
-    await axiosCall('GET', eventsUrl()+'/'+eventId, null, cb);
+    await axiosCall('GET', await eventsUrl()+'/'+eventId, null, cb);
 }
 
 export const getEvents = async (startDate, cb) => {
-    await axiosGetCallWithParams(eventsUrl(), {$filter: "StartDate ge "+startDate}, (result) => cb(result.Events) )
+    await axiosGetCallWithParams(await eventsUrl(), {$filter: "StartDate ge "+startDate}, result => {
+        cb(result.Events);} )
 };
