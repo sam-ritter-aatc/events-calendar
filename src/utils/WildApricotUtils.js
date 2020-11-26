@@ -1,4 +1,5 @@
 const axios = require('axios');
+const qs = require('querystring');
 
 export const makeBaseUrl = (token) => {
     return process.env.REACT_APP_WA_BASE_URL + '/accounts/' + token.Permissions[0].AccountId;
@@ -13,6 +14,48 @@ export const makeHeaders = (token) => {
         'Content-Type': 'application/json',
         'Authorization': makeAuthHeader(token)
     }
+}
+
+const makeBasicAuthHeader = () => {
+    return 'Basic ' + new Buffer('APIKEY:' + process.env.REACT_APP_WA_API_KEY).toString('base64');
+}
+
+
+export const getAuthTokens = async (cb) => {
+    // let basicAuthHeader = makeBasicAuthHeader();
+    let body = {
+        grant_type: 'client_credentials',
+        scope: 'auto',
+        obtain_refresh_token: true
+    };
+    await axiosAuthRequest(body, cb);
+}
+
+export const refreshAuthTokens = async (refreshToken, cb) => {
+    // let basicAuthHeader = makeBasicAuthHeader();
+    let body = {
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+    }
+    await axiosAuthRequest(body, cb);
+}
+
+const axiosAuthRequest = async (body, cb) => {
+    await axios({
+        method: 'POST',
+        url: process.env.REACT_APP_WA_OAUTH_URL,
+        data: qs.stringify(body),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': makeBasicAuthHeader()},
+    })
+        .then( (result) => {
+            cb(result.data);
+        })
+        .catch( (err) => {
+            console.log('error', err);
+        });
+
 }
 
 export const axiosCall = async (token, method, url, body, cb) => {

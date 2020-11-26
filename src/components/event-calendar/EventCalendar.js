@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
+import {getAuthTokens} from "../../utils/WildApricotUtils";
 import {getEvents} from '../../utils/WildApricotEvents';
 import eventConvert from '../../utils/WildApricotConversions';
 import {buildRedirect,memberEventTag,firstDateEventsToRetrieve} from "../EventCommon";

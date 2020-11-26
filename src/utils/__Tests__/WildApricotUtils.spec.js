@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getAuthTokens} from '../WildApricotOAuthUtils';
+import {getAuthTokens} from '../WildApricotUtils';
 import {makeAToken} from "../../__Test-Utils__/TokenData";
 
 // let token = require('./sampleToken.json');

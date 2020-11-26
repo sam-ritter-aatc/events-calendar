@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-// import {getAuthTokens} from "../../utils/WildApricotOAuthUtils";
 import {getEventById, updateEvent, deleteEvent} from "../../utils/WildApricotEvents";
 import {getContact} from "../../utils/WildApricotContacts";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
