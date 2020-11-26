@@ -10,7 +10,7 @@ describe('checks FieldValues in contact for admin access', () => {
         let data = makeData(NoAdminValue.FieldValues);
         axios.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
-        await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
+        await getContact(1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
         expect(contact.isAdmin).toBeFalsy();
     })
@@ -19,7 +19,7 @@ describe('checks FieldValues in contact for admin access', () => {
         let data = makeData(HasAdminValue.FieldValues);
         axios.mockImplementationOnce(() => Promise.resolve(data));
         let contact = null;
-        await getContact(makeAToken(), 1234, (data) => {contact = Object.assign({},data)} );
+        await getContact(1234, (data) => {contact = Object.assign({},data)} );
         console.log(contact);
         expect(contact.isAdmin).toBeTruthy();
     })
