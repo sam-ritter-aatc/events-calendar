@@ -1,4 +1,4 @@
-import {axiosCall} from "./WildApricotUtils";
+import {axiosCall} from "./WildApricotCommunication";
 
 const makeEmailUrl = () => {
     return 'https://cors-anywhere.herokuapp.com/https://api.wildapricot.org/v2.2/rpc/' + localStorage.getItem('AccountId') + '/email/SendEmail';

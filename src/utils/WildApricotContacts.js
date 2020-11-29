@@ -1,4 +1,4 @@
-import {makeBaseUrl, axiosCall} from "./WildApricotUtils";
+import {makeBaseUrl, axiosCall} from "./WildApricotCommunication";
 
 export const getContact = async (contactId, cb) => {
     await axiosCall('GET', await makeBaseUrl() + '/contacts/' + contactId, null, result => convertContactData(result, cb));

@@ -1,4 +1,4 @@
-import {makeBaseUrl, axiosCall, axiosGetCallWithParams} from "./WildApricotUtils";
+import {makeBaseUrl, axiosCall, axiosGetCallWithParams} from "./WildApricotCommunication";
 
 const eventsUrl = async () => {
     return await makeBaseUrl()+'/events';
