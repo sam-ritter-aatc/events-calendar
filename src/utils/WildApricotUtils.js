@@ -1,5 +1,83 @@
-const axios = require('axios');
+import axios from 'axios';
+// import createAuthRefreshInterceptor from 'axios-auth-refresh';
 const qs = require('querystring');
+
+const instance = axios.create();
+
+
+const _getAuthTokens = async () => {
+    let body = {
+        grant_type: 'client_credentials',
+        scope: 'auto',
+        obtain_refresh_token: true
+    };
+    await _axiosAuthRequest(body);
+}
+
+const _refreshAuthTokens = async () => {
+    let body = {
+        grant_type: 'refresh_token',
+        refresh_token: localStorage.getItem('refresh_token')
+    }
+    return _axiosAuthRequest(body);
+}
+
+
+let isRefreshing = false;
+let subscribers = [];
+
+const subscribeTokenRefresh = async (cb) => {
+    subscribers.push(cb);
+}
+
+const subscribersOnRefreshed = async () => {
+    subscribers.map(cb => cb());
+}
+
+// instance.interceptors.response.use(
+//     response => {
+//         console.log("INTECEPTOR", response);
+//         return response;
+//     },
+//     error => {
+//         console.log("ERROR RESPONSE", error.response);
+//         return Promise.reject();
+//     }
+// );
+
+instance.interceptors.response.use(
+    response => response,
+    async err => {
+        let errResponse = err.response;
+        console.log("####error response####", errResponse);
+        const {
+            config,
+            status,
+            data,
+        } = err.response;
+
+        console.log("======ERROR VALUES======", config, status, data);
+
+        if( status===401 && data.reason === 'invalid_token') {
+            console.log("!!!!!!!!! refreshing");
+            console.log("HEADERS BEFORE", config.headers);
+            if( !isRefreshing) {
+                isRefreshing = true;
+                await _refreshAuthTokens();
+                isRefreshing = false;
+            }
+            config.headers = await makeHeaders();
+            console.log("CONFIG AFTER REFRESH", config);
+            const requestSubscribers = new Promise(resolve => {
+                subscribeTokenRefresh(() => resolve(axios(config)));    // original request
+            });
+
+            subscribersOnRefreshed();
+
+            return requestSubscribers;
+        }
+    }
+);
 
 
 export const makeBaseUrl = async () => {
@@ -24,46 +102,32 @@ const makeBasicAuthHeader = () => {
     return 'Basic ' + new Buffer('APIKEY:' + process.env.REACT_APP_WA_API_KEY).toString('base64');
 }
 
-
-export const getAuthTokens = async () => {
-    let body = {
-        grant_type: 'client_credentials',
-        scope: 'auto',
-        obtain_refresh_token: true
-    };
-    await axiosAuthRequest(body);
+const _saveTokenBitsToLocalStorage = (token) => {
+    console.log("----> saving auth tokens", token);
+    localStorage.setItem('AccountId', token.Permissions[0].AccountId);
+    localStorage.setItem('access_token', token.access_token);
+    localStorage.setItem('refresh_token', token.refresh_token);
+    localStorage.setItem('token_type', token.token_type);
 }
 
-export const refreshAuthTokens = async () => {
-    let body = {
-        grant_type: 'refresh_token',
-        refresh_token: localStorage.getItem('refresh_token')
-    }
-    await axiosAuthRequest(body);
+const _getAuthUrl = async () => {
+    return await process.env.REACT_APP_WA_OAUTH_URL;
 }
 
-const axiosAuthRequest = async (body) => {
-    await axios({
+const _axiosAuthRequest = async (body) => {
+    await instance({
         method: 'POST',
-        url: process.env.REACT_APP_WA_OAUTH_URL,
+        url: await _getAuthUrl(),
         data: qs.stringify(body),
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': makeBasicAuthHeader()
         },
     })
-        .then((result) => {
-            let token = result.data;
-            localStorage.setItem('AccountId', token.Permissions[0].AccountId);
-            localStorage.setItem('access_token', token.access_token);
-            localStorage.setItem('refresh_token', token.refresh_token);
-            localStorage.setItem('token_type', token.token_type);
-            localStorage.setItem('token', token);
-        })
+        .then((result) => _saveTokenBitsToLocalStorage(result.data))
         .catch((err) => {
-            console.log('error', err);
+            console.error('error', err);
         });
-
 }
 
 export const axiosCall = async (method, url, body, cb) => {
@@ -77,12 +141,12 @@ export const axiosGetCallWithParams = async (url, params, cb) => {
 
 const _getTokensIfFirstCall = async () => {
     if(!localStorage.getItem('access_token')) {
-        await getAuthTokens();
+        await _getAuthTokens();
     }
 }
 const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
      // const firstCall = true;
-    await axios({
+    await instance({
         method: methd,
         url: url,
         headers: await makeHeaders(),
@@ -102,3 +166,5 @@ const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
             errorCb(err);
         });
 }
+
+
