@@ -12,7 +12,7 @@ import {Button} from "react-bootstrap-buttons";
 export default class EventCreator extends Component {
     constructor(props) {
         super(props);
-        console.log("INCOMING PROPS", props);
+        // console.log("INCOMING PROPS", props);
 
         this.state = {
             event: emptyEvent(),
@@ -34,7 +34,9 @@ export default class EventCreator extends Component {
         theEvent.StartDate = theEvent.StartDate.toISOString();
         theEvent.EndDate = theEvent.EndDate.toISOString();
         createEvent(theEvent, (data) => {
-            createInitialRegistrationForEvent(data, this.props.location.state.member.id, (data)=> {console.log("INITIAL REG", data)});
+            createInitialRegistrationForEvent(data, this.props.location.state.member.id, data=> {
+                // console.log("INITIAL REG", data)
+            });
         });
 
         this.setState({event: emptyEvent()});
@@ -58,7 +60,7 @@ export default class EventCreator extends Component {
             eventInfo: this.props.location.state.eventInfo
         })
 
-        console.log("STATE",this.state);
+        // console.log("STATE",this.state);
         if (this.state.eventInfo.date) {  // user clicked on a date to create event.
             startDate = new  Date(new Date(this.state.eventInfo.date).setHours(8,0,0));
             endDate = new  Date(new Date(this.state.eventInfo.date).setHours(20,0,0));
@@ -73,7 +75,7 @@ export default class EventCreator extends Component {
             Id: this.props.location.state.member.id
         }
         this.setState({event: {...this.state.event, Details:details}});
-        console.log("STATE", this.state);
+        // console.log("STATE", this.state);
     }
 
     startDateHandler(date) {

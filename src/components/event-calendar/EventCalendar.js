@@ -38,7 +38,7 @@ export default class EventCalendar extends Component {
             await getContact(queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
             this.setState({isLoggedInUser:true})
         }
-        console.log("===> getting events.")
+        // console.log("===> getting events.")
         await getEvents(firstDateEventsToRetrieve(), (data) => {
             var myEvents = eventConvert(data).map((event) => {
                 return {
@@ -54,7 +54,7 @@ export default class EventCalendar extends Component {
                 }
             });
             this.props.onEventChange(myEvents);
-            console.log("events have been reloaded")
+            // console.log("events have been reloaded")
         });
     }
 
@@ -68,7 +68,7 @@ export default class EventCalendar extends Component {
     }
 
     handleWindowResize(arg) {
-        console.log("RESIZE", arg);
+        // console.log("RESIZE", arg);
         arg.updateSize();
     }
 
@@ -77,7 +77,7 @@ export default class EventCalendar extends Component {
     }
 
     handleEventClick = (arg) => {
-        console.log("going to event", arg);
+        // console.log("going to event", arg);
         this.setState({showEvent: true, eventInfo: arg});
     }
 

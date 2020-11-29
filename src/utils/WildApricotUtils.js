@@ -111,7 +111,7 @@ const _axiosAuthRequest = async (body) => {
 }
 
 export const axiosCall = async (method, url, body, cb) => {
-    console.log("Calling - ", url, body, localStorage.getItem('access_token'));
+    // console.log("Calling - ", url, body, localStorage.getItem('access_token'));
     await _axiosCall(method,url,null,body,cb, err => cb({err}));
 }
 
@@ -134,7 +134,7 @@ const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
         params: params
     })
         .then(result => {
-            console.log("RESULT FROM WA", result);
+            // console.log("RESULT FROM WA", result);
             cb(result.data);
         })
         .catch(err => {

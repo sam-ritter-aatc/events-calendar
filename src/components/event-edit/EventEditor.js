@@ -30,7 +30,7 @@ const editorConfiguration = {
 export default class EventEditor extends Component {
     constructor(props) {
         super(props);
-        console.log("INCOMING PROPS", props);
+        // console.log("INCOMING PROPS", props);
 
         this.state = {
             event: emptyEvent(),
@@ -51,7 +51,9 @@ export default class EventEditor extends Component {
         e.preventDefault();
 
         // let theEvent = Object.assign({}, this.state.event);
-        updateEvent(this.state.event.Id, this.state.event, (data) => {console.log("UPDATE RESULT", data)})
+        updateEvent(this.state.event.Id, this.state.event, data => {
+            // console.log("UPDATE RESULT", data)
+        })
 
         this.setState({event: emptyEvent()});
 
@@ -101,7 +103,7 @@ export default class EventEditor extends Component {
             await getContact(this.state.event.Details.Organizer.Id, (data) => {
                 this.setState({organizer: data});
             });
-            console.log("contact", this.state.organizer);
+            // console.log("contact", this.state.organizer);
         }
     }
 
@@ -114,7 +116,9 @@ export default class EventEditor extends Component {
     }
 
     handleDelete() {
-        deleteEvent(this.state.event.Id, (data) => {console.log("DELETE RESULT", data)});
+        deleteEvent(this.state.event.Id, data => {
+            // console.log("DELETE RESULT", data)
+        });
 
         this.props.history.push(`/?mid=${this.state.member.id}`);
     }
@@ -134,7 +138,7 @@ export default class EventEditor extends Component {
             return (
                 <div className="App">
                      <div className="editor">
-                         <div className="form-group" style={{'text-align':'center'}}>
+                         <div className="form-group" style={{'textAlign':'center'}}>
                              <Button xs onClick={() => this.calendarViewClick()}>Calendar View</Button>
                              <Button xs btnStyle="danger" onClick={() => this.handleDelete()}>Delete Event</Button>
                          </div>
@@ -182,7 +186,7 @@ export default class EventEditor extends Component {
                                 />
                             </div>
 
-                            <div className="form-group button" style={{'text-align':'center'}}>
+                            <div className="form-group button" style={{'textAlign':'center'}}>
                                 <Button xs btnStyle="primary" type="submit">Save Event</Button>
                             </div>
 

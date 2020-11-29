@@ -37,8 +37,8 @@ export default class EventDisplay extends Component {
     }
 
     async componentDidMount() {
-        console.log("incoming props => ", this.props);
-        console.log("Display Event Info: ", this.props.location.state.eventInfo);
+        // console.log("incoming props => ", this.props);
+        // console.log("Display Event Info: ", this.props.location.state.eventInfo);
 
         // recurring event
         await this.getEvent();
@@ -123,7 +123,7 @@ export default class EventDisplay extends Component {
     async handleAddGuest(regId) {
         let reg = this.findRegistrationByRegId(regId);
         reg.numGuests = reg.numGuests+1;
-        console.log("Registrations ", reg);
+        // console.log("Registrations ", reg);
         await updateRegistration(reg, async (data) => {
             await this.updateRegistrationInState(reg, data);
         });
@@ -147,7 +147,9 @@ export default class EventDisplay extends Component {
     }
 
     async handleSendMessage() {
-        sendEmail(this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),(data)=>console.log(data));
+        sendEmail(this.state.event.Id, this.state.registrations, this.messageSubject(), this.memberMessage(),data=> {
+            // console.log(data)
+        });
         await this.setState({
             rsvpModalTitle: '',
             rsvpMessage: '',
@@ -188,10 +190,10 @@ export default class EventDisplay extends Component {
     findRegistrationByRegId(regId) {
         let regArray = this.state.registrations.filter(reg => reg.regId === regId);
         if (regArray.length === 1) {
-            console.log("find reg returning -> ", regArray[0]);
+            // console.log("find reg returning -> ", regArray[0]);
             return regArray[0];
         } else {
-            console.log("find reg by reg id -- returning null");
+            // console.log("find reg by reg id -- returning null");
             return null;
         }
     }

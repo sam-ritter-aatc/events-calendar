@@ -11,7 +11,9 @@ export const getRegistrationsForEventId = async ( eventId, cb) => {
 export const createInitialRegistrationForEvent = async (eventId, userId, cb) => {
     let regTypeId = null;
     await getRegistrationTypesForEvent(eventId, data => {regTypeId = data[0].Id;});
-    await updateRegistrationTypeForEvent(regTypeId, eventId, data => {console.log("updated registration type", data);});
+    await updateRegistrationTypeForEvent(regTypeId, eventId, data => {
+        // console.log("updated registration type", data);
+    });
     await sendRegistrationForEvent(eventId, userId, regTypeId, cb);
 }
 

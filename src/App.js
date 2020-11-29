@@ -21,14 +21,14 @@ export default class App extends Component {
     }
 
     updateMember = (member) => {
-        console.log("Setting member data -> ", member)
+        // console.log("Setting member data -> ", member)
         if (member != null) {
             this.setState({member: member});
         }
     }
 
     updateToken = (token) => {
-        console.log("Updating Token -> ", token)
+        // console.log("Updating Token -> ", token)
         this.setState( {token: {timestamp: Date.now(), waToken: token}})
     }
 
