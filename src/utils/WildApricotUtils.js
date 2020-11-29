@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import createAuthRefreshInterceptor from 'axios-auth-refresh';
 const qs = require('querystring');
 
 const instance = axios.create();
@@ -34,40 +33,24 @@ const subscribersOnRefreshed = async () => {
     subscribers.map(cb => cb());
 }
 
-// instance.interceptors.response.use(
-//     response => {
-//         console.log("INTECEPTOR", response);
-//         return response;
-//     },
-//     error => {
-//         console.log("ERROR RESPONSE", error.response);
-//         return Promise.reject();
-//     }
-// );
-
 instance.interceptors.response.use(
     response => response,
     async err => {
         let errResponse = err.response;
-        console.log("####error response####", errResponse);
         const {
             config,
             status,
             data,
         } = err.response;
 
-        console.log("======ERROR VALUES======", config, status, data);
 
         if( status===401 && data.reason === 'invalid_token') {
-            console.log("!!!!!!!!! refreshing");
-            console.log("HEADERS BEFORE", config.headers);
             if( !isRefreshing) {
                 isRefreshing = true;
                 await _refreshAuthTokens();
                 isRefreshing = false;
             }
             config.headers = await makeHeaders();
-            console.log("CONFIG AFTER REFRESH", config);
             const requestSubscribers = new Promise(resolve => {
                 subscribeTokenRefresh(() => resolve(axios(config)));    // original request
             });
@@ -78,7 +61,6 @@ instance.interceptors.response.use(
         }
     }
 );
-
 
 export const makeBaseUrl = async () => {
     await _getTokensIfFirstCall();
@@ -103,7 +85,6 @@ const makeBasicAuthHeader = () => {
 }
 
 const _saveTokenBitsToLocalStorage = (token) => {
-    console.log("----> saving auth tokens", token);
     localStorage.setItem('AccountId', token.Permissions[0].AccountId);
     localStorage.setItem('access_token', token.access_token);
     localStorage.setItem('refresh_token', token.refresh_token);
@@ -144,8 +125,8 @@ const _getTokensIfFirstCall = async () => {
         await _getAuthTokens();
     }
 }
+
 const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
-     // const firstCall = true;
     await instance({
         method: methd,
         url: url,
@@ -159,10 +140,6 @@ const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
         })
         .catch(err => {
             console.log("*****ERROR*******", err);
-            // if(err.response.status === 401) {
-            //     console.log("************");
-            //
-            // }
             errorCb(err);
         });
 }
