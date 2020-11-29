@@ -36,7 +36,6 @@ const subscribersOnRefreshed = async () => {
 instance.interceptors.response.use(
     response => response,
     async err => {
-        let errResponse = err.response;
         const {
             config,
             status,
