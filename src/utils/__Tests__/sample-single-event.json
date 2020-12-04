@@ -1,0 +1,177 @@
+{
+  "Id": 3755961,
+  "Url": "https://api.wildapricot.org/v2/accounts/57611/Events/3755961",
+  "EventType": "Rsvp",
+  "StartDate": "2020-08-19T00:00:00-04:00",
+  "EndDate": "2020-08-19T00:00:00-04:00",
+  "Location": "Brighton, MI",
+  "RegistrationEnabled": true,
+  "RegistrationsLimit": null,
+  "PendingRegistrationsCount": 0,
+  "ConfirmedRegistrationsCount": 2,
+  "CheckedInAttendeesNumber": 0,
+  "InviteeStat": {
+    "NotResponded": 0,
+    "NotAttended": 0,
+    "Attended": 0,
+    "MaybeAttended": 0
+  },
+  "Tags": [
+    "race",
+    "sprint"
+  ],
+  "AccessLevel": "Public",
+  "Details": {
+    "DescriptionHtml": "<div align=\"center\">\r\n  <a href=\"https://www.runtrextri.com/\" style=\"font-size: 0.8em;\">https://www.runtrextri.com/</a>\r\n</div>",
+    "PaymentInstructions": "",
+    "TimeZone": {
+      "ZoneId": "Eastern Standard Time",
+      "Name": "(UTC-05:00) Eastern Time (US & Canada)",
+      "UtcOffset": -300
+    },
+    "RegistrationTypes": [
+      {
+        "Id": 5636096,
+        "Url": "https://api.wildapricot.org/v2/accounts/57611/EventRegistrationTypes/5636096",
+        "EventId": 3755961,
+        "IsEnabled": true,
+        "Description": "",
+        "BasePrice": 0.0000,
+        "GuestPrice": 0.0000,
+        "UseTaxScopeSettings": null,
+        "Availability": "Everyone",
+        "AvailableForMembershipLevels": null,
+        "GuestRegistrationPolicy": "Disabled",
+        "CurrentRegistrantsCount": 2,
+        "MultipleRegistrationAllowed": false,
+        "UnavailabilityPolicy": "Undefined",
+        "CancellationBehaviour": "Allow",
+        "CancellationDaysBeforeEvent": 0,
+        "IsWaitlistEnabled": false,
+        "Name": "RSVP"
+      }
+    ],
+    "EventRegistrationFields": [
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": false,
+        "FieldName": "First name",
+        "Type": "String",
+        "IsSystem": true,
+        "FieldInstructions": "",
+        "Description": "This is a system field (first name).   It cannot be deleted.",
+        "MaxLength": 50,
+        "Order": 1,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "FirstName",
+        "IsRequired": true
+      },
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": false,
+        "FieldName": "Last name",
+        "Type": "String",
+        "IsSystem": true,
+        "FieldInstructions": "",
+        "Description": "This is a system field (last name).  It cannot be deleted.",
+        "MaxLength": 50,
+        "Order": 2,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "LastName",
+        "IsRequired": true
+      },
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": true,
+        "FieldName": "Organization",
+        "Type": "String",
+        "IsSystem": true,
+        "FieldInstructions": "",
+        "Description": "This is a system field (organization).  It cannot be deleted.",
+        "MaxLength": 250,
+        "Order": 3,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "Organization",
+        "IsRequired": false
+      },
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": false,
+        "FieldName": "e-Mail",
+        "Type": "String",
+        "IsSystem": true,
+        "FieldInstructions": "",
+        "Description": "This is a system field (email).   It is mandatory for online self-service transactions and cannot be deleted.",
+        "MaxLength": 100,
+        "Order": 4,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "Email",
+        "IsRequired": false
+      },
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": false,
+        "FieldName": "Phone",
+        "Type": "String",
+        "IsSystem": true,
+        "FieldInstructions": "",
+        "Description": "This is a system field (phone).  It cannot be deleted.",
+        "MaxLength": 50,
+        "Order": 5,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "Phone",
+        "IsRequired": true
+      },
+      {
+        "Id": 0,
+        "Kind": "Common",
+        "AdminOnly": false,
+        "FieldName": "DOB",
+        "Type": "String",
+        "IsSystem": false,
+        "FieldInstructions": "",
+        "MaxLength": 250,
+        "Order": 6,
+        "DisplayType": "SingleLineText",
+        "SystemCode": "custom-2691406",
+        "IsRequired": true
+      }
+    ],
+    "TotalPaid": 0.0,
+    "TotalDue": 0.0,
+    "AccessControl": {
+      "AccessLevel": "Public",
+      "AvailableForAnyLevel": false,
+      "AvailableForLevels": [],
+      "AvailableForAnyGroup": false,
+      "AvailableForGroups": []
+    },
+    "GuestRegistrationSettings": {
+      "Enabled": false,
+      "CreateContactMode": "NeverCreateContact"
+    },
+    "Organizer": {
+      "Id": 7250947,
+      "Url": "https://api.wildapricot.org/v2/accounts/57611/Contacts/7250947"
+    },
+    "PaymentMethod": "OnlineAndOffline",
+    "RegistrationConfirmationExtraInfo": "",
+    "RegistrationMessage": null,
+    "SendEmailCopy": false,
+    "IsWaitlistEnabled": false,
+    "MultipleRegistrationAllowed": false,
+    "AttendeesDisplaySettings": {
+      "VisibleTo": "Members",
+      "ShowPendingAttendees": false
+    }
+  },
+  "StartTimeSpecified": false,
+  "EndTimeSpecified": false,
+  "HasEnabledRegistrationTypes": true,
+  "Name": "Race - T-Rex"
+}

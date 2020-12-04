@@ -1,8 +1,13 @@
 import axios from 'axios';
+import {initializeUnauthorizedInterceptor} from './UnauthorizedInterceptor';
 const qs = require('querystring');
 
 const instance = axios.create();
 
+const initInterceptors = async () => {
+    await initializeUnauthorizedInterceptor(instance);
+};
+initInterceptors();
 
 const _getAuthTokens = async () => {
     let body = {
@@ -13,7 +18,7 @@ const _getAuthTokens = async () => {
     await _axiosAuthRequest(body);
 }
 
-const _refreshAuthTokens = async () => {
+export const _refreshAuthTokens = async () => {
     let body = {
         grant_type: 'refresh_token',
         refresh_token: localStorage.getItem('refresh_token')
@@ -22,44 +27,44 @@ const _refreshAuthTokens = async () => {
 }
 
 
-let isRefreshing = false;
-let subscribers = [];
+// let isRefreshing = false;
+// let subscribers = [];
+//
+// const subscribeTokenRefresh = async (cb) => {
+//     subscribers.push(cb);
+// }
+//
+// const subscribersOnRefreshed = async () => {
+//     subscribers.map(cb => cb());
+// }
 
-const subscribeTokenRefresh = async (cb) => {
-    subscribers.push(cb);
-}
-
-const subscribersOnRefreshed = async () => {
-    subscribers.map(cb => cb());
-}
-
-instance.interceptors.response.use(
-    response => response,
-    async err => {
-        const {
-            config,
-            status,
-            data,
-        } = err.response;
-
-
-        if( status===401 && data.reason === 'invalid_token') {
-            if( !isRefreshing) {
-                isRefreshing = true;
-                await _refreshAuthTokens();
-                isRefreshing = false;
-            }
-            config.headers = await makeHeaders();
-            const requestSubscribers = new Promise(resolve => {
-                subscribeTokenRefresh(() => resolve(axios(config)));    // original request
-            });
-
-            subscribersOnRefreshed();
-
-            return requestSubscribers;
-        }
-    }
-);
+// instance.interceptors.response.use(
+//     response => response,
+//     async err => {
+//         const {
+//             config,
+//             status,
+//             data,
+//         } = err.response;
+//
+//
+//         if( status===401 && data.reason === 'invalid_token') {
+//             if( !isRefreshing) {
+//                 isRefreshing = true;
+//                 await _refreshAuthTokens();
+//                 isRefreshing = false;
+//             }
+//             config.headers = await makeHeaders();
+//             const requestSubscribers = new Promise(resolve => {
+//                 subscribeTokenRefresh(() => resolve(axios(config)));    // original request
+//             });
+//
+//             subscribersOnRefreshed();
+//
+//             return requestSubscribers;
+//         }
+//     }
+// );
 
 export const makeBaseUrl = async () => {
     await _getTokensIfFirstCall();
@@ -71,7 +76,7 @@ const makeAuthHeader = async () => {
     return localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token');
 }
 
-const makeHeaders = async () => {
+export const makeHeaders = async () => {
     await _getTokensIfFirstCall();
     return {
         'Content-Type': 'application/json',
