@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {getEvents} from '../../utils/WildApricotEvents';
 import {eventConvert} from '../../utils/WildApricotConversions';
 import {buildRedirect,memberEventTag,firstDateEventsToRetrieve} from "../EventCommon";
+import EventDataLoader from "../event-data-loader/EventDataLoader";
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -23,6 +24,7 @@ export default class EventCalendar extends Component {
 
         this.state = {
             calendarWeekends: true,
+            fetch: true,
             showEvent: false,
             editEvent: false,
             xid: props.match.params.xid,
@@ -54,6 +56,7 @@ export default class EventCalendar extends Component {
                 }
             });
             this.props.onEventChange(myEvents);
+            this.setState({fetch: false});
             // console.log("events have been reloaded")
         });
     }
@@ -93,37 +96,46 @@ export default class EventCalendar extends Component {
         if (this.state.editEvent) {
             return buildRedirect('createEvent', this.props.member, this.state.eventInfo);
         }
-        return (
-            <div className='EventCalendar'>
-                <FullCalendar
-                    defaultView="dayGridMonth"
-                    firstDay={1}
-                    fixedWeekCount={false}
-                    handleWindowResize={true}
-                    contentHeight='auto'
-                    height='auto'
-                    // aspectRatio={3}
-                    header={{
-                        left: 'prev today next',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,listMonth'
-                    }}
-                    plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin, bootstrapPlugin]}
-                    themeSystem="bootstrap"
-                    displayEventTime={true}
-                    selectable={true}
-                    ref={this.calendarComponentRef}
-                    weekends={this.state.calendarWeekends}
-                    events={this.props.events}
-                    dateClick={this.handleDateClick}
-                    eventClick={this.handleEventClick}
-                    windowResize={this.handleWindowResize}
-                />
-                {this.state.isLoggedInUser ? <Button xs onClick={this.createEvent}>Create Event</Button> : <div> </div> }
-                <div className="userName">
-                    {this.props.member.displayName != null ? this.props.member.displayName : 'Anonymous'}
+        console.log("###STATE", this.state);
+        console.log("SWTICH", localStorage.getItem('firstInFromWildApricot'));
+
+        if (this.state.fetch) {
+            console.log('showing loader');
+            return (<EventDataLoader name="Event Calendar"/>);
+        } else {
+            return (
+                <div className='EventCalendar'>
+                    <FullCalendar
+                        defaultView="dayGridMonth"
+                        firstDay={1}
+                        fixedWeekCount={false}
+                        handleWindowResize={true}
+                        contentHeight='auto'
+                        height='auto'
+                        // aspectRatio={3}
+                        header={{
+                            left: 'prev today next',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,listMonth'
+                        }}
+                        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin, bootstrapPlugin]}
+                        themeSystem="bootstrap"
+                        displayEventTime={true}
+                        selectable={true}
+                        ref={this.calendarComponentRef}
+                        weekends={this.state.calendarWeekends}
+                        events={this.props.events}
+                        dateClick={this.handleDateClick}
+                        eventClick={this.handleEventClick}
+                        windowResize={this.handleWindowResize}
+                    />
+                    {this.state.isLoggedInUser ? <Button xs onClick={this.createEvent}>Create Event</Button> :
+                        <div></div>}
+                    <div className="userName">
+                        {this.props.member.displayName != null ? this.props.member.displayName : 'Anonymous'}
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
     }
 }
