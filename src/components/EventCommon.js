@@ -97,7 +97,7 @@ export const firstDateEventsToRetrieve = () => {
     // firstDate.setFullYear(firstDate.getFullYear() - 1);
     firstDate.setMonth(firstDate.getMonth() - 6);
 
-    // console.log("FIRST DATE", firstDate)
+    console.log("FIRST DATE", firstDate)
 
     return firstDate.toISOString()
 }
