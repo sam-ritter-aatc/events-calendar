@@ -94,7 +94,7 @@ export const baseRegistration = (contactId, eventId, message) => {
 
 export const firstDateEventsToRetrieve = () => {
     let firstDate = new Date();
-    firstDate.setFullYear(firstDate.getFullYear() - 1);
+    // firstDate.setFullYear(firstDate.getFullYear() - 1);
     firstDate.setMonth(firstDate.getMonth() - 6);
 
     // console.log("FIRST DATE", firstDate)
