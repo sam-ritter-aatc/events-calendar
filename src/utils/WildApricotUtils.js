@@ -36,6 +36,7 @@ const subscribersOnRefreshed = async () => {
 instance.interceptors.response.use(
     response => response,
     async err => {
+        console.log('======>', err);
         const {
             config,
             status,
