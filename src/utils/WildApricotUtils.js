@@ -1,7 +1,7 @@
 import axios from 'axios';
 const qs = require('querystring');
 
-const instance = axios.create();
+// const instance = axios.create();
 
 
 const _getAuthTokens = async () => {
@@ -33,7 +33,7 @@ const subscribersOnRefreshed = async () => {
     subscribers.map(cb => cb());
 }
 
-instance.interceptors.response.use(
+axios.interceptors.response.use(
     response => response,
     async err => {
         console.log('======>', err);
@@ -96,7 +96,7 @@ const _getAuthUrl = async () => {
 }
 
 const _axiosAuthRequest = async (body) => {
-    await instance({
+    await axios({
         method: 'POST',
         url: await _getAuthUrl(),
         data: qs.stringify(body),
@@ -127,7 +127,7 @@ const _getTokensIfFirstCall = async () => {
 }
 
 const _axiosCall = async (methd, url, params, body, cb, errorCb) => {
-    await instance({
+    await axios({
         method: methd,
         url: url,
         headers: await makeHeaders(),
