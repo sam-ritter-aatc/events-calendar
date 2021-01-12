@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {getEvents} from '../../utils/WildApricotEvents';
 import {eventConvert} from '../../utils/WildApricotConversions';
-import {buildRedirect,memberEventTag,firstDateEventsToRetrieve} from "../EventCommon";
+import {buildRedirect, memberEventTag, firstDateEventsToRetrieve, fullSetStartDate} from "../EventCommon";
 import EventDataLoader from "../event-data-loader/EventDataLoader";
 
 import FullCalendar from '@fullcalendar/react'
@@ -36,36 +36,47 @@ export default class EventCalendar extends Component {
     async componentDidMount() {
         const queryStringValues = queryString.parse(this.props.location.search);
 
-        if ( queryStringValues.mid && queryStringValues.mid !== "0") {
+        if (queryStringValues.mid && queryStringValues.mid !== "0") {
             await getContact(queryStringValues.mid, (contact) => this.props.onMemberChange(contact))
-            this.setState({isLoggedInUser:true})
+            this.setState({isLoggedInUser: true})
         }
         // console.log("===> getting events.")
-        await getEvents(firstDateEventsToRetrieve(), (data) => {
-            var myEvents = eventConvert(data).map((event) => {
-                return {
-                    id: event.Id,
-                    title: event.Name.replace("Weekly Workout - ", "")
-                        .replace("Weekly Workout- ",""),  // shorten string in event
-                    start: event.StartDate,
-                    end: event.EndDate,
-                    Url: event.Url,
-                    Tags: event.Tags,
-                    backgroundColor: this.getEventColor(event),
-                    parentId: event.parentId
-                }
-            });
+        await getEvents(firstDateEventsToRetrieve(), data => {
+            var myEvents = this.convertEventData(data);
             this.props.onEventChange(myEvents);
             this.setState({fetch: false});
             // console.log("events have been reloaded")
         });
+
+        // let's fill out more data for the user.
+        getEvents(fullSetStartDate(), eventData => {
+            var events = this.convertEventData(eventData);
+            // console.log("all events = ", events);
+            this.props.onEventChange(events);
+        });
+    }
+
+    convertEventData(eventData) {
+        return eventConvert(eventData).map((event) => {
+            return {
+                id: event.Id,
+                title: event.Name.replace("Weekly Workout - ", "")
+                    .replace("Weekly Workout- ", ""),  // shorten string in event
+                start: event.StartDate,
+                end: event.EndDate,
+                Url: event.Url,
+                Tags: event.Tags,
+                backgroundColor: this.getEventColor(event),
+                parentId: event.parentId
+            }
+        });
     }
 
     getEventColor(event) {
-        if ( /Race/.test(event.Name) ) {
+        if (/Race/.test(event.Name)) {
             return 'red'
-        } else if ( event.Tags && event.Tags.indexOf(memberEventTag())> -1) {
-             return 'green'
+        } else if (event.Tags && event.Tags.indexOf(memberEventTag()) > -1) {
+            return 'green'
         }
         return 'blue';
     }
@@ -96,11 +107,11 @@ export default class EventCalendar extends Component {
         if (this.state.editEvent) {
             return buildRedirect('createEvent', this.props.member, this.state.eventInfo);
         }
-        console.log("###STATE", this.state);
-        console.log("SWTICH", localStorage.getItem('firstInFromWildApricot'));
+        // console.log("###STATE", this.state);
+        // console.log("SWTICH", localStorage.getItem('firstInFromWildApricot'));
 
         if (this.state.fetch) {
-            console.log('showing loader');
+            // console.log('showing loader');
             return (<EventDataLoader name="Event Calendar"/>);
         } else {
             return (
