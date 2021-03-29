@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/ui-react": "^1.0.6",
     "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
     "@ckeditor/ckeditor5-build-classic": "^19.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
@@ -24,6 +25,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "aws-amplify": "^3.3.26",
     "axios": "^0.21.0",
     "bootstrap": "^4.4.1",
     "dotenv": "^8.2.0",
@@ -75,10 +77,10 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.2.0",
-    "react-test-renderer": "^16.13.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.4",
-    "enzyme-to-json": "^3.5.0"
+    "enzyme-to-json": "^3.5.0",
+    "gh-pages": "^2.2.0",
+    "react-test-renderer": "^16.13.1"
   }
 }
